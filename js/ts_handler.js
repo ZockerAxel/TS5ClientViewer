@@ -1,17 +1,21 @@
 //@ts-check
 import { TSRemoteAppWrapper } from "../libs/ts5-remote-apps-wrapper.min.js";
+import App from "./app.js";
 
 export class Handler {
     #apiKey;
+    #app;
     #api;
     
     /**
      * Creates a new Handler
      * 
      * @param {string | null} apiKey The TS API Key, use null to generate a new one
+     * @param {App} app The App to use
      */
-    constructor(apiKey) {
+    constructor(apiKey, app) {
         this.#apiKey = apiKey;
+        this.#app = app;
     }
     
     async connect() {
