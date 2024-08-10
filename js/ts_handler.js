@@ -1,9 +1,9 @@
 //@ts-check
-import { TSRemoteAppWrapper } from "../libs/ts5-remote-apps-wrapper.min.js";
 import App from "./app.js";
 
 export class Handler {
     #apiKey;
+    #apiPort;
     #app;
     #api;
     
@@ -11,16 +11,32 @@ export class Handler {
      * Creates a new Handler
      * 
      * @param {string | null} apiKey The TS API Key, use null to generate a new one
+     * @param {number} apiPort The TeamSpeak Remote App API port
      * @param {App} app The App to use
      */
-    constructor(apiKey, app) {
+    constructor(apiKey, apiPort, app) {
         this.#apiKey = apiKey;
+        this.#apiPort = apiPort;
         this.#app = app;
     }
     
+    /**
+     * Connects to the TS5 Client
+     * 
+     * @returns {Promise<string>} The API Key
+     */
     async connect() {
-        if(this.#apiKey == null) return await this.#connectWithoutAPIKey();
-        else return await this.#connectWithAPIKey();
+        console.log({message: "[Handler] Connecting ...", apiKey: this.#apiKey});
+        
+        if(this.#apiKey == null) {
+            const apiKey = await this.#connectWithoutAPIKey();
+            this.#apiKey = apiKey;
+            return apiKey;
+        } else {
+            const apiKey = await this.#connectWithAPIKey();
+            this.#apiKey = apiKey;
+            return apiKey;
+        }
     }
     
     /**
@@ -37,7 +53,14 @@ export class Handler {
             rejectFunction = reject;
         });
         
-        this.#api = new TSRemoteAppWrapper.TSAPIWrapper();
+        // @ts-ignore
+        this.#api = new TSRemoteAppWrapper.TSApiWrapper({
+            api: {
+                port: this.#apiPort,
+                tsEventDebug: true,
+            },
+            app: this.#app.toRemoteAPIApp(),
+        });
         
         this.#api.on("apiReady", function(/** @type {{ payload: { apiKey: string; }; }} */ data) {
             resolveFunction(data.payload.apiKey);
@@ -60,11 +83,14 @@ export class Handler {
             rejectFunction = reject;
         });
         
-        const apiKey = this.#apiKey;
-        this.#api = new TSRemoteAppWrapper.TSAPIWrapper({
+        // @ts-ignore
+        this.#api = new TSRemoteAppWrapper.TSApiWrapper({
             api: {
                 key: this.#apiKey,
+                port: this.#apiPort,
+                tsEventDebug: true,
             },
+            app: this.#app.toRemoteAPIApp(),
         });
         
         this.#api.on("apiReady", function(/** @type {{ payload: { apiKey: string; }; }} */ data) {

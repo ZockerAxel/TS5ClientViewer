@@ -1,6 +1,5 @@
 {
     "identifier": "eu.endercentral.ts5viewer.standalone",
     "name": "Client-Viewer (Standalone)",
-    "description": "An external Client Viewer for TeamSpeak 5",
-    "version": "indev-0.1"
+    "description": "An external Client Viewer for TeamSpeak 5"
 }
