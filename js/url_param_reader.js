@@ -1,5 +1,4 @@
 //@ts-check
-init();
 
 /**@type {Map<string, string>} */
 const lookupMap = new Map();
@@ -76,3 +75,6 @@ export function getParamBoolean(key) {
 export function isParamSet(key) {
     return lookupMap.has(key);
 }
+
+
+init();
