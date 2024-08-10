@@ -1,0 +1,6 @@
+{
+    "identifier": "eu.endercentral.ts5viewer.obs",
+    "name": "Client-Viewer (OBS Browser Source)",
+    "description": "An external Client Viewer for TeamSpeak 5",
+    "version": "indev-0.1"
+}
