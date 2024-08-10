@@ -1,5 +1,5 @@
 //@ts-check
-import App from "./App.js";
+import App from "../App.js";
 
 export class Handler {
     #apiKey;
