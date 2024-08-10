@@ -1,5 +1,5 @@
 //@ts-check
-import { getParam, isParamSet } from "./url_param_reader.js";
+import { getParam, isParamSet } from "./UrlParamReader.js";
 
 /**
  * @typedef EnvironmentType

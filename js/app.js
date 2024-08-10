@@ -1,7 +1,7 @@
 //@ts-check
-import interfaceAppObject from "./data_loaders/interface_app_loader.js";
-import standaloneAppObject from "./data_loaders/standalone_app_loader.js";
-import obsAppObject from "./data_loaders/obs_app_loader.js";
+import interfaceAppObject from "./data_loaders/InterfaceAppLoader.js";
+import standaloneAppObject from "./data_loaders/StandaloneAppLoader.js";
+import obsAppObject from "./data_loaders/ObsAppLoader.js";
 
 export const APP_VERSION = "indev-0.1";
 
@@ -53,7 +53,7 @@ export default class App {
     /**
      * Load an App by it's Environment
      * 
-     * @param {import("./environment_checker").EnvironmentType} environment The Environment
+     * @param {import("./EnvironmentChecker.js").EnvironmentType} environment The Environment
      * @param {string | undefined} customIdSuffix Custom Id Suffix to use (e.g. if you use multiple browser sources in OBS)
      * @returns {App} The loaded App
      */

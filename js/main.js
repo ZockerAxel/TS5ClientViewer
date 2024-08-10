@@ -1,9 +1,9 @@
 //@ts-check
-import App from "./app.js";
-import { getEnvironment } from "./environment_checker.js";
-import { Handler } from "./ts_handler.js";
-import { getParam, getParamInt } from "./url_param_reader.js";
-import { getOrDefault } from "./utils.js";
+import App from "./App.js";
+import { getEnvironment } from "./EnvironmentChecker.js";
+import { Handler } from "./TSHandler.js";
+import { getParam, getParamInt } from "./UrlParamReader.js";
+import { getOrDefault } from "./Utils.js";
 
 const DEFAULT_APP_PORT = 5899;
 
