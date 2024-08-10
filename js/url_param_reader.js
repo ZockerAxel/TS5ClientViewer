@@ -14,8 +14,6 @@ function init() {
         const key = data[0];
         const value = data[1];
         
-        if(!key || !value) continue;
-        
         lookupMap.set(key, value);
     }
 }
@@ -52,6 +50,21 @@ export function getParamFloat(key) {
     const value = getParam(key);
     if(!value) return undefined;
     return Number.parseFloat(value);
+}
+
+/**
+ * Gets a parameter value as a boolean by it's key.
+ * Assumes false for unset params.
+ * Assumes true for set params without a value.
+ * 
+ * @param {string} key The Key to lookup
+ * @returns {boolean} The set value
+ */
+export function getParamBoolean(key) {
+    if(!isParamSet(key)) return false;//If unset, assume false
+    const value = getParam(key);
+    if(!value) return true;//If set, but no value, assume true
+    return value.toLowerCase() === "true";
 }
 
 /**
