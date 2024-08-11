@@ -18,6 +18,12 @@ export class Handler {
     /**@type {Server} */
     #activeServer;
     
+    //Callbacks
+    /**@type {((server: Server) => void)[]} */
+    #newServerCallbacks = [];
+    /**@type {((server: Server) => void)[]} */
+    #activeServerChangeCallbacks = [];
+    
     /**
      * Creates a new Handler
      * 
@@ -48,7 +54,28 @@ export class Handler {
     }
     
     /**
-     * Removes a Server
+     * 
+     * @param {(server: Server) => void} callback 
+     */
+    onNewServer(callback) {
+        this.#newServerCallbacks.push(callback);
+    }
+    
+    /**
+     * Add a Server
+     * 
+     * @param {Server} server The added Server
+     */
+    addServer(server) {
+        this.#servers.push(server);
+        
+        for(const callback of this.#newServerCallbacks) {
+            callback(server);
+        }
+    }
+    
+    /**
+     * Remove a Server
      * 
      * @param {Server} server The Server to remove
      */
@@ -73,13 +100,37 @@ export class Handler {
             if(localClient === null) throw new Error(`No local Client found on Server '${server.getName()}'`);
             
             if(!localClient.isHardwareMuted()) {
-                this.#activeServer = server;//Set the server where the client is not hardware-muted as the active one
+                this.#setActiveServer(server);//Set the server where the client is not hardware-muted as the active one
                 break;
             }
         }
         
         // @ts-ignore
         testOutput.textContent = this.#activeServer.toTreeString();
+    }
+    
+    /**
+     * Sets the active server
+     * 
+     * @param {Server} server The new active Server
+     */
+    #setActiveServer(server) {
+        const changed = this.#activeServer !== server;
+        this.#activeServer = server;
+        
+        if(changed) {
+            for(const callback of this.#activeServerChangeCallbacks) {
+                callback(server);
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param {(server: Server) => void} callback 
+     */
+    onActiveServerChange(callback) {
+        this.#newServerCallbacks.push(callback);
     }
     
     getActiveServer() {
@@ -273,7 +324,7 @@ export class Handler {
                     clientId: clientId,
                 });
                 
-                self.#servers.push(server);
+                self.addServer(server);
             } else {
                 //If server is not null, user presumably disconnected (on their own or against their will)
                 
@@ -412,7 +463,7 @@ export class Handler {
         
         for(const connection of payload.connections) {
             const server = this.#loadServer(connection);
-            this.#servers.push(server);
+            this.addServer(server);
         }
         
         // @ts-ignore
@@ -465,10 +516,10 @@ export class Handler {
             to.addClient(client);
             
             if(client.isLocalClient()) {
-                if(!client.isHardwareMuted()) this.#activeServer = server;//Set this server as the active one if local client is not hardware muted
+                if(!client.isHardwareMuted()) this.#setActiveServer(server);//Set this server as the active one if local client is not hardware muted
             
                 client.onHardwareMutedChange(function(hardwareMuted) {
-                    if(!hardwareMuted) self.#activeServer = server;//Set the server as the active one as soon as local client is no longer hardware-muted
+                    if(!hardwareMuted) self.#setActiveServer(server);//Set the server as the active one as soon as local client is no longer hardware-muted
                     
                     // @ts-ignore
                     testOutput.textContent = self.#activeServer.toTreeString();
@@ -570,10 +621,10 @@ export class Handler {
         const localClient = server.getLocalClient();
         
         if(localClient !== null) {
-            if(!localClient.isHardwareMuted()) this.#activeServer = server;//Set this server as the active one if local client is not hardware muted
+            if(!localClient.isHardwareMuted()) this.#setActiveServer(server);//Set this server as the active one if local client is not hardware muted
             
             localClient.onHardwareMutedChange(function(hardwareMuted) {
-                if(!hardwareMuted) self.#activeServer = server;//Set the server as the active one as soon as local client is no longer hardware-muted
+                if(!hardwareMuted) self.#setActiveServer(server);//Set the server as the active one as soon as local client is no longer hardware-muted
                 
                 // @ts-ignore
                 testOutput.textContent = self.#activeServer.toTreeString();
