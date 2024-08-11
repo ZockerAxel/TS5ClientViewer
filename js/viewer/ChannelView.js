@@ -97,7 +97,7 @@ export default class ChannelView {
     
     createElement() {
         this.#element = document.createElement("div");
-        this.#element.classList.add("channel");
+        this.#element.classList.add("channel", "container");
         
         const channelName = document.createElement("div");
         channelName.classList.add("name");
@@ -124,6 +124,15 @@ export default class ChannelView {
         this.#element.appendChild(this.#channelContainer);
         
         return this.#element;
+    }
+    
+    onTreeDisplayed() {
+        for(const clientView of this.#clientViews) {
+            clientView.onTreeDisplayed();
+        }
+        for(const channelView of this.#channelViews) {
+            channelView.onTreeDisplayed();
+        }
     }
     
     /**

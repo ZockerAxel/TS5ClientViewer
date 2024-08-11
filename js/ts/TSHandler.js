@@ -676,7 +676,7 @@ export default class Handler {
         const talking = properties.flagTalking;
         const muted = properties.inputMuted;
         const hardwareMuted = !properties.inputHardware;
-        const soundMuted = properties.isMuted;
+        const soundMuted = properties.outputMuted;
         const away = properties.away;
         const awayMessage = properties.awayMessage;
         const talkPower = properties.talkPower;
@@ -697,7 +697,7 @@ export default class Handler {
         const talking = properties.flagTalking;
         const muted = properties.inputMuted;
         const hardwareMuted = !properties.inputHardware;
-        const soundMuted = properties.isMuted;
+        const soundMuted = properties.outputMuted;
         const away = properties.away;
         const awayMessage = properties.awayMessage;
         const talkPower = properties.talkPower;

@@ -105,6 +105,18 @@ export default class Client {
     
     /**
      * 
+     * @param {(newValue: boolean) => void} callback The callback function
+     */
+    onStatusChanged(callback) {
+        this.onTalkingChange(callback);
+        this.onMutedChange(callback);
+        this.onHardwareMutedChange(callback);
+        this.onSoundMutedChange(callback);
+        this.onAwayChange(callback);
+    }
+    
+    /**
+     * 
      * @param {string} nickname The new nickname
      */
     updateNickname(nickname) {
@@ -257,7 +269,7 @@ export default class Client {
     
     /**
      * 
-     * @param {(newValue: boolean) => void} callback The callback function
+     * @param {(newValue: boolean, message: string) => void} callback The callback function
      */
     onAwayChange(callback) {
         this.#awayUpdateCallbacks.push(callback);

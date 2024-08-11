@@ -1,0 +1,211 @@
+* {
+    font-size: inherit;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+:root {
+    font-family: "Roboto", sans-serif;
+    
+    --box-bg: hsl(0, 0%, 85%);
+    
+    --light-blue-color: hsl(203, 51%, 58%);
+    
+    --channel-text-color: hsl(0, 0%, 10%);
+    --client-text-color: hsl(211, 27%, 37%);
+    
+    --scale: 1.5;
+    
+    width: 100vw;
+    height: 100dvh;
+    
+    overflow: hidden;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    
+    overflow: hidden;
+}
+
+/* 
+    Viewer
+*/
+
+#viewer {
+    font-size: calc(var(--scale) * 1.5em);
+    
+    display: flex;
+    flex-direction: column;
+    
+    user-select: none;
+    
+    & .container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.025em;
+        margin-block: 0.025em;
+    }
+}
+
+.server {
+    width: fit-content;
+}
+
+.channel, .client {
+    margin-inline-start: 0.5em;
+}
+
+.channel {
+    color: var(--channel-text-color);
+}
+
+.client {
+    display: flex;
+    align-items: center;
+    
+    --height: 0;
+    
+    color: var(--client-text-color);
+    
+    &.self {
+        font-weight: bold;
+        color: var(--light-blue-color);
+    }
+    
+    & > .name {
+        margin-inline-start: 0.25em;
+    }
+}
+
+.server > .channel {
+    margin: 0;
+}
+
+.channel > .name, .client {
+    background-color: var(--box-bg);
+    
+    --padding: 0.4em;
+    
+    padding: var(--padding);
+    
+    border: 0.1em solid var(--client-text-color);
+    
+    width: fit-content;
+}
+
+/* Client Statuses */
+.status {
+    position: relative;
+    
+    display: flex;
+    
+    --calculated-height: calc(var(--height) - (var(--padding) * 2));
+    
+    height: var(--calculated-height);
+    width: var(--calculated-height);
+}
+
+.status[status="hardware_muted"]::before {
+    content: "";
+    
+    position: absolute;
+    
+    background-image: url("/resources/img/client_status/input_muted_hardware.png");
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    inset: 0;
+    
+    top: 0.05em;
+    
+    filter: invert(100%) hue-rotate(180deg) saturate(4);
+}
+
+.status[status="sound_muted"]::before {
+    content: "";
+    
+    position: absolute;
+    
+    background-image: url("/resources/img/client_status/output_muted.png");
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    inset: 0;
+    
+    top: 0.05em;
+    
+    filter: invert(100%) hue-rotate(180deg) saturate(4);
+}
+
+.status[status="away"]::before {
+    content: "";
+    
+    position: absolute;
+    
+    background-image: url("/resources/img/client_status/away.svg");
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    inset: 0;
+}
+
+.status[status="away_and_sound_muted"]::before {
+    content: "";
+    
+    position: absolute;
+    
+    background-image: url("/resources/img/client_status/away_and_sound_muted.svg");
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    inset: 0;
+}
+
+.status[status="mic_muted"]::before {
+    content: "";
+    
+    position: absolute;
+    
+    background-image: url("/resources/img/client_status/input_muted.png");
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    inset: 0;
+    
+    top: 0.05em;
+    
+    filter: invert(100%) hue-rotate(180deg) saturate(4);
+}
+
+.status[status="not_talking"] {
+    background-image: linear-gradient(#21303A, #365369);
+    
+    border: 0.11em solid var(--light-blue-color);
+    border-radius: 50%;
+}
+
+.status[status="talking"] {
+    background-image: linear-gradient(#177CA1, #22B0E4);
+    
+    border: 0.11em solid hsl(200, 53%, 55%);
+    border-radius: 50%;
+}
+
+/* 
+    Interface
+*/
+
+/* 
+    Utility
+*/
+
+.hidden {
+    display: none;
+}

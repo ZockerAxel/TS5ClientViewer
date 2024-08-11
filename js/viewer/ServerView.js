@@ -33,11 +33,15 @@ export default class ServerView {
     
     createElement() {
         this.#element = document.createElement("div");
-        this.#element.classList.add("server");
+        this.#element.classList.add("server", "container");
         
         const rootChannelElement = this.#rootChannelView.createElement();
         this.#element.appendChild(rootChannelElement);
         
         return this.#element;
+    }
+    
+    onTreeDisplayed() {
+        this.#rootChannelView.onTreeDisplayed();
     }
 }

@@ -132,5 +132,6 @@ export default class Viewer {
         
         const tree = serverView.createElement();
         viewerDiv.appendChild(tree);
+        serverView.onTreeDisplayed();
     }
 }
