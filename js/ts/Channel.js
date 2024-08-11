@@ -91,6 +91,10 @@ export default class Channel {
         return this.#name;
     }
     
+    getDisplayName() {
+        return this.#name.replace(/^\[.*?spacer.*?\]\s*/, "")
+    }
+    
     /**
      * Set a new order
      * 
@@ -358,7 +362,7 @@ export default class Channel {
     }
     
     toTreeString(offset = 0) {
-        let text = createLengthString(offset * 4, " ") + this.#name.replace(/^\[.*?spacer.*?\]\s*/, "");
+        let text = createLengthString(offset * 4, " ") + this.getDisplayName();
         
         for(const client of this.#clients) {
             const clientLine = createLengthString((offset + 1) * 4, " ") + "- " + client.getNickname();

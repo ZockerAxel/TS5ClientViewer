@@ -35,6 +35,11 @@ export default class Handler {
         this.#app = app;
     }
     
+    restart() {
+        this.#api.disconnect();
+        this.#api.connect();
+    }
+    
     /**
      * Gets a server by it's ID
      * 
