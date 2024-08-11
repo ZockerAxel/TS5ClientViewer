@@ -320,7 +320,7 @@ export default class Channel {
     }
     
     toTreeString(offset = 0) {
-        let text = createLengthString(offset * 2, " ") + this.#name;
+        let text = createLengthString(offset * 2, " ") + this.#name.replace(/^\[.*?spacer.*?\]\s*/, "");
         
         for(const client of this.#clients) {
             const clientLine = createLengthString((offset + 1) * 2, " ") + "- " + client.getNickname();

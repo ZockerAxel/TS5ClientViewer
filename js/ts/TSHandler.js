@@ -405,7 +405,7 @@ export class Handler {
                 if(parent === null) continue;
                 
                 const channelId = Number.parseInt(channelInfo.id);
-                const channelName = channelInfo.properties.name.replace(/^\[.*?spacer.*?\]\s*/, "");
+                const channelName = channelInfo.properties.name;
                 const channelOrder = Number.parseInt(channelInfo.order);
                 
                 const channel = new Channel(server, channelId, channelName, channelOrder);
@@ -472,7 +472,7 @@ export class Handler {
                 if(parent === null) continue;
                 
                 const channelId = Number.parseInt(channelInfo.id);
-                const channelName = channelInfo.properties.name.replace(/^\[.*?spacer.*?\]\s*/, "");
+                const channelName = channelInfo.properties.name;
                 const channelOrder = Number.parseInt(channelInfo.order);
                 
                 const channel = new Channel(server, channelId, channelName, channelOrder);
