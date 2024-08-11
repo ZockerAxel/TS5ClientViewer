@@ -51,6 +51,26 @@ export class Handler {
         return [...this.#servers];
     }
     
+    updateActiveServer() {
+        for(const server of this.getServers()) {
+            const localClient = server.getLocalClient();
+            
+            if(localClient === null) throw new Error(`No local Client found on Server '${server.getName()}'`);
+            
+            if(!localClient.isHardwareMuted()) {
+                this.#activeServer = server;//Set the server where the client is not hardware-muted as the active one
+                break;
+            }
+        }
+        
+        // @ts-ignore
+        testOutput.textContent = this.#activeServer.toTreeString();
+    }
+    
+    getActiveServer() {
+        return this.#activeServer;
+    }
+    
     /**
      * Connects to the TS5 Client
      * 
@@ -144,6 +164,7 @@ export class Handler {
     registerEvents() {
         this.registerAuthEvent();
         this.registerClientMovedEvent();
+        this.registerClientPropertiesUpdatedEvent();
     }
     
     registerAuthEvent() {
@@ -160,18 +181,31 @@ export class Handler {
         });
     }
     
+    registerClientPropertiesUpdatedEvent() {
+        const self = this;
+        this.#api.on("tsOnClientPropertiesUpdated", function(data) {
+            const serverId = Number.parseInt(data.payload.connectionId);
+            
+            const server = self.getServer(serverId);
+            
+            if(server == null) throw new Error(`Client Properties updated in unkown Server (ID: ${serverId})`);
+            
+            const clientId = Number.parseInt(data.payload.clientId);
+            
+            const client = server.getClient(clientId);
+            
+            if(client === null) throw new Error(`Client Properties updated for unkown Client (ID: ${clientId}) in Server '${server.getName()}' (ID: ${serverId})`);
+            
+            self.#updateClient(client, data.payload.properties);
+        });
+    }
+    
     #onAuth(payload) {
         this.#servers.length = 0;//Clear Servers
         
         for(const connection of payload.connections) {
             const server = this.#loadServer(connection);
             this.#servers.push(server);
-            
-            const localClient = server.getLocalClient();
-            
-            if(localClient === null) throw new Error(`No local Client found on Server '${server.getName()}'`);
-            
-            if(!localClient.isHardwareMuted()) this.#activeServer = server;//Set the server where the client is not hardware-muted as the active one
         }
         
         // @ts-ignore
@@ -244,6 +278,8 @@ export class Handler {
     }
     
     #loadServer({id, properties, channelInfos, clientInfos, clientId}) {
+        const self = this;
+        
         const server = new Server(id, clientId, properties.name);
         
         const allChannelInfos = [...channelInfos.rootChannels];
@@ -292,6 +328,19 @@ export class Handler {
         //Sort all channels initally to make sure they are in the correct order (they should already be given in the correct order, but you can never be sure enough)
         server.getRootChannel().sortSubChannelsRecursively();
         
+        const localClient = server.getLocalClient();
+        
+        if(localClient === null) throw new Error(`No local Client found on Server '${server.getName()}' (ID: ${server.getId()})`);
+        
+        if(!localClient.isHardwareMuted()) this.#activeServer = server;//Set this server as the active one if local client is not hardware muted
+        
+        localClient.onHardwareMutedChange(function(hardwareMuted) {
+            if(!hardwareMuted) self.#activeServer = server;//Set the server as the active one as soon as local client is no longer hardware-muted
+            
+            // @ts-ignore
+            testOutput.textContent = self.#activeServer.toTreeString();
+        });
+        
         return server;
     }
     
@@ -317,5 +366,33 @@ export class Handler {
         const client = new Client(server, clientId, clientType, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage, talkPower);
         
         return client;
+    }
+    
+    /**
+     * Updates a Client with the provided Properties
+     * 
+     * @param {Client} client The Client to update
+     * @param {*} properties The Client Properties
+     */
+    #updateClient(client, properties) {
+        const nickname = properties.nickname;
+        const talking = properties.flagTalking;
+        const muted = properties.inputMuted;
+        const hardwareMuted = !properties.inputHardware;
+        const soundMuted = properties.isMuted;
+        const away = properties.away;
+        const awayMessage = properties.awayMessage;
+        const talkPower = properties.talkPower;
+        
+        client.update({
+            nickname: nickname,
+            talking: talking,
+            muted: muted,
+            hardwareMuted: hardwareMuted,
+            soundMuted: soundMuted,
+            away: away,
+            awayMessage: awayMessage,
+            talkPower: talkPower,
+        });
     }
 }

@@ -69,6 +69,20 @@ export default class Client {
         this.#talkPower = talkPower;
     }
     
+    /**
+     * 
+     * @param {{nickname?: string, talking?: boolean, muted?: boolean, hardwareMuted?: boolean, soundMuted?: boolean, away?: boolean, awayMessage?: string, talkPower?: number}} param0 
+     */
+    update({nickname = this.#nickname, talking = this.#talking, muted = this.#muted, hardwareMuted = this.#hardwareMuted, soundMuted = this.#soundMuted, away = this.#away, awayMessage = this.#awayMessage, talkPower = this.#talkPower}) {
+        this.updateNickname(nickname);
+        this.updateTalking(talking);
+        this.updateMuted(muted);
+        this.updateHardwareMuted(hardwareMuted);
+        this.updateSoundMuted(soundMuted);
+        this.updateAway(away, awayMessage);
+        this.updateTalkPower(talkPower);
+    }
+    
     getServer() {
         return this.#server;
     }
@@ -81,6 +95,10 @@ export default class Client {
         return this.#id;
     }
     
+    isLocalClient() {
+        return this.#server.getLocalClient() === this;
+    }
+    
     getType() {
         return this.#type;
     }
@@ -90,7 +108,7 @@ export default class Client {
      * @param {string} nickname The new nickname
      */
     updateNickname(nickname) {
-        const changed = this.#nickname === nickname;
+        const changed = this.#nickname !== nickname;
         this.#nickname = nickname;
         
         if(changed) {
@@ -117,7 +135,7 @@ export default class Client {
      * @param {boolean} talking The new value
      */
     updateTalking(talking) {
-        const changed = this.#talking === talking;
+        const changed = this.#talking !== talking;
         this.#talking = talking;
         
         if(changed) {
@@ -144,7 +162,7 @@ export default class Client {
      * @param {boolean} muted The new value
      */
     updateMuted(muted) {
-        const changed = this.#muted === muted;
+        const changed = this.#muted !== muted;
         this.#muted = muted;
         
         if(changed) {
@@ -171,7 +189,7 @@ export default class Client {
      * @param {boolean} hardwareMuted The new value
      */
     updateHardwareMuted(hardwareMuted) {
-        const changed = this.#hardwareMuted === hardwareMuted;
+        const changed = this.#hardwareMuted !== hardwareMuted;
         this.#hardwareMuted = hardwareMuted;
         
         if(changed) {
@@ -198,7 +216,7 @@ export default class Client {
      * @param {boolean} soundMuted The new value
      */
     updateSoundMuted(soundMuted) {
-        const changed = this.#soundMuted === soundMuted;
+        const changed = this.#soundMuted !== soundMuted;
         this.#soundMuted = soundMuted;
         
         if(changed) {
@@ -226,7 +244,7 @@ export default class Client {
      * @param {string} awayMessage The new away message
      */
     updateAway(away, awayMessage) {
-        const changed = this.#away === away && this.#awayMessage === awayMessage;
+        const changed = this.#away !== away || this.#awayMessage !== awayMessage;
         this.#away = away;
         this.#awayMessage = awayMessage;
         
@@ -258,7 +276,7 @@ export default class Client {
      * @param {number} talkPower The new value
      */
     updateTalkPower(talkPower) {
-        const changed = this.#talkPower === talkPower;
+        const changed = this.#talkPower !== talkPower;
         this.#talkPower = talkPower;
         
         if(changed) {

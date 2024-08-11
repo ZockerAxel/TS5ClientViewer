@@ -64,7 +64,7 @@ export default class Channel {
      * @param {string} name The new channel name
      */
     updateName(name) {
-        const changed = this.#name === name;
+        const changed = this.#name !== name;
         this.#name = name;
         
         if(changed) {
