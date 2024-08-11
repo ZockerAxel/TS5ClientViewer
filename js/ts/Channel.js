@@ -17,6 +17,14 @@ export default class Channel {
     //Callbacks
     /**@type {((newValue: string) => void)[]} */
     #nameUpdateCallbacks = [];
+    /**@type {((channel: Channel) => void)[]} */
+    #channelAddCallbacks = [];
+    /**@type {((channel: Channel) => void)[]} */
+    #channelRemoveCallbacks = [];
+    /**@type {((client: Client) => void)[]} */
+    #clientAddCallbacks = [];
+    /**@type {((client: Client) => void)[]} */
+    #clientRemoveCallbacks = [];
     
     /**
      * Creates a new Channel, which represents a Channel in the TeamSpeak Server Tree
@@ -36,6 +44,14 @@ export default class Channel {
     
     getServer() {
         return this.#server;
+    }
+    
+    getParent() {
+        const parent = this.#server.getRootChannel().getParentChannel(this);
+        
+        if(!parent) throw new Error(`Channel '${this.#name}' (ID: ${this.#id}) has no parent`);
+        
+        return parent;
     }
     
     getId() {
@@ -73,6 +89,51 @@ export default class Channel {
         return this.#order;
     }
     
+    /**
+     * Adds a subchannel with this channel as a parent
+     * 
+     * @param {Channel} channel The Channel that was added
+     */
+    addSubChannel(channel) {
+        this.#subChannels.push(channel);
+        
+        for(const callback of this.#channelAddCallbacks) {
+            callback(channel);
+        }
+    }
+    
+    /**
+     * 
+     * @param {(channel: Channel) => void} callback The callback function
+     */
+    onSubChannelAdd(callback) {
+        this.#channelAddCallbacks.push(callback);
+    }
+    
+    /**
+     * Removes a subchannel from this channel
+     * 
+     * @param {Channel} channel The Channel that was added
+     */
+    removeSubChannel(channel) {
+        const index = this.#subChannels.indexOf(channel);
+        if(index === -1) return;
+        
+        this.#subChannels.splice(index, 1);
+        
+        for(const callback of this.#channelRemoveCallbacks) {
+            callback(channel);
+        }
+    }
+    
+    /**
+     * 
+     * @param {(channel: Channel) => void} callback The callback function
+     */
+    onSubChannelRemove(callback) {
+        this.#channelRemoveCallbacks.push(callback);
+    }
+    
     getSubChannels() {
         return this.#subChannels;
     }
@@ -93,6 +154,25 @@ export default class Channel {
         for(const channel of this.#subChannels) {
             const recursiveChannel = channel.getChannel(id);
             if(recursiveChannel !== null) return recursiveChannel;
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Searches for the Channel that is the parent of the specified channel in it's nested subchannels. Checks itself.
+     * 
+     * @param {Channel} channel The Child Channel
+     * @returns {Channel | null} The Parent Channel
+     */
+    getParentChannel(channel) {
+        for(const subChannel of this.#subChannels) {
+            if(subChannel == channel) return this;
+        }
+        
+        for(const subChannel of this.#subChannels) {
+            const foundParent = subChannel.getParentChannel(channel);
+            if(foundParent !== null) return foundParent;
         }
         
         return null;
