@@ -302,8 +302,9 @@ export class Handler {
         const soundMuted = properties.isMuted;
         const away = properties.away;
         const awayMessage = properties.awayMessage;
+        const talkPower = properties.talkPower;
         
-        const client = new Client(server, clientId, clientType, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage);
+        const client = new Client(server, clientId, clientType, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage, talkPower);
         
         return client;
     }

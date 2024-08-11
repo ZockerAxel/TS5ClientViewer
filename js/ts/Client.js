@@ -18,6 +18,8 @@ export default class Client {
     #away;
     #awayMessage;
     
+    #talkPower;
+    
     //Callback Lists
     /**@type {((newValue: string) => void)[]} */
     #nicknameUpdateCallbacks = [];
@@ -31,6 +33,8 @@ export default class Client {
     #soundMutedUpdateCallbacks = [];
     /**@type {((newValue: boolean, message: string) => void)[]} */
     #awayUpdateCallbacks = [];
+    /**@type {((newValue: number) => void)[]} */
+    #talkPowerUpdateCallbacks = [];
     
     /**
      * Creates a new Client, which represents a Client in the TeamSpeak Server Tree
@@ -45,8 +49,9 @@ export default class Client {
      * @param {boolean} soundMuted Whether the client is currently deaf
      * @param {boolean} away Whether the client is away
      * @param {string} awayMessage The away message (if they are away)
+     * @param {number} talkPower The talk power (affects client order)
      */
-    constructor(server, id, type, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage) {
+    constructor(server, id, type, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage, talkPower) {
         this.#server = server;
         
         this.#id = id;
@@ -60,6 +65,8 @@ export default class Client {
         this.#soundMuted = soundMuted;
         this.#away = away;
         this.#awayMessage = awayMessage;
+        
+        this.#talkPower = talkPower;
     }
     
     getServer() {
@@ -244,5 +251,32 @@ export default class Client {
     
     getAwayMessage() {
         return this.#awayMessage;
+    }
+    
+    /**
+     * 
+     * @param {number} talkPower The new value
+     */
+    updateTalkPower(talkPower) {
+        const changed = this.#talkPower === talkPower;
+        this.#talkPower = talkPower;
+        
+        if(changed) {
+            for(const callback of this.#talkPowerUpdateCallbacks) {
+                callback(talkPower);
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param {(newValue: number) => void} callback The callback function
+     */
+    onTalkPowerChange(callback) {
+        this.#talkPowerUpdateCallbacks.push(callback);
+    }
+    
+    getTalkPower() {
+        return this.#talkPower;
     }
 }
