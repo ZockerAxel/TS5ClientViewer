@@ -4,8 +4,6 @@ import Channel from "./Channel.js";
 import Client from "./Client.js";
 import Server from "./Server.js";
 
-const testOutput = document.querySelector("#test-tree");
-
 export default class Handler {
     #apiKey;
     #apiPort;
@@ -120,9 +118,6 @@ export default class Handler {
                 break;
             }
         }
-        
-        // @ts-ignore
-        testOutput.textContent = this.#activeServer.toTreeString();
     }
     
     /**
@@ -311,9 +306,6 @@ export default class Handler {
             client.update({
                 talking: status !== 0,
             });
-            
-            // @ts-ignore
-            testOutput.textContent = self.#activeServer.toTreeString();
         });
     }
     
@@ -390,9 +382,6 @@ export default class Handler {
             console.log({message: "Created new Channel", channel: channel, parent: parent});
             
             parent.addSubChannel(channel);
-            
-            // @ts-ignore
-            testOutput.textContent = self.#activeServer.toTreeString();
         });
     }
     
@@ -420,9 +409,6 @@ export default class Handler {
             const order = Number.parseInt(data.payload.order);
             
             self.#onChannelMoved(channel, parent, order);
-            
-            // @ts-ignore
-            testOutput.textContent = self.#activeServer.toTreeString();
         });
     }
     
@@ -444,9 +430,6 @@ export default class Handler {
             const order = Number.parseInt(data.payload.properties.order);
             
             self.#onChannelMoved(channel, null, order);
-            
-            // @ts-ignore
-            testOutput.textContent = self.#activeServer.toTreeString();
         });
     }
     
@@ -468,9 +451,6 @@ export default class Handler {
             console.log({message: "Deleted Channel", channel: channel});
             
             channel.delete();
-            
-            // @ts-ignore
-            testOutput.textContent = self.#activeServer.toTreeString();
         });
     }
     
@@ -481,9 +461,6 @@ export default class Handler {
             const server = this.#loadServer(connection);
             this.addServer(server);
         }
-        
-        // @ts-ignore
-        testOutput.textContent = this.#activeServer.toTreeString();
     }
     
     #onClientMoved(payload) {
@@ -511,9 +488,6 @@ export default class Handler {
             
             channel.removeClient(client);
             
-            // @ts-ignore
-            if(server === this.#activeServer) testOutput.textContent = server.toTreeString();
-            
             return;
         }
         
@@ -536,9 +510,6 @@ export default class Handler {
             
                 client.onHardwareMutedChange(function(hardwareMuted) {
                     if(!hardwareMuted) self.#setActiveServer(server);//Set the server as the active one as soon as local client is no longer hardware-muted
-                    
-                    // @ts-ignore
-                    testOutput.textContent = self.#activeServer.toTreeString();
                 });
             }
         } else {
@@ -558,10 +529,8 @@ export default class Handler {
             to.addClient(client);
             
             console.log({message: "Client switched Channel", from: oldChannel, to: to});
+            
         }
-        
-        // @ts-ignore
-        if(server === this.#activeServer) testOutput.textContent = server.toTreeString();
     }
     
     /**
@@ -641,9 +610,6 @@ export default class Handler {
             
             localClient.onHardwareMutedChange(function(hardwareMuted) {
                 if(!hardwareMuted) self.#setActiveServer(server);//Set the server as the active one as soon as local client is no longer hardware-muted
-                
-                // @ts-ignore
-                testOutput.textContent = self.#activeServer.toTreeString();
             });
         }
         
