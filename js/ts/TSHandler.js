@@ -4,6 +4,8 @@ import Channel from "./Channel.js";
 import Client from "./Client.js";
 import Server from "./Server.js";
 
+const testOutput = document.querySelector("#test-tree");
+
 export class Handler {
     #apiKey;
     #apiPort;
@@ -24,6 +26,26 @@ export class Handler {
         this.#apiKey = apiKey;
         this.#apiPort = apiPort;
         this.#app = app;
+    }
+    
+    /**
+     * Gets a server by it's ID
+     * 
+     * @param {number} id The Server ID
+     * @returns {Server | null}
+     */
+    getServer(id) {
+        for(const server of this.#servers) {
+            if(server.getId() === id) {
+                return server;
+            }
+        }
+        
+        return null;
+    }
+    
+    getServers() {
+        return [...this.#servers];
     }
     
     /**
@@ -118,6 +140,7 @@ export class Handler {
     
     registerEvents() {
         this.registerAuthEvent();
+        this.registerClientMovedEvent();
     }
     
     registerAuthEvent() {
@@ -127,15 +150,88 @@ export class Handler {
         });
     }
     
+    registerClientMovedEvent() {
+        const self = this;
+        this.#api.on("tsOnClientMoved", function(data) {
+            self.#onClientMoved(data.payload);
+        });
+    }
+    
     #onAuth(payload) {
         this.#servers.length = 0;//Clear Servers
         
         /**@type {number} */
         const currentConnectionId = payload.currentConnectionId;
         
-        for(const server of payload.connections) {
-            this.#loadServer(server);
+        for(const connection of payload.connections) {
+            const server = this.#loadServer(connection);
+            this.#servers.push(server);
         }
+    }
+    
+    #onClientMoved(payload) {
+        const connectionId = payload.connectionId;
+        const server = this.getServer(connectionId);
+        
+        if(server === null) throw new Error(`Client moved in unknown Server (ID: '${connectionId}')`);
+        
+        const clientId = payload.clientId;
+        const channelId = Number.parseInt(payload.newChannelId);
+        
+        if(channelId === 0) {
+            //If channel id is 0, client disconnected
+            console.log({message: "Client disconnected", clientId: clientId});
+            
+            const client = server.getClient(clientId);
+            
+            if(client === null) throw new Error(`Unknown Client (ID: ${clientId}) disconnected`);
+            
+            const channel = client.getChannel();
+            
+            if(channel === null) throw new Error(`Client (ID: ${clientId}) disconnected from unknown Channel`);
+            
+            channel.removeClient(client);
+            
+            // @ts-ignore
+            testOutput.textContent = server.toTreeString();
+            
+            return;
+        }
+        
+        const properties = payload.properties;
+        
+        if(properties !== undefined) {
+            //If properties exist, it's a freshly connected client
+            const client = this.#loadClient(server, clientId, properties);
+            
+            console.log({message: "Client connected", client: client});
+            
+            const to = server.getChannel(channelId);
+            
+            if(to === null) throw new Error(`Client moved into unkown Channel (ID: ${channelId})`);
+            
+            to.addClient(client);
+        } else {
+            //If properties don't exist, the client changed channels
+            const client = server.getClient(clientId);
+            
+            if(client === null) throw new Error(`Unknown Client (ID: ${clientId}) moved into a Channel`);
+            
+            const oldChannel = client.getChannel();
+            
+            oldChannel?.removeClient(client);
+            
+            const to = server.getChannel(channelId);
+            
+            if(to === null) throw new Error(`Client '${client.getNickname()}' (ID: ${clientId}) moved into unkown Channel (ID: ${channelId})`);
+            
+            to.addClient(client);
+            
+            console.log({message: "Client switched Channel", from: oldChannel, to: to});
+        }
+        
+        // @ts-ignore
+        testOutput.textContent = server.toTreeString();
     }
     
     #loadServer({id, properties, channelInfos, clientInfos, clientId}) {
@@ -169,16 +265,8 @@ export class Handler {
                     if(clientInfo.channelId !== channelId) continue;
                     
                     const clientId = clientInfo.id;
-                    const clientType = clientInfo.properties.type;
-                    const nickname = clientInfo.properties.nickname;
-                    const talking = clientInfo.properties.flagTalking;
-                    const muted = clientInfo.properties.inputMuted;
-                    const hardwareMuted = clientInfo.properties.inputDeactivated;
-                    const soundMuted = clientInfo.properties.isMuted;
-                    const away = clientInfo.properties.away;
-                    const awayMessage = clientInfo.properties.awayMessage;
                     
-                    const client = new Client(server, clientId, clientType, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage);
+                    const client = this.#loadClient(server, clientId, clientInfo.properties);
                     
                     channel.addClient(client);
                 }
@@ -191,6 +279,32 @@ export class Handler {
             }
         }
         
-        console.log(server.toTreeString());
+        // @ts-ignore
+        testOutput.textContent = server.toTreeString();
+        
+        return server;
+    }
+    
+    /**
+     * Loads a client with the given properties
+     * 
+     * @param {Server} server The Server the client belongs to
+     * @param {number} clientId The Client ID
+     * @param {*} properties The Client Properties
+     * @returns {Client} The created client
+     */
+    #loadClient(server, clientId, properties) {
+        const clientType = properties.type;
+        const nickname = properties.nickname;
+        const talking = properties.flagTalking;
+        const muted = properties.inputMuted;
+        const hardwareMuted = properties.inputDeactivated;
+        const soundMuted = properties.isMuted;
+        const away = properties.away;
+        const awayMessage = properties.awayMessage;
+        
+        const client = new Client(server, clientId, clientType, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage);
+        
+        return client;
     }
 }

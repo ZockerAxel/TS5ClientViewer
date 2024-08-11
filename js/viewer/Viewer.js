@@ -2,7 +2,7 @@
 
 /**
  * @typedef ViewerMode
- * @type {"tree" | "used_channels" | "own_channel"}
+ * @type {"tree" | "used_channels" | "own_channel" | "talking"}
  */
 
 export default class Viewer {
