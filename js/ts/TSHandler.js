@@ -181,6 +181,7 @@ export class Handler {
         this.registerTalkStatusChangedEvent();
         this.registerConnectStatusChangedEvent();
         this.registerChannelsEvent();
+        this.registerChannelCreatedEvent();
     }
     
     registerAuthEvent() {
@@ -279,7 +280,7 @@ export class Handler {
     registerChannelsEvent() {
         const self = this;
         this.#api.on("tsOnChannels", function(data) {
-            const connectionId = data.payload.connectionId;
+            const connectionId = Number.parseInt(data.payload.connectionId);
             
             const server = self.getServer(connectionId);
             
@@ -288,6 +289,36 @@ export class Handler {
             const channelInfos = data.payload.info;
             
             self.#loadChannels(server, channelInfos);
+        });
+    }
+    
+    registerChannelCreatedEvent() {
+        const self = this;
+        this.#api.on("tsOnChannelCreated", function(data) {
+            const connectionId = Number.parseInt(data.payload.connectionId);
+            
+            const server = self.getServer(connectionId);
+            
+            if(server === null) throw new Error(`Channel Created in Unknown Server (ID: ${connectionId})`);
+            
+            const parentId = data.payload.parentId;
+            
+            const parent = server.getChannel(parentId);
+            
+            if(parent === null) throw new Error(`Channel created with Unknown Parent Channel (ID: ${parentId}) on Server '${server.getName()}' (ID: ${connectionId})`);
+            
+            const channelId = Number.parseInt(data.payload.channelId);
+            const channelName = data.payload.properties.name;
+            const channelOrder = Number.parseInt(data.payload.properties.order);
+            
+            const channel = new Channel(server, channelId, channelName, channelOrder);
+            
+            console.log({message: "Created new Channel", channel: channel, parent: parent});
+            
+            parent.addSubChannel(channel);
+            
+            // @ts-ignore
+            testOutput.textContent = self.#activeServer.toTreeString();
         });
     }
     
@@ -421,7 +452,7 @@ export class Handler {
                     channel.addClient(client);
                 }
                 
-                parent.addSubChannel(channel, false);
+                parent.addSubChannel(channel);
                 
                 const index = allChannelInfos.indexOf(channelInfo);
                 if(index === -1) continue;
@@ -477,7 +508,7 @@ export class Handler {
                 
                 const channel = new Channel(server, channelId, channelName, channelOrder);
                 
-                parent.addSubChannel(channel, false);
+                parent.addSubChannel(channel);
                 
                 const index = allChannelInfos.indexOf(channelInfo);
                 if(index === -1) continue;

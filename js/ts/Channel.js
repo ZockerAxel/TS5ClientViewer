@@ -94,13 +94,22 @@ export default class Channel {
      * Adds a subchannel with this channel as a parent
      * 
      * @param {Channel} channel The Channel that was added
-     * @param {boolean} sort Whether to sort after this operation
      */
-    addSubChannel(channel, sort = true) {
-        this.#subChannels.push(channel);
+    addSubChannel(channel) {
+        const predecessor = channel.getPredecessor();
         
-        if(sort) {
-            this.sortSubChannels();
+        if(predecessor === null) throw new Error(`Subchannel '${channel.getName()}' (ID: ${channel.getId()}) added to Channel '${this.getName()}' (ID: ${this.#id}) with unknown Predecessor (ID: ${channel.#order})`);
+        
+        if(predecessor.getId() === 0) {
+            this.#subChannels.splice(0, 0, channel);
+        } else {
+            const index = this.#subChannels.indexOf(predecessor) + 1;
+            
+            if(index === -1) {
+                this.#subChannels.push(channel);
+            } else {
+                this.#subChannels.splice(index, 0, channel);
+            }
         }
         
         for(const callback of this.#channelAddCallbacks) {
