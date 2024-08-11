@@ -180,10 +180,13 @@ export class Handler {
         this.registerClientPropertiesUpdatedEvent();
         this.registerTalkStatusChangedEvent();
         this.registerConnectStatusChangedEvent();
+        
+        //Channel Events
         this.registerChannelsEvent();
         this.registerChannelCreatedEvent();
         this.registerChannelMovedEvent();
         this.registerChannelEditedEvent();
+        this.registerChannelDeletedEvent();
     }
     
     registerAuthEvent() {
@@ -372,6 +375,28 @@ export class Handler {
             const order = Number.parseInt(data.payload.properties.order);
             
             self.#onChannelMoved(channel, null, order);
+            
+            // @ts-ignore
+            testOutput.textContent = self.#activeServer.toTreeString();
+        });
+    }
+    
+    registerChannelDeletedEvent() {
+        const self = this;
+        this.#api.on("tsOnChannelDeleted", function(data) {
+            const connectionId = Number.parseInt(data.payload.connectionId);
+            
+            const server = self.getServer(connectionId);
+            
+            if(server === null) throw new Error(`Channel deleted in unknown Server (ID: ${connectionId})`);
+            
+            const channelId = Number.parseInt(data.payload.channelId);
+            
+            const channel = server.getChannel(channelId);
+            
+            if(channel === null) throw new Error(`Unknown Channel (ID: ${channelId}) deleted in Server '${server.getName()}' (ID: ${connectionId})`);
+            
+            channel.delete();
             
             // @ts-ignore
             testOutput.textContent = self.#activeServer.toTreeString();

@@ -29,6 +29,9 @@ export default class Channel {
     /**@type {((client: Client) => void)[]} */
     #clientRemoveCallbacks = [];
     
+    /**@type {(() => void)[]} */
+    #deleteCallbacks = [];
+    
     /**
      * Creates a new Channel, which represents a Channel in the TeamSpeak Server Tree
      * 
@@ -368,6 +371,38 @@ export default class Channel {
         }
         
         return text;
+    }
+    
+    /**
+     *  Deletes itself and all subchannels recursively. Will not actually remove them from the tree.
+     */
+    deleteSubChannelsRecursively() {
+        this.delete(false);
+        
+        for(const channel of this.#subChannels) {
+            channel.deleteSubChannelsRecursively();
+        }
+    }
+    
+    /**
+     * Deletes the Channel and calls the registered callbacks. Can optionally not remove the channel from the tree (e.g. when leaving a server and every channel gets deleted)
+     * 
+     * @param {boolean} remove Whether to remove the Channel from it's parent
+     */
+    delete(remove = true) {
+        if(remove) this.getParent().removeSubChannel(this);
+        
+        for(const callback of this.#deleteCallbacks) {
+            callback();
+        }
+    }
+    
+    /**
+     * 
+     * @param {() => void} callback The callback function
+     */
+    onDelete(callback) {
+        this.#deleteCallbacks.push(callback);
     }
 }
 
