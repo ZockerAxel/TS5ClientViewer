@@ -262,7 +262,11 @@ export default class Channel {
     
     sortClients() {
         this.#clients.sort(function(a, b) {
-            return b.getTalkPower() - a.getTalkPower();
+            const talkPowerDifference = b.getTalkPower() - a.getTalkPower();
+            
+            if(talkPowerDifference === 0) return a.getNickname().localeCompare(b.getNickname());
+            
+            return talkPowerDifference;
         });
     }
     
