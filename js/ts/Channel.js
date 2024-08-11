@@ -294,4 +294,12 @@ export class RootChannel extends Channel {
         super(server, 0, name, 0);
     }
     
+    /**
+     * Add a Client to this Channel
+     * 
+     * @param {Client} client The Client that was added
+     */
+    addClient(client) {
+        throw new Error("Illegal Operation: RootChannel#addClient. Reason: Root Channel can not have Clients!");
+    }
 }
