@@ -484,6 +484,9 @@ export class Handler {
                 allChannelInfos.splice(index, 1);
             }
         }
+        
+        //Sort all channels initally to make sure they are in the correct order (they should already be given in the correct order, but you can never be sure enough)
+        server.getRootChannel().sortSubChannelsRecursively();
     }
     
     /**
