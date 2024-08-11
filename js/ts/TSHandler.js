@@ -165,6 +165,7 @@ export class Handler {
         this.registerAuthEvent();
         this.registerClientMovedEvent();
         this.registerClientPropertiesUpdatedEvent();
+        this.registerTalkStatusChangedEvent();
     }
     
     registerAuthEvent() {
@@ -197,6 +198,32 @@ export class Handler {
             if(client === null) throw new Error(`Client Properties updated for unkown Client (ID: ${clientId}) in Server '${server.getName()}' (ID: ${serverId})`);
             
             self.#updateClient(client, data.payload.properties);
+        });
+    }
+    
+    registerTalkStatusChangedEvent() {
+        const self = this;
+        this.#api.on("tsOnTalkStatusChanged", function(data) {
+            const serverId = Number.parseInt(data.payload.connectionId);
+            
+            const server = self.getServer(serverId);
+            
+            if(server == null) throw new Error(`Client Talk Status updated in unkown Server (ID: ${serverId})`);
+            
+            const clientId = Number.parseInt(data.payload.clientId);
+            
+            const client = server.getClient(clientId);
+            
+            if(client === null) throw new Error(`Client Talk Status updated for unkown Client (ID: ${clientId}) in Server '${server.getName()}' (ID: ${serverId})`);
+            
+            const status = Number.parseInt(data.payload.status);
+            
+            client.update({
+                talking: status !== 0,
+            });
+            
+            // @ts-ignore
+            testOutput.textContent = self.#activeServer.toTreeString();
         });
     }
     
