@@ -47,6 +47,19 @@ export class Handler {
         return null;
     }
     
+    /**
+     * Removes a Server
+     * 
+     * @param {Server} server The Server to remove
+     */
+    removeServer(server) {
+        const index = this.#servers.indexOf(server);
+        
+        if(index === -1) return;
+        
+        this.#servers.splice(index, 1);
+    }
+    
     getServers() {
         return [...this.#servers];
     }
@@ -166,6 +179,8 @@ export class Handler {
         this.registerClientMovedEvent();
         this.registerClientPropertiesUpdatedEvent();
         this.registerTalkStatusChangedEvent();
+        this.registerConnectStatusChangedEvent();
+        this.registerChannelsEvent();
     }
     
     registerAuthEvent() {
@@ -227,6 +242,55 @@ export class Handler {
         });
     }
     
+    registerConnectStatusChangedEvent() {
+        const self = this;
+        this.#api.on("tsOnConnectStatusChanged", function(data) {
+            const connectionId = Number.parseInt(data.payload.connectionId);
+            const status = Number.parseInt(data.payload.status);
+            
+            let server = self.getServer(connectionId);
+            
+            if(server === null) {
+                //If server is null, User just connected to a new server (or something went really bad lmao)
+                if(status !== 2) return;//Only handle status 2, as this status is used for when server name is sent. Status 3 does not seem to send any useful info
+                
+                const clientId = Number.parseInt(data.payload.info.clientId);
+                const serverName = data.payload.info.serverName;
+                
+                server = self.#loadServer({
+                    id: connectionId,
+                    properties: {
+                        name: serverName,
+                    },
+                    clientId: clientId,
+                });
+                
+                self.#servers.push(server);
+            } else {
+                //If server is not null, user presumably disconnected (on their own or against their will)
+                
+                if(status !== 0) return;//Only handle status 0 as this status is used for disconnecting for any reason
+                
+                self.removeServer(server);
+            }
+        });
+    }
+    
+    registerChannelsEvent() {
+        const self = this;
+        this.#api.on("tsOnChannels", function(data) {
+            const connectionId = data.payload.connectionId;
+            
+            const server = self.getServer(connectionId);
+            
+            if(server === null) throw new Error(`Received Channels for Unknown Server (ID: ${connectionId})`);
+            
+            const channelInfos = data.payload.info;
+            
+            self.#loadChannels(server, channelInfos);
+        });
+    }
+    
     #onAuth(payload) {
         this.#servers.length = 0;//Clear Servers
         
@@ -240,6 +304,8 @@ export class Handler {
     }
     
     #onClientMoved(payload) {
+        const self = this;
+        
         const connectionId = payload.connectionId;
         const server = this.getServer(connectionId);
         
@@ -281,6 +347,17 @@ export class Handler {
             if(to === null) throw new Error(`Client moved into unkown Channel (ID: ${channelId})`);
             
             to.addClient(client);
+            
+            if(client.isLocalClient()) {
+                if(!client.isHardwareMuted()) this.#activeServer = server;//Set this server as the active one if local client is not hardware muted
+            
+                client.onHardwareMutedChange(function(hardwareMuted) {
+                    if(!hardwareMuted) self.#activeServer = server;//Set the server as the active one as soon as local client is no longer hardware-muted
+                    
+                    // @ts-ignore
+                    testOutput.textContent = self.#activeServer.toTreeString();
+                });
+            }
         } else {
             //If properties don't exist, the client changed channels
             const client = server.getClient(clientId);
@@ -304,7 +381,7 @@ export class Handler {
         if(server === this.#activeServer) testOutput.textContent = server.toTreeString();
     }
     
-    #loadServer({id, properties, channelInfos, clientInfos, clientId}) {
+    #loadServer({id, properties, channelInfos = {rootChannels: [], subChannels: {}}, clientInfos = [], clientId}) {
         const self = this;
         
         const server = new Server(id, clientId, properties.name);
@@ -357,18 +434,56 @@ export class Handler {
         
         const localClient = server.getLocalClient();
         
-        if(localClient === null) throw new Error(`No local Client found on Server '${server.getName()}' (ID: ${server.getId()})`);
-        
-        if(!localClient.isHardwareMuted()) this.#activeServer = server;//Set this server as the active one if local client is not hardware muted
-        
-        localClient.onHardwareMutedChange(function(hardwareMuted) {
-            if(!hardwareMuted) self.#activeServer = server;//Set the server as the active one as soon as local client is no longer hardware-muted
+        if(localClient !== null) {
+            if(!localClient.isHardwareMuted()) this.#activeServer = server;//Set this server as the active one if local client is not hardware muted
             
-            // @ts-ignore
-            testOutput.textContent = self.#activeServer.toTreeString();
-        });
+            localClient.onHardwareMutedChange(function(hardwareMuted) {
+                if(!hardwareMuted) self.#activeServer = server;//Set the server as the active one as soon as local client is no longer hardware-muted
+                
+                // @ts-ignore
+                testOutput.textContent = self.#activeServer.toTreeString();
+            });
+        }
         
         return server;
+    }
+    
+    /**
+     * 
+     * @param {Server} server 
+     * @param {*} channelInfos 
+     */
+    #loadChannels(server, channelInfos) {
+        const allChannelInfos = [...channelInfos.rootChannels];
+        
+        for(const channelList of Object.values(channelInfos.subChannels)) {
+            for(const channel of channelList) {
+                allChannelInfos.push(channel);
+            }
+        }
+        
+        while(allChannelInfos.length > 0) {
+            console.log({message: "Collecting Channels ...", remainingChannels: allChannelInfos.length});
+            
+            for(const channelInfo of [...allChannelInfos]) {
+                const parentId = channelInfo.parentId;
+                const parent = server.getChannel(parentId);
+                
+                if(parent === null) continue;
+                
+                const channelId = Number.parseInt(channelInfo.id);
+                const channelName = channelInfo.properties.name.replace(/^\[.*?spacer.*?\]\s*/, "");
+                const channelOrder = Number.parseInt(channelInfo.order);
+                
+                const channel = new Channel(server, channelId, channelName, channelOrder);
+                
+                parent.addSubChannel(channel, false);
+                
+                const index = allChannelInfos.indexOf(channelInfo);
+                if(index === -1) continue;
+                allChannelInfos.splice(index, 1);
+            }
+        }
     }
     
     /**
