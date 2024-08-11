@@ -396,6 +396,8 @@ export class Handler {
             
             if(channel === null) throw new Error(`Unknown Channel (ID: ${channelId}) deleted in Server '${server.getName()}' (ID: ${connectionId})`);
             
+            console.log({message: "Deleted Channel", channel: channel});
+            
             channel.delete();
             
             // @ts-ignore
@@ -508,6 +510,8 @@ export class Handler {
         //Remove and re-add so that order correctly updates
         oldParent.removeSubChannel(channel);
         parent.addSubChannel(channel);
+        
+        console.log({message: "Moved Channel", channel: channel, oldParent: oldParent, parent: parent, order: order});
     }
     
     #loadServer({id, properties, channelInfos = {rootChannels: [], subChannels: {}}, clientInfos = [], clientId}) {
