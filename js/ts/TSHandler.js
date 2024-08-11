@@ -15,6 +15,9 @@ export class Handler {
     /**@type {Server[]} */
     #servers = [];
     
+    /**@type {Server} */
+    #activeServer;
+    
     /**
      * Creates a new Handler
      * 
@@ -160,13 +163,19 @@ export class Handler {
     #onAuth(payload) {
         this.#servers.length = 0;//Clear Servers
         
-        /**@type {number} */
-        const currentConnectionId = payload.currentConnectionId;
-        
         for(const connection of payload.connections) {
             const server = this.#loadServer(connection);
             this.#servers.push(server);
+            
+            const localClient = server.getLocalClient();
+            
+            if(localClient === null) throw new Error(`No local Client found on Server '${server.getName()}'`);
+            
+            if(!localClient.isHardwareMuted()) this.#activeServer = server;//Set the server where the client is not hardware-muted as the active one
         }
+        
+        // @ts-ignore
+        testOutput.textContent = this.#activeServer.toTreeString();
     }
     
     #onClientMoved(payload) {
@@ -193,7 +202,7 @@ export class Handler {
             channel.removeClient(client);
             
             // @ts-ignore
-            testOutput.textContent = server.toTreeString();
+            if(server === this.#activeServer) testOutput.textContent = server.toTreeString();
             
             return;
         }
@@ -231,7 +240,7 @@ export class Handler {
         }
         
         // @ts-ignore
-        testOutput.textContent = server.toTreeString();
+        if(server === this.#activeServer) testOutput.textContent = server.toTreeString();
     }
     
     #loadServer({id, properties, channelInfos, clientInfos, clientId}) {
@@ -283,9 +292,6 @@ export class Handler {
         //Sort all channels initally to make sure they are in the correct order (they should already be given in the correct order, but you can never be sure enough)
         server.getRootChannel().sortSubChannelsRecursively();
         
-        // @ts-ignore
-        testOutput.textContent = server.toTreeString();
-        
         return server;
     }
     
@@ -302,7 +308,7 @@ export class Handler {
         const nickname = properties.nickname;
         const talking = properties.flagTalking;
         const muted = properties.inputMuted;
-        const hardwareMuted = properties.inputDeactivated;
+        const hardwareMuted = !properties.inputHardware;
         const soundMuted = properties.isMuted;
         const away = properties.away;
         const awayMessage = properties.awayMessage;

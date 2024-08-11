@@ -27,6 +27,10 @@ export default class Server {
         return this.#id;
     }
     
+    getName() {
+        return this.#rootChannel.getName();
+    }
+    
     getLocalClient() {
         if(!this.#localClient) this.#localClient = this.getClient(this.#localClientId);
         return this.#localClient;
