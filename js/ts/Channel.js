@@ -1,4 +1,5 @@
 //@ts-check
+import { createLengthString } from "../Utils.js";
 import Client from "./Client.js";
 import Server from "./Server.js";
 
@@ -178,6 +179,51 @@ export default class Channel {
         return null;
     }
     
+    /**
+     * Add a Client to this Channel
+     * 
+     * @param {Client} client The Client that was added
+     */
+    addClient(client) {
+        this.#clients.push(client);
+        
+        for(const callback of this.#clientAddCallbacks) {
+            callback(client);
+        }
+    }
+    
+    /**
+     * 
+     * @param {(client: Client) => void} callback The callback function
+     */
+    onClientAdd(callback) {
+        this.#clientAddCallbacks.push(callback);
+    }
+    
+    /**
+     * Add a Client to this Channel
+     * 
+     * @param {Client} client The Client that was added
+     */
+    removeClient(client) {
+        const index = this.#clients.indexOf(client);
+        if(index === -1) return;
+        
+        this.#clients.splice(index, 1);
+        
+        for(const callback of this.#clientRemoveCallbacks) {
+            callback(client);
+        }
+    }
+    
+    /**
+     * 
+     * @param {(client: Client) => void} callback The callback function
+     */
+    onClientRemove(callback) {
+        this.#clientRemoveCallbacks.push(callback);
+    }
+    
     getClients() {
         return this.#clients;
     }
@@ -219,4 +265,33 @@ export default class Channel {
         
         return null;
     }
+    
+    toTreeString(offset = 0) {
+        let text = createLengthString(offset * 2, " ") + this.#name;
+        
+        for(const client of this.#clients) {
+            const clientLine = createLengthString((offset + 1) * 2, " ") + "- " + client.getNickname();
+            text += `\n${clientLine}`;
+        }
+        
+        for(const channel of this.#subChannels) {
+            const channelText = channel.toTreeString(offset + 1);
+            text += `\n${channelText}`;
+        }
+        
+        return text;
+    }
+}
+
+export class RootChannel extends Channel {
+    
+    /**
+     * 
+     * @param {Server} server The Server this Channel belongs to
+     * @param {string} name The Server Name
+     */
+    constructor(server, name) {
+        super(server, 0, name, 0);
+    }
+    
 }

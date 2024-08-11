@@ -1,11 +1,17 @@
 //@ts-check
 import App from "../App.js";
+import Channel from "./Channel.js";
+import Client from "./Client.js";
+import Server from "./Server.js";
 
 export class Handler {
     #apiKey;
     #apiPort;
     #app;
     #api;
+    
+    /**@type {Server[]} */
+    #servers = [];
     
     /**
      * Creates a new Handler
@@ -63,12 +69,15 @@ export class Handler {
         });
         
         this.#api.on("apiReady", function(/** @type {{ payload: { apiKey: string; }; }} */ data) {
+            console.log({message: "[Handler] API Ready.", apiKey: data.payload.apiKey});
             resolveFunction(data.payload.apiKey);
         });
         
         this.#api.on("apiError", function(data) {
             rejectFunction(data.exception.message);
         });
+        
+        this.registerEvents();
         
         return promise;
     }
@@ -94,6 +103,7 @@ export class Handler {
         });
         
         this.#api.on("apiReady", function(/** @type {{ payload: { apiKey: string; }; }} */ data) {
+            console.log({message: "[Handler] API Ready.", apiKey: data.payload.apiKey});
             resolveFunction(data.payload.apiKey);
         });
         
@@ -101,6 +111,86 @@ export class Handler {
             rejectFunction(data.exception.message);
         });
         
+        this.registerEvents();
+        
         return promise;
+    }
+    
+    registerEvents() {
+        this.registerAuthEvent();
+    }
+    
+    registerAuthEvent() {
+        const self = this;
+        this.#api.on("tsOnAuth", function(data) {
+            self.#onAuth(data.payload);
+        });
+    }
+    
+    #onAuth(payload) {
+        this.#servers.length = 0;//Clear Servers
+        
+        /**@type {number} */
+        const currentConnectionId = payload.currentConnectionId;
+        
+        for(const server of payload.connections) {
+            this.#loadServer(server);
+        }
+    }
+    
+    #loadServer({id, properties, channelInfos, clientInfos, clientId}) {
+        const server = new Server(id, clientId, properties.name);
+        
+        const allChannelInfos = [...channelInfos.rootChannels];
+        const allClientInfos = [...clientInfos];
+        
+        for(const channelList of Object.values(channelInfos.subChannels)) {
+            for(const channel of channelList) {
+                allChannelInfos.push(channel);
+            }
+        }
+        
+        while(allChannelInfos.length > 0) {
+            console.log({message: "Collecting Channels ...", remainingChannels: allChannelInfos.length});
+            
+            for(const channelInfo of [...allChannelInfos]) {
+                const parentId = channelInfo.parentId;
+                const parent = server.getChannel(parentId);
+                
+                if(parent === null) continue;
+                
+                const channelId = channelInfo.id;
+                const channelName = channelInfo.properties.name.replace(/^\[.*?spacer.*?\]\s*/, "");
+                const channelOrder = channelInfo.order;
+                
+                const channel = new Channel(server, channelId, channelName, channelOrder);
+                
+                for(const clientInfo of [...allClientInfos]) {
+                    if(clientInfo.channelId !== channelId) continue;
+                    
+                    const clientId = clientInfo.id;
+                    const clientType = clientInfo.properties.type;
+                    const nickname = clientInfo.properties.nickname;
+                    const talking = clientInfo.properties.flagTalking;
+                    const muted = clientInfo.properties.inputMuted;
+                    const hardwareMuted = clientInfo.properties.inputDeactivated;
+                    const soundMuted = clientInfo.properties.isMuted;
+                    const away = clientInfo.properties.away;
+                    const awayMessage = clientInfo.properties.awayMessage;
+                    
+                    const client = new Client(server, clientId, clientType, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage);
+                    
+                    channel.addClient(client);
+                }
+                
+                parent.addSubChannel(channel);
+                
+                const index = allChannelInfos.indexOf(channelInfo);
+                if(index === -1) continue;
+                allChannelInfos.splice(index, 1);
+            }
+        }
+        
+        console.log(server.toTreeString());
     }
 }

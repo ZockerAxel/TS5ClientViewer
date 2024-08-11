@@ -1,24 +1,26 @@
 //@ts-check
-import Channel from "./Channel.js";
+import Channel, { RootChannel } from "./Channel.js";
 import Client from "./Client.js";
-import RootChannel from "./RootChannel.js";
 
 export default class Server {
     #id;
-    #localClient;
+    /**@type {Client | null} */
+    #localClient = null;
+    #localClientId;
     
     #rootChannel;
     
     /**
+     * Creates a Server, represents a Connection to a TeamSpeak Server and contains all channels and connected clients.
      * 
      * @param {number} id Connection ID
-     * @param {Client} localClient The Local Client
-     * @param {RootChannel} rootChannel The Root Channel (does not really exists, acts as the parent for all channels without a parent)
+     * @param {number} localClientId The Local Client
+     * @param {string} name The Server Name
      */
-    constructor(id, localClient, rootChannel) {
+    constructor(id, localClientId, name) {
         this.#id = id;
-        this.#localClient = localClient;
-        this.#rootChannel = rootChannel;
+        this.#localClientId = localClientId;
+        this.#rootChannel = new RootChannel(this, name);
     }
     
     getId() {
@@ -26,6 +28,7 @@ export default class Server {
     }
     
     getLocalClient() {
+        if(!this.#localClient) this.#localClient = this.getClient(this.#localClientId);
         return this.#localClient;
     }
     
@@ -51,5 +54,9 @@ export default class Server {
      */
     getClient(id) {
         return this.#rootChannel.getClient(id);
+    }
+    
+    toTreeString() {
+        return this.#rootChannel.toTreeString();
     }
 }
