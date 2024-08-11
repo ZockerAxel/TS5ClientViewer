@@ -198,6 +198,20 @@ body {
     border-radius: 50%;
 }
 
+.away_message {
+    color: #F65D21;
+    
+    margin-inline-start: 0.25em;
+}
+
+.away_message::before {
+    content: "[";
+}
+
+.away_message::after {
+    content: "]";
+}
+
 /* 
     Interface
 */

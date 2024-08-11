@@ -45,6 +45,8 @@ export default class ChannelView {
             self.#clientViews.push(clientView);
             if(!self.isCreated()) return;
             self.#addClientView(clientView);
+            
+            clientView.onTreeDisplayed();
         });
         
         this.#channel.onClientRemove(function(client) {

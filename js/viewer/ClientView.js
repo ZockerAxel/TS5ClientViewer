@@ -63,6 +63,8 @@ export default class ClientView {
             
             statusElement.classList.toggle("hidden", status !== this.#currentStatus);
         }
+        
+        this.#awayMessageElement.classList.toggle("hidden", !this.#client.isAway() || this.#client.getAwayMessage().length === 0);
     }
     
     #getStatus() {
