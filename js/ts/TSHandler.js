@@ -182,6 +182,8 @@ export class Handler {
         this.registerConnectStatusChangedEvent();
         this.registerChannelsEvent();
         this.registerChannelCreatedEvent();
+        this.registerChannelMovedEvent();
+        this.registerChannelEditedEvent();
     }
     
     registerAuthEvent() {
@@ -322,6 +324,60 @@ export class Handler {
         });
     }
     
+    registerChannelMovedEvent() {
+        const self = this;
+        this.#api.on("tsOnChannelMoved", function(data) {
+            const connectionId = Number.parseInt(data.payload.connectionId);
+            
+            const server = self.getServer(connectionId);
+            
+            if(server === null) throw new Error(`Channel moved in unknown Server (ID: ${connectionId})`);
+            
+            const channelId = Number.parseInt(data.payload.channelId);
+            
+            const channel = server.getChannel(channelId);
+            
+            if(channel === null) throw new Error(`Unknown Channel (ID: ${channelId}) moved in Server '${server.getName()}' (ID: ${connectionId})`);
+            
+            const parentId = Number.parseInt(data.payload.parentId);
+            
+            const parent = server.getChannel(parentId);
+            
+            if(parent === null) throw new Error(`Channel '${channel.getName()}' (ID: ${channelId}) moved to unknown Parent Channel (ID: ${parentId}) in Server '${server.getName()}' (ID: ${connectionId})`);
+            
+            const order = Number.parseInt(data.payload.order);
+            
+            self.#onChannelMoved(channel, parent, order);
+            
+            // @ts-ignore
+            testOutput.textContent = self.#activeServer.toTreeString();
+        });
+    }
+    
+    registerChannelEditedEvent() {
+        const self = this;
+        this.#api.on("tsOnChannelEdited", function(data) {
+            const connectionId = Number.parseInt(data.payload.connectionId);
+            
+            const server = self.getServer(connectionId);
+            
+            if(server === null) throw new Error(`Channel moved in unknown Server (ID: ${connectionId})`);
+            
+            const channelId = Number.parseInt(data.payload.channelId);
+            
+            const channel = server.getChannel(channelId);
+            
+            if(channel === null) throw new Error(`Unknown Channel (ID: ${channelId}) moved in Server '${server.getName()}' (ID: ${connectionId})`);
+            
+            const order = Number.parseInt(data.payload.properties.order);
+            
+            self.#onChannelMoved(channel, null, order);
+            
+            // @ts-ignore
+            testOutput.textContent = self.#activeServer.toTreeString();
+        });
+    }
+    
     #onAuth(payload) {
         this.#servers.length = 0;//Clear Servers
         
@@ -410,6 +466,23 @@ export class Handler {
         
         // @ts-ignore
         if(server === this.#activeServer) testOutput.textContent = server.toTreeString();
+    }
+    
+    /**
+     * 
+     * @param {Channel} channel The moved Channel
+     * @param {Channel | null} parent The parent Channel or null if unchanged
+     * @param {number} order The predecessor channel id
+     */
+    #onChannelMoved(channel, parent, order) {
+        channel.updateOrder(order);
+        
+        const oldParent = channel.getParent();
+        if(parent === null) parent = oldParent;//If parent is null, that means that it is unchanged
+        
+        //Remove and re-add so that order correctly updates
+        oldParent.removeSubChannel(channel);
+        parent.addSubChannel(channel);
     }
     
     #loadServer({id, properties, channelInfos = {rootChannels: [], subChannels: {}}, clientInfos = [], clientId}) {

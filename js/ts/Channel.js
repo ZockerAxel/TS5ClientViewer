@@ -18,6 +18,8 @@ export default class Channel {
     //Callbacks
     /**@type {((newValue: string) => void)[]} */
     #nameUpdateCallbacks = [];
+    /**@type {((newValue: number) => void)[]} */
+    #orderUpdateCallbacks = [];
     /**@type {((channel: Channel) => void)[]} */
     #channelAddCallbacks = [];
     /**@type {((channel: Channel) => void)[]} */
@@ -84,6 +86,30 @@ export default class Channel {
     
     getName() {
         return this.#name;
+    }
+    
+    /**
+     * Set a new order
+     * 
+     * @param {number} order The predecessor channel id
+     */
+    updateOrder(order) {
+        const changed = this.#order !== order;
+        this.#order = order;
+        
+        if(changed) {
+            for(const callback of this.#orderUpdateCallbacks) {
+                callback(order);
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param {(newValue: number) => void} callback The callback function 
+     */
+    onOrderChange(callback) {
+        this.#orderUpdateCallbacks.push(callback);
     }
     
     getPredecessor() {
