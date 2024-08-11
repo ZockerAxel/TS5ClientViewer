@@ -6,7 +6,7 @@ import Server from "./Server.js";
 
 const testOutput = document.querySelector("#test-tree");
 
-export class Handler {
+export default class Handler {
     #apiKey;
     #apiPort;
     #app;
@@ -41,11 +41,27 @@ export class Handler {
      * Gets a server by it's ID
      * 
      * @param {number} id The Server ID
-     * @returns {Server | null}
+     * @returns {Server | null} The found Server or null, if none was found
      */
     getServer(id) {
         for(const server of this.#servers) {
             if(server.getId() === id) {
+                return server;
+            }
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Gets a server by it's name
+     * 
+     * @param {string} name The Server Name
+     * @returns {Server | null} The found Server or null, if none was found
+     */
+    getServerByName(name) {
+        for(const server of this.#servers) {
+            if(server.getName() === name) {
                 return server;
             }
         }

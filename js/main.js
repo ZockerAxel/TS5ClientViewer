@@ -1,7 +1,7 @@
 //@ts-check
 import App from "./App.js";
 import { getEnvironment } from "./EnvironmentChecker.js";
-import { Handler } from "./ts/TSHandler.js";
+import Handler from "./ts/TSHandler.js";
 import { getParam, getParamInt } from "./UrlParamReader.js";
 import { getOrDefault } from "./Utils.js";
 
