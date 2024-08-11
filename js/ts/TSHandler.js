@@ -57,6 +57,8 @@ export class Handler {
         
         if(index === -1) return;
         
+        server.getRootChannel().deleteSubChannelsRecursively();
+        
         this.#servers.splice(index, 1);
     }
     
