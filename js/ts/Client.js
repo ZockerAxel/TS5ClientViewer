@@ -1,6 +1,9 @@
 //@ts-check
+import Server from "./Server.js";
 
 export default class Client {
+    #server;
+    
     //Info
     #id;
     #type;
@@ -30,8 +33,9 @@ export default class Client {
     #awayUpdateCallbacks = [];
     
     /**
-     * Creates a new Client, which represents a Client in the TeamSpeak Channel Tree
+     * Creates a new Client, which represents a Client in the TeamSpeak Server Tree
      * 
+     * @param {Server} server The Server that this Client belongs to
      * @param {number} id Client ID
      * @param {number} type Client Type (0 = Client, 1 = ServerQuery Client)
      * @param {string} nickname Client Nickname
@@ -42,7 +46,9 @@ export default class Client {
      * @param {boolean} away Whether the client is away
      * @param {string} awayMessage The away message (if they are away)
      */
-    constructor(id, type, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage) {
+    constructor(server, id, type, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage) {
+        this.#server = server;
+        
         this.#id = id;
         this.#type = type;
         this.#nickname = nickname;
@@ -54,6 +60,10 @@ export default class Client {
         this.#soundMuted = soundMuted;
         this.#away = away;
         this.#awayMessage = awayMessage;
+    }
+    
+    getServer() {
+        return this.#server;
     }
     
     getId() {
