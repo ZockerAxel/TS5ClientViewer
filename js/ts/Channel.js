@@ -86,17 +86,22 @@ export default class Channel {
         return this.#name;
     }
     
-    getOrder() {
-        return this.#order;
+    getPredecessor() {
+        return this.#server.getChannel(this.#order);
     }
     
     /**
      * Adds a subchannel with this channel as a parent
      * 
      * @param {Channel} channel The Channel that was added
+     * @param {boolean} sort Whether to sort after this operation
      */
-    addSubChannel(channel) {
+    addSubChannel(channel, sort = true) {
         this.#subChannels.push(channel);
+        
+        if(sort) {
+            this.sortSubChannels();
+        }
         
         for(const callback of this.#channelAddCallbacks) {
             callback(channel);
@@ -133,6 +138,32 @@ export default class Channel {
      */
     onSubChannelRemove(callback) {
         this.#channelRemoveCallbacks.push(callback);
+    }
+    
+    sortSubChannels() {
+        /**@type {Channel[]} */
+        const sortedSubchannels = [];
+        
+        let current = this.#subChannels.find(function(channel) {
+            return channel.#order === 0;
+        });
+        
+        while(current) {
+            const currentId = current.getId();
+            sortedSubchannels.push(current);
+            current = this.#subChannels.find(function(channel) {
+                return channel.#order === currentId;
+            });
+        }
+        
+        this.#subChannels = sortedSubchannels;
+    }
+    
+    sortSubChannelsRecursively() {
+        this.sortSubChannels();
+        for(const channel of this.#subChannels) {
+            channel.sortSubChannelsRecursively();
+        }
     }
     
     getSubChannels() {
@@ -183,9 +214,14 @@ export default class Channel {
      * Add a Client to this Channel
      * 
      * @param {Client} client The Client that was added
+     * @param {boolean} sort Whether to sort the clients afterwards
      */
-    addClient(client) {
+    addClient(client, sort = true) {
         this.#clients.push(client);
+        
+        if(sort) {
+            this.sortClients();
+        }
         
         for(const callback of this.#clientAddCallbacks) {
             callback(client);
@@ -222,6 +258,19 @@ export default class Channel {
      */
     onClientRemove(callback) {
         this.#clientRemoveCallbacks.push(callback);
+    }
+    
+    sortClients() {
+        this.#clients.sort(function(a, b) {
+            return b.getTalkPower() - a.getTalkPower();
+        });
+    }
+    
+    sortClientsRecursively() {
+        this.sortClients();
+        for(const channel of this.#subChannels) {
+            channel.sortClients();
+        }
     }
     
     getClients() {

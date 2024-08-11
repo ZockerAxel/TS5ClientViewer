@@ -175,7 +175,7 @@ export class Handler {
         
         if(server === null) throw new Error(`Client moved in unknown Server (ID: '${connectionId}')`);
         
-        const clientId = payload.clientId;
+        const clientId = Number.parseInt(payload.clientId);
         const channelId = Number.parseInt(payload.newChannelId);
         
         if(channelId === 0) {
@@ -255,29 +255,33 @@ export class Handler {
                 
                 if(parent === null) continue;
                 
-                const channelId = channelInfo.id;
+                const channelId = Number.parseInt(channelInfo.id);
                 const channelName = channelInfo.properties.name.replace(/^\[.*?spacer.*?\]\s*/, "");
-                const channelOrder = channelInfo.order;
+                const channelOrder = Number.parseInt(channelInfo.order);
                 
                 const channel = new Channel(server, channelId, channelName, channelOrder);
                 
                 for(const clientInfo of [...allClientInfos]) {
-                    if(clientInfo.channelId !== channelId) continue;
+                    const clientChannelId = Number.parseInt(clientInfo.channelId);
+                    if(clientChannelId !== channelId) continue;
                     
-                    const clientId = clientInfo.id;
+                    const clientId = Number.parseInt(clientInfo.id);
                     
                     const client = this.#loadClient(server, clientId, clientInfo.properties);
                     
                     channel.addClient(client);
                 }
                 
-                parent.addSubChannel(channel);
+                parent.addSubChannel(channel, false);
                 
                 const index = allChannelInfos.indexOf(channelInfo);
                 if(index === -1) continue;
                 allChannelInfos.splice(index, 1);
             }
         }
+        
+        //Sort all channels initally to make sure they are in the correct order (they should already be given in the correct order, but you can never be sure enough)
+        server.getRootChannel().sortSubChannelsRecursively();
         
         // @ts-ignore
         testOutput.textContent = server.toTreeString();
