@@ -183,6 +183,25 @@ export default class Channel {
     }
     
     /**
+     * Searches for the Channel that is the parent of the specified Client in it's nested subchannels. Checks itself.
+     * 
+     * @param {Client} client The Client
+     * @returns {Channel | null} The Parent Channel
+     */
+    getClientChannel(client) {
+        for(const ownClient of this.#clients) {
+            if(ownClient == client) return this;
+        }
+        
+        for(const subChannel of this.#subChannels) {
+            const foundParent = subChannel.getClientChannel(client);
+            if(foundParent !== null) return foundParent;
+        }
+        
+        return null;
+    }
+    
+    /**
      * Searches for the Client by the specified ID in this Channel and all it's nested subchannels
      * 
      * @param {number} id The Client ID

@@ -66,6 +66,10 @@ export default class Client {
         return this.#server;
     }
     
+    getChannel() {
+        return this.#server.getRootChannel().getClientChannel(this);
+    }
+    
     getId() {
         return this.#id;
     }
