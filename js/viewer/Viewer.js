@@ -32,6 +32,8 @@ export default class Viewer {
     #channelHidden;
     /**@type {boolean} */
     #silentClientsHidden;
+    /**@type {boolean} */
+    #statusHidden;
     
     /**@type {Server} */
     #server;
@@ -39,9 +41,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -52,6 +54,7 @@ export default class Viewer {
         this.setLocalClientColorEnabled(localClientColorEnabled);
         this.#channelHidden = channelHidden;
         this.setSilentClientsHidden(silentClientsHidden);
+        this.setStatusHidden(statusHidden);
         
         this.#registerEvents();
     }
@@ -227,6 +230,21 @@ export default class Viewer {
     
     isSilentClientsHidden() {
         return this.#silentClientsHidden;
+    }
+    
+    /**
+     * Sets whether status will be hidden
+     * 
+     * @param {boolean} hidden Whether silent clients should be hidden
+     */
+    setStatusHidden(hidden) {
+        this.#statusHidden = hidden;
+        
+        viewerDiv.classList.toggle("hide_status", hidden);
+    }
+    
+    isStatusHidden() {
+        return this.#statusHidden;
     }
     
     refreshViewer() {

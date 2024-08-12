@@ -37,6 +37,7 @@ async function main() {
     const localClientColor = !getParamBoolean("disable_local_client_color");
     const hideChannelName = getParamBoolean("hide_channel");
     const hideSilentClients = getParamBoolean("only_talking");
+    const hideStatus = getParamBoolean("hide_status");
     
     const viewer = new Viewer(handler, {
         mode: viewerMode,
@@ -47,6 +48,7 @@ async function main() {
         localClientColorEnabled: localClientColor,
         channelHidden: hideChannelName,
         silentClientsHidden: hideSilentClients,
+        statusHidden: hideStatus,
     });
     
     viewer.updateSelectedServer();

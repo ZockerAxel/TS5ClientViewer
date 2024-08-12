@@ -104,6 +104,10 @@ body {
     margin-inline-start: 0.5em;
 }
 
+#viewer.hide_status .client > .name {
+    margin-inline-start: 0;
+}
+
 .server > .channel {
     margin: 0;
 }
@@ -120,6 +124,10 @@ body {
 
 /* Client Statuses */
 #viewer.hide_silent_clients .client:has(.status[status="talking"].hidden) {
+    display: none;
+}
+
+#viewer.hide_status .status {
     display: none;
 }
 
