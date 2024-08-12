@@ -49,17 +49,18 @@ body {
 
 #viewer .container {
     display: flex;
-        flex-direction: column;
-        align-items: var(--alignment);
-        gap: 0.025em;
-        margin-block: 0.025em;
+    flex-direction: column;
+    align-items: var(--alignment);
 }
 
 .client_list, .channel_list {
     display: flex;
     flex-direction: column;
     align-items: var(--alignment);
-    gap: 0.025em;
+}
+
+.client_list {
+    margin-top: 0.025em;
 }
 
 .server {
@@ -98,8 +99,8 @@ body {
 .channel > .name, .client {
     background-color: var(--box-bg);
     
+    margin-block: 0.025em;
     --padding: 0.4em;
-    
     padding: var(--padding);
     
     width: fit-content;
