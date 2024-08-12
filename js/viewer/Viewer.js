@@ -34,6 +34,8 @@ export default class Viewer {
     #silentClientsHidden;
     /**@type {boolean} */
     #statusHidden;
+    /**@type {boolean} */
+    #avatarsShown;
     
     /**@type {Server} */
     #server;
@@ -41,9 +43,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -55,6 +57,7 @@ export default class Viewer {
         this.#channelHidden = channelHidden;
         this.setSilentClientsHidden(silentClientsHidden);
         this.setStatusHidden(statusHidden);
+        this.setAvatarsShown(avatarsShown);
         
         this.#registerEvents();
     }
@@ -247,6 +250,21 @@ export default class Viewer {
     
     isStatusHidden() {
         return this.#statusHidden;
+    }
+    
+    /**
+     * Sets whether avatars will be shown
+     * 
+     * @param {boolean} shown Whether silent clients should be hidden
+     */
+    setAvatarsShown(shown) {
+        this.#avatarsShown = shown;
+        
+        viewerDiv.classList.toggle("show_avatars", shown);
+    }
+    
+    isAvatarsShown() {
+        return this.#avatarsShown;
     }
     
     refreshViewer() {

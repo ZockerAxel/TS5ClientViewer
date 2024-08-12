@@ -1,3 +1,5 @@
+//@ts-check
+
 /**
  * Returns the entered value or the default value if the entered value is null or undefined
  * 
@@ -24,4 +26,28 @@ export function createLengthString(length, fill) {
     }
     
     return text;
+}
+
+/**
+ * Reads the Avatar URL from the Avatar field
+ * 
+ * @param {string} avatarField The Avatar Field in the client properties
+ * @returns {string | null} The URL
+ */
+export function readMyTsAvatarURL(avatarField) {
+    if(!avatarField || avatarField === "") return null;
+    
+    const entries = avatarField.split(";");
+    
+    if(entries.length === 0) return null;
+    
+    const lastEntry = entries[entries.length - 1];
+    
+    if(!lastEntry) return null;
+    
+    const url = lastEntry.split(",")[1];
+    
+    if(!url) return null;
+    
+    return url;
 }

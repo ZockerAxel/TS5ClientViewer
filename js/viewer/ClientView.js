@@ -58,6 +58,11 @@ export default class ClientView {
         this.#client.onNicknameChange(function(newValue) {
             self.#nicknameElement.textContent = newValue;
         });
+        
+        this.#client.onAvatarUrlChange(function(newValue) {
+            self.#element.classList.toggle("has_avatar", newValue !== null);
+            self.#element.style.setProperty("--avatar", `url("${newValue}")`);
+        });
     }
     
     updateStatus() {
@@ -109,6 +114,8 @@ export default class ClientView {
     createElement() {
         this.#element = document.createElement("div");
         this.#element.classList.add("client");
+        this.#element.classList.toggle("has_avatar", this.#client.getAvatarUrl() !== null);
+        this.#element.style.setProperty("--avatar", `url("${this.#client.getAvatarUrl()}")`);
         if(this.#client.isLocalClient()) this.#element.classList.add("self");
         
         for(const status of CLIENT_STATUSES) {

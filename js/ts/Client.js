@@ -8,6 +8,7 @@ export default class Client {
     #id;
     #type;
     #nickname;
+    #avatarUrl;
     
     //Status
     #talking;
@@ -23,6 +24,8 @@ export default class Client {
     //Callback Lists
     /**@type {((newValue: string) => void)[]} */
     #nicknameUpdateCallbacks = [];
+    /**@type {((newValue: string | null) => void)[]} */
+    #avatarUrlUpdateCallbacks = [];
     /**@type {((newValue: boolean) => void)[]} */
     #talkingUpdateCallbacks = [];
     /**@type {((newValue: boolean) => void)[]} */
@@ -43,6 +46,7 @@ export default class Client {
      * @param {number} id Client ID
      * @param {number} type Client Type (0 = Client, 1 = ServerQuery Client)
      * @param {string} nickname Client Nickname
+     * @param {string | null} avatarUrl The Avatar URL (from myTeamspeak-Avatar)
      * @param {boolean} talking Whether the client is currently talking
      * @param {boolean} muted Whether the client is currently muted
      * @param {boolean} hardwareMuted Whether the client is currently hardware-muted
@@ -51,12 +55,13 @@ export default class Client {
      * @param {string} awayMessage The away message (if they are away)
      * @param {number} talkPower The talk power (affects client order)
      */
-    constructor(server, id, type, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage, talkPower) {
+    constructor(server, id, type, nickname, avatarUrl, talking, muted, hardwareMuted, soundMuted, away, awayMessage, talkPower) {
         this.#server = server;
         
         this.#id = id;
         this.#type = type;
         this.#nickname = nickname;
+        this.#avatarUrl = avatarUrl;
         
         this.#talking = talking;
         
@@ -71,10 +76,11 @@ export default class Client {
     
     /**
      * 
-     * @param {{nickname?: string, talking?: boolean, muted?: boolean, hardwareMuted?: boolean, soundMuted?: boolean, away?: boolean, awayMessage?: string, talkPower?: number}} param0 
+     * @param {{nickname?: string, avatarUrl?: string | null, talking?: boolean, muted?: boolean, hardwareMuted?: boolean, soundMuted?: boolean, away?: boolean, awayMessage?: string, talkPower?: number}} param0 
      */
-    update({nickname = this.#nickname, talking = this.#talking, muted = this.#muted, hardwareMuted = this.#hardwareMuted, soundMuted = this.#soundMuted, away = this.#away, awayMessage = this.#awayMessage, talkPower = this.#talkPower}) {
+    update({nickname = this.#nickname, avatarUrl = this.#avatarUrl, talking = this.#talking, muted = this.#muted, hardwareMuted = this.#hardwareMuted, soundMuted = this.#soundMuted, away = this.#away, awayMessage = this.#awayMessage, talkPower = this.#talkPower}) {
         this.updateNickname(nickname);
+        this.updateAvatarUrl(avatarUrl);
         this.updateTalking(talking);
         this.updateMuted(muted);
         this.updateHardwareMuted(hardwareMuted);
@@ -140,6 +146,33 @@ export default class Client {
     
     getNickname() {
         return this.#nickname;
+    }
+    
+    /**
+     * 
+     * @param {string | null} avatarUrl The new nickname
+     */
+    updateAvatarUrl(avatarUrl) {
+        const changed = this.#avatarUrl !== avatarUrl;
+        this.#avatarUrl = avatarUrl;
+        
+        if(changed) {
+            for(const callback of this.#avatarUrlUpdateCallbacks) {
+                callback(avatarUrl);
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param {(newValue: string | null) => void} callback The callback function
+     */
+    onAvatarUrlChange(callback) {
+        this.#avatarUrlUpdateCallbacks.push(callback);
+    }
+    
+    getAvatarUrl() {
+        return this.#avatarUrl;
     }
     
     /**

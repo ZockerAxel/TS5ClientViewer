@@ -38,6 +38,7 @@ async function main() {
     const hideChannelName = getParamBoolean("hide_channel");
     const hideSilentClients = getParamBoolean("only_talking");
     const hideStatus = getParamBoolean("hide_status");
+    const showAvatar = getParamBoolean("show_avatar");
     
     const viewer = new Viewer(handler, {
         mode: viewerMode,
@@ -49,6 +50,7 @@ async function main() {
         channelHidden: hideChannelName,
         silentClientsHidden: hideSilentClients,
         statusHidden: hideStatus,
+        avatarsShown: showAvatar,
     });
     
     viewer.updateSelectedServer();

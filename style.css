@@ -88,6 +88,7 @@ body {
     align-items: center;
     
     --height: 0;
+    --avatar: url("");
     
     color: var(--client-text-color);
 }
@@ -231,6 +232,15 @@ body {
     
     border: 0.11em solid hsl(200, 53%, 55%);
     border-radius: 50%;
+}
+
+#viewer.show_avatars .client.has_avatar :where(.status[status="not_talking"], .status[status="talking"]) {
+    background-image: var(--avatar);
+    background-size: cover;
+}
+
+#viewer.show_avatars .client.has_avatar .status[status="talking"] {
+    border: 0.2em solid hsl(200, 63%, 65%);
 }
 
 .away_message {

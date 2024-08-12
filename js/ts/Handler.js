@@ -1,5 +1,6 @@
 //@ts-check
 import App from "../App.js";
+import { readMyTsAvatarURL } from "../Utils.js";
 import Channel from "./Channel.js";
 import Client from "./Client.js";
 import Server from "./Server.js";
@@ -699,6 +700,7 @@ export default class Handler {
     #loadClient(server, clientId, properties) {
         const clientType = properties.type;
         const nickname = properties.nickname;
+        const avatarUrl = readMyTsAvatarURL(properties.myteamspeakAvatar);
         const talking = properties.flagTalking;
         const muted = properties.inputMuted;
         const hardwareMuted = !properties.inputHardware;
@@ -707,7 +709,7 @@ export default class Handler {
         const awayMessage = properties.awayMessage;
         const talkPower = properties.talkPower;
         
-        const client = new Client(server, clientId, clientType, nickname, talking, muted, hardwareMuted, soundMuted, away, awayMessage, talkPower);
+        const client = new Client(server, clientId, clientType, nickname, avatarUrl, talking, muted, hardwareMuted, soundMuted, away, awayMessage, talkPower);
         
         return client;
     }
