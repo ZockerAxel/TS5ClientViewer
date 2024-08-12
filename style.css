@@ -53,6 +53,10 @@ body {
     align-items: var(--alignment);
 }
 
+#viewer > .container {
+    margin-inline: 0;
+}
+
 .client_list, .channel_list {
     display: flex;
     flex-direction: column;
@@ -63,11 +67,15 @@ body {
     margin-top: 0.025em;
 }
 
+#viewer > .channel > .client_list {
+    margin-inline: 0;
+}
+
 .server {
     width: fit-content;
 }
 
-.channel, .client {
+.channel, .client_list {
     margin-inline: 0.5em;
 }
 
@@ -93,7 +101,7 @@ body {
 }
 
 .client > .name {
-    margin-inline-start: 0.25em;
+    margin-inline-start: 0.5em;
 }
 
 .server > .channel {

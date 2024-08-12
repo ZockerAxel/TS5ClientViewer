@@ -27,7 +27,7 @@ export default class ServerView {
     }
     
     buildTree() {
-        this.#rootChannelView = new ChannelView(this, null, this.#server.getRootChannel());
+        this.#rootChannelView = new ChannelView(null, this.#server.getRootChannel());
         this.#rootChannelView.buildTree();
     }
     

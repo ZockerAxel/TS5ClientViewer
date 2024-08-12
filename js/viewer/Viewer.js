@@ -3,10 +3,11 @@ import Server from "../ts/Server.js";
 import Handler from "../ts/Handler.js";
 import { viewerDiv, interfaceDiv } from "../PreloadedElements.js";
 import ServerView from "./ServerView.js";
+import ChannelView from "./ChannelView.js";
 
 /**
  * @typedef ViewerMode
- * @type {"tree" | "used_channels" | "own_channel" | "talking"}
+ * @type {"tree" | "channel" | "talking"}
  */
 
 /**
@@ -27,6 +28,8 @@ export default class Viewer {
     #alignment;
     /**@type {boolean} */
     #localClientColorEnabled;
+    /**@type {boolean} */
+    #channelHidden;
     
     /**@type {Server} */
     #server;
@@ -34,9 +37,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -45,6 +48,7 @@ export default class Viewer {
         this.setScale(scale);
         this.setAlignment(alignment);
         this.setLocalClientColorEnabled(localClientColorEnabled);
+        this.#channelHidden = channelHidden;
         
         this.#registerEvents();
     }
@@ -56,6 +60,15 @@ export default class Viewer {
             if(self.getServerSelectMode() !== "active") return;
             
             self.setServer(server);
+        });
+        
+        this.#handler.onNewServer(function(server) {
+            server.onLocalClientMoved(function(channel) {
+                if(self.getServer() !== server) return;
+                if(self.getMode() !== "channel" && self.getMode() !== "talking") return;
+                
+                self.refreshViewer();
+            });
         });
     }
     
@@ -92,7 +105,7 @@ export default class Viewer {
         this.#server = server;
         
         if(changed) {
-            this.createTree();
+            this.refreshViewer();
         }
     }
     
@@ -107,6 +120,8 @@ export default class Viewer {
      */
     setMode(mode) {
         this.#mode = mode;
+        
+        this.refreshViewer();
     }
     
     getMode() {
@@ -181,6 +196,35 @@ export default class Viewer {
         return this.#localClientColorEnabled;
     }
     
+    /**
+     * Sets whether the channel is hidden (not applicable for mode "tree")
+     * 
+     * @param {boolean} hidden 
+     */
+    setChannelHidden(hidden) {
+        this.#channelHidden = hidden;
+        
+        this.refreshViewer();
+    }
+    
+    isChannelHidden() {
+        return this.#channelHidden;
+    }
+    
+    refreshViewer() {
+        switch(this.#mode) {
+            case "tree":
+                this.createTree();
+                break;
+            case "channel":
+                this.createOwnChannel();
+                break;
+            case "talking":
+                this.createTalking();
+                break;
+        }
+    }
+    
     createTree() {
         console.log({message: "[Viewer] Creating new Tree ..."});
         viewerDiv.textContent = "";//Clear Viewer
@@ -194,5 +238,36 @@ export default class Viewer {
         const tree = serverView.createElement();
         viewerDiv.appendChild(tree);
         serverView.onTreeDisplayed();
+    }
+    
+    createOwnChannel() {
+        console.log({message: "[Viewer] Creating Own Channel ..."});
+        viewerDiv.textContent = "";//Clear Viewer
+        
+        const server = this.getServer();
+        const client = server.getLocalClient();
+        
+        if(client === null) throw new Error("No Local Client found");
+        
+        const channel = client.getChannel();
+        
+        if(channel === null) throw new Error("Channel of Local Client not found");;
+        
+        const channelView = new ChannelView(null, channel);
+        
+        channelView.buildClientTree();
+        
+        const tree = channelView.createElement();
+        viewerDiv.appendChild(tree);
+        channelView.onTreeDisplayed();
+        
+        channelView.setChannelNameHidden(this.isChannelHidden());
+    }
+    
+    createTalking() {
+        console.log({message: "[Viewer] Creating Talking ..."});
+        viewerDiv.textContent = "";//Clear Viewer
+        
+        
     }
 }

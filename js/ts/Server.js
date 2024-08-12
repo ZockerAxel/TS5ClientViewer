@@ -10,6 +10,9 @@ export default class Server {
     
     #rootChannel;
     
+    /**@type {((channel: Channel) => void)[]} */
+    #localClientMoveCallbacks = [];
+    
     /**
      * Creates a Server, represents a Connection to a TeamSpeak Server and contains all channels and connected clients.
      * 
@@ -58,6 +61,24 @@ export default class Server {
      */
     getClient(id) {
         return this.#rootChannel.getClient(id);
+    }
+    
+    /**
+     * 
+     * @param {(channel: Channel) => void} callback 
+     */
+    onLocalClientMoved(callback) {
+        this.#localClientMoveCallbacks.push(callback);
+    }
+    
+    /**
+     * 
+     * @param {Channel} channel The Channel moved into
+     */
+    updateLocalClientChannel(channel) {
+        for(const callback of this.#localClientMoveCallbacks) {
+            callback(channel);
+        }
     }
     
     toTreeString() {

@@ -544,8 +544,11 @@ export default class Handler {
             
             to.addClient(client);
             
-            console.log({message: "Client switched Channel", from: oldChannel, to: to});
+            if(client.isLocalClient()) {
+                server.updateLocalClientChannel(to);
+            }
             
+            console.log({message: "Client switched Channel", from: oldChannel, to: to});
         }
     }
     

@@ -1,10 +1,8 @@
 //@ts-check
 import Channel from "../ts/Channel.js";
 import ClientView from "./ClientView.js";
-import ServerView from "./ServerView.js";
 
 export default class ChannelView {
-    #serverView;
     #parentView;
     
     #channel;
@@ -27,12 +25,10 @@ export default class ChannelView {
     
     /**
      * 
-     * @param {ServerView} serverView The Server View this Channel View belongs to
      * @param {ChannelView | null} parentView The View of this' Channels parent
      * @param {Channel} channel The Channel
      */
-    constructor(serverView, parentView, channel) {
-        this.#serverView = serverView;
+    constructor(parentView, channel) {
         this.#parentView = parentView;
         this.#channel = channel;
         
@@ -42,34 +38,17 @@ export default class ChannelView {
     #registerEvents() {
         const self = this;
         
-        this.#channel.onSubChannelAdd(function(channel) {
-            const channelView = new ChannelView(self.#serverView, self, channel);
-            channelView.buildTree();
-            
-            self.#channelViews.push(channelView);
-            if(!self.isCreated()) return;
-            
-            self.#addChannelView(channelView);
-            
-            channelView.onTreeDisplayed();
-            
-            self.#updateChannelTree();
-        });
-        
-        this.#channel.onSubChannelRemove(function(channel) {
-            for(let i = 0; i < self.#channelViews.length; i++) {
-                const channelView = self.#channelViews[i];
-                if(channelView.getChannel() !== channel) continue;
-                
-                channelView.remove();
-                self.#channelViews.splice(i, 1);
-                break;
-            }
-        });
-        
         this.#channel.onNameChange(function(name) {
             self.#channelNameElement.textContent = name;
         });
+        
+        this.#channel.onDelete(function() {
+            self.remove();
+        });
+    }
+    
+    #registerClientEvents() {
+        const self = this;
         
         this.#channel.onClientAdd(function(client) {
             const clientView = new ClientView(self, client);
@@ -94,14 +73,35 @@ export default class ChannelView {
                 break;
             }
         });
-        
-        this.#channel.onDelete(function() {
-            self.remove();
-        });
     }
     
-    getServerView() {
-        return this.#serverView;
+    #registerChannelEvents() {
+        const self = this;
+        
+        this.#channel.onSubChannelAdd(function(channel) {
+            const channelView = new ChannelView(self, channel);
+            channelView.buildTree();
+            
+            self.#channelViews.push(channelView);
+            if(!self.isCreated()) return;
+            
+            self.#addChannelView(channelView);
+            
+            channelView.onTreeDisplayed();
+            
+            self.#updateChannelTree();
+        });
+        
+        this.#channel.onSubChannelRemove(function(channel) {
+            for(let i = 0; i < self.#channelViews.length; i++) {
+                const channelView = self.#channelViews[i];
+                if(channelView.getChannel() !== channel) continue;
+                
+                channelView.remove();
+                self.#channelViews.splice(i, 1);
+                break;
+            }
+        });
     }
     
     getParentView() {
@@ -120,16 +120,37 @@ export default class ChannelView {
         return this.#element !== undefined && this.#element.parentElement !== undefined;
     }
     
+    /**
+     * Sets whether the channel name will be hidden
+     * 
+     * @param {boolean} hidden Whether its hidden
+     */
+    setChannelNameHidden(hidden) {
+        this.#channelNameElement.classList.toggle("hidden", hidden);
+    }
+    
     buildTree() {
+        this.buildClientTree();
+        this.buildChannelTree();
+    }
+    
+    buildClientTree() {
         for(const client of this.#channel.getClients()) {
             this.#clientViews.push(new ClientView(this, client));
         }
+        
+        this.#registerClientEvents();
+    }
+    
+    buildChannelTree() {
         for(const channel of this.#channel.getSubChannels()) {
-            const channelView = new ChannelView(this.#serverView, this, channel);
+            const channelView = new ChannelView(this, channel);
             channelView.buildTree();
             
             this.#channelViews.push(channelView);
         }
+        
+        this.#registerChannelEvents();
     }
     
     createElement() {

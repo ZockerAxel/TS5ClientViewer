@@ -35,6 +35,7 @@ async function main() {
     const scale = getOrDefault(getParamFloat("scale"), 1);
     const alignment = getOrDefault(getParam("align"), "start");
     const localClientColor = !getParamBoolean("disable_local_client_color");
+    const hideChannelName = getParamBoolean("hide_channel");
     
     const viewer = new Viewer(handler, {
         mode: viewerMode,
@@ -43,6 +44,7 @@ async function main() {
         scale: scale,
         alignment: alignment,
         localClientColorEnabled: localClientColor,
+        channelHidden: hideChannelName,
     });
     
     viewer.updateSelectedServer();
