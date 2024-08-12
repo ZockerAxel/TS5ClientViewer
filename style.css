@@ -34,6 +34,10 @@ body {
     overflow: hidden;
 }
 
+body:has(#interface.active) {
+    background-color: black;
+}
+
 /* 
     Viewer
 */
@@ -276,6 +280,8 @@ body {
 #interface {
     display: none;
     
+    --alignment: end;
+    
     overflow: auto;
 }
 
@@ -294,7 +300,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 1em;
-    align-self: end;
+    align-self: var(--alignment, end);
     text-align: center;
     
     padding: 1em;

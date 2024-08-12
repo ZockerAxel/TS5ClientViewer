@@ -191,6 +191,7 @@ export default class Viewer {
         this.#alignment = alignment;
         
         viewerDiv.style.setProperty("--alignment", `${alignment}`);
+        interfaceDiv.style.setProperty("--alignment", `${alignment === "start" ? "end" : "start"}`);
     }
     
     getAlignment() {
