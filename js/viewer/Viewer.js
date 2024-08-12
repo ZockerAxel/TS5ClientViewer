@@ -182,6 +182,7 @@ export default class Viewer {
     }
     
     createTree() {
+        console.log({message: "[Viewer] Creating new Tree ..."});
         viewerDiv.textContent = "";//Clear Viewer
         
         const server = this.getServer();

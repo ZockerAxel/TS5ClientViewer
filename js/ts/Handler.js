@@ -106,6 +106,10 @@ export default class Handler {
         server.getRootChannel().deleteSubChannelsRecursively();
         
         this.#servers.splice(index, 1);
+        
+        if(server === this.#activeServer) {
+            this.updateActiveServer();
+        }
     }
     
     getServers() {
@@ -120,9 +124,13 @@ export default class Handler {
             
             if(!localClient.isHardwareMuted()) {
                 this.#setActiveServer(server);//Set the server where the client is not hardware-muted as the active one
-                break;
+                return;
             }
         }
+        
+        const firstServer = this.getServers()[0];
+        
+        if(firstServer) this.#setActiveServer(firstServer);
     }
     
     /**
@@ -146,7 +154,7 @@ export default class Handler {
      * @param {(server: Server) => void} callback 
      */
     onActiveServerChange(callback) {
-        this.#newServerCallbacks.push(callback);
+        this.#activeServerChangeCallbacks.push(callback);
     }
     
     getActiveServer() {
@@ -467,6 +475,8 @@ export default class Handler {
             const server = this.#loadServer(connection);
             this.addServer(server);
         }
+        
+        this.updateActiveServer();
     }
     
     #onClientMoved(payload) {
