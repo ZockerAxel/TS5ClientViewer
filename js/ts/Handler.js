@@ -199,7 +199,7 @@ export default class Handler {
         this.#api = new TSRemoteAppWrapper.TSApiWrapper({
             api: {
                 port: this.#apiPort,
-                tsEventDebug: true,
+                // tsEventDebug: true,
             },
             app: this.#app.toRemoteAPIApp(),
         });
@@ -233,7 +233,7 @@ export default class Handler {
             api: {
                 key: this.#apiKey,
                 port: this.#apiPort,
-                tsEventDebug: true,
+                // tsEventDebug: true,
             },
             app: this.#app.toRemoteAPIApp(),
         });
