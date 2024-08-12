@@ -104,7 +104,7 @@ export default class Handler {
         
         if(index === -1) return;
         
-        server.getRootChannel().deleteSubChannelsRecursively();
+        server.delete();
         
         this.#servers.splice(index, 1);
         

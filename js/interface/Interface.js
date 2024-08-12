@@ -42,6 +42,10 @@ export default class Interface {
         option.textContent = server.getName();
         
         interfaceServerList.appendChild(option);
+        
+        server.onDelete(function() {
+            option.remove();
+        });
     }
     
     getViewer() {

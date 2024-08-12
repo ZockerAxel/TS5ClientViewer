@@ -12,6 +12,8 @@ export default class Server {
     
     /**@type {((channel: Channel) => void)[]} */
     #localClientMoveCallbacks = [];
+    /**@type {(() => void)[]} */
+    #deleteCallbacks = [];
     
     /**
      * Creates a Server, represents a Connection to a TeamSpeak Server and contains all channels and connected clients.
@@ -79,6 +81,22 @@ export default class Server {
         for(const callback of this.#localClientMoveCallbacks) {
             callback(channel);
         }
+    }
+    
+    /**
+     * 
+     * @param {() => void} callback 
+     */
+    onDelete(callback) {
+        this.#deleteCallbacks.push(callback);
+    }
+    
+    delete() {
+        for(const callback of this.#deleteCallbacks) {
+            callback();
+        }
+        
+        this.#rootChannel.deleteSubChannelsRecursively();
     }
     
     toTreeString() {
