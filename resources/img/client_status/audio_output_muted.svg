@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg class="tsv-icon-audio-output-muted" width="100%" height="100%" viewBox="0 0 22 22" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+    <rect id="audio_output_muted" x="0" y="0" width="22" height="22" style="fill:none;"/>
+    <g id="cuttet" style="fill: white;">
+        <path d="M6.579,6.961C6.175,8.222 5.935,9.582 5.935,11C5.935,12.418 6.175,13.778 6.579,15.039L5.586,14.887C4.658,14.887 3.904,13.145 3.904,11C3.904,8.855 4.658,7.113 5.586,7.113L6.579,6.961Z" class="tsv-icon-base-fill" style=""/>
+        <g>
+            <path d="M13.646,1.01C15.944,1.01 18.134,5.486 18.134,11C18.134,16.514 15.944,20.99 13.646,20.99C11.348,20.99 7.215,16.514 7.215,11C7.215,5.486 11.348,1.01 13.646,1.01ZM13.544,2.63C15.507,2.63 17.1,6.381 17.1,11C17.1,15.619 15.507,19.37 13.544,19.37C11.581,19.37 9.987,15.619 9.987,11C9.987,6.381 11.581,2.63 13.544,2.63Z" class="tsv-icon-base-fill" style=""/>
+            <ellipse cx="13.518" cy="11.026" rx="1.509" ry="3.718" class="tsv-icon-base-fill" style=""/>
+        </g>
+    </g>
+    <path d="M7.261,15.989C7.051,15.779 7.051,15.439 7.261,15.23L17.816,4.675C18.025,4.466 18.365,4.466 18.575,4.675L19.334,5.434C19.543,5.644 19.543,5.984 19.334,6.193L8.779,16.748C8.57,16.957 8.229,16.957 8.02,16.748L7.261,15.989Z" class="tsv-icon-shaded-bg-fill" style="fill: #DF0F0F;"/>
+    <path d="M8.322,15.928C8.112,15.719 8.112,15.379 8.322,15.169L18.169,5.322C18.379,5.112 18.719,5.112 18.928,5.322L19.687,6.081C19.897,6.29 19.897,6.63 19.687,6.84L9.84,16.687C9.63,16.897 9.29,16.897 9.081,16.687L8.322,15.928Z" class="tsv-icon-error-fill" style="fill: #DF0F0F;"/>
+</svg>
