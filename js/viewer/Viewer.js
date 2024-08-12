@@ -40,6 +40,8 @@ export default class Viewer {
     #spacersShown;
     /**@type {boolean} */
     #emptyChannelsHidden;
+    /**@type {boolean} */
+    #queryClientsShown;
     
     /**@type {Server} */
     #server;
@@ -47,9 +49,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -64,6 +66,7 @@ export default class Viewer {
         this.setAvatarsShown(avatarsShown);
         this.setSpacersShown(spacersShown);
         this.setEmptyChannelsHidden(emptyChannelsHidden);
+        this.setQueryClientsShown(queryClientsShown);
         
         this.#registerEvents();
     }
@@ -300,7 +303,22 @@ export default class Viewer {
     }
     
     isEmptyChannelsHidden() {
-        return this.#spacersShown;
+        return this.#emptyChannelsHidden;
+    }
+    
+    /**
+     * Sets whether empty channels will be hidden
+     * 
+     * @param {boolean} shown Whether spacers should be hidden
+     */
+    setQueryClientsShown(shown) {
+        this.#queryClientsShown = shown;
+        
+        viewerDiv.classList.toggle("show_query_clients", shown);
+    }
+    
+    isQueryClientsShown() {
+        return this.#queryClientsShown;
     }
     
     refreshViewer() {

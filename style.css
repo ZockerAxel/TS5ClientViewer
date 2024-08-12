@@ -84,7 +84,8 @@ body {
 }
 
 #viewer:not(.show_spacers) .channel.spacer,
-#viewer.hide_empty_channels .channel:not(:has(.client)) {
+#viewer.hide_empty_channels .channel:not(:has(.client)),
+#viewer.hide_empty_channels:not(.show_query_clients) .channel:not(:has(.client.regular_client)) {
     display: none;
 }
 
@@ -96,6 +97,10 @@ body {
     --avatar: url("");
     
     color: var(--client-text-color);
+}
+
+#viewer:not(.show_query_clients) .client:not(.regular_client) {
+    display: none;
 }
 
 .client:first-child {

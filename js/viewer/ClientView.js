@@ -114,6 +114,7 @@ export default class ClientView {
     createElement() {
         this.#element = document.createElement("div");
         this.#element.classList.add("client");
+        this.#element.classList.toggle("regular_client", this.#client.getType() === 0);
         this.#element.classList.toggle("has_avatar", this.#client.getAvatarUrl() !== null);
         this.#element.style.setProperty("--avatar", `url("${this.#client.getAvatarUrl()}")`);
         if(this.#client.isLocalClient()) this.#element.classList.add("self");
