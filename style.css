@@ -340,8 +340,6 @@ body {
 input[type="checkbox"] {
     width: 1em;
     height: 1em;
-    
-    cursor: pointer;
 }
 
 :disabled {
