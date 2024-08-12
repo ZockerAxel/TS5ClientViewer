@@ -38,7 +38,7 @@ async function main() {
     const hideChannelName = getParamBoolean("hide_channel");
     const hideSilentClients = getParamBoolean("only_talking");
     const hideStatus = getParamBoolean("hide_status");
-    const showAvatar = getParamBoolean("show_avatar");
+    const showAvatar = getParamBoolean("show_avatars");
     const showSpacers = getParamBoolean("show_spacers");
     const hideEmptyChannels = getParamBoolean("hide_empty");
     const showQueryClients = getParamBoolean("show_query_clients");
