@@ -19,6 +19,7 @@ export default class Viewer {
     
     #mode;
     #serverSelectMode;
+    /**@type {*} */
     #serverSelectModeOptions;
     
     /**@type {Server} */
