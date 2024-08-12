@@ -36,7 +36,7 @@ body {
 */
 
 #viewer {
-    font-size: calc(var(--scale) * 1.5em);
+    font-size: calc(var(--scale) * 1em);
     
     display: flex;
     flex-direction: column;
