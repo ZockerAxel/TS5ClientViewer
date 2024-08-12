@@ -198,7 +198,7 @@ export default class Interface {
         
         url += urlComponents.join("&");
         
-        interfaceGeneratedUrl.textContent = url;
+        interfaceGeneratedUrl.textContent = encodeURI(url);
     }
     
     /**
