@@ -152,7 +152,6 @@ export default class ClientView {
     
     onTreeDisplayed() {
         this.#element.style.setProperty("--height", `${this.#element.clientHeight}px`);
-        console.log("updated height");
     }
     
     remove() {
