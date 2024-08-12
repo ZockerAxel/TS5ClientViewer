@@ -39,11 +39,37 @@ export default class ChannelView {
     #registerEvents() {
         const self = this;
         
+        this.#channel.onSubChannelAdd(function(channel) {
+            const channelView = new ChannelView(self.#serverView, self, channel);
+            channelView.buildTree();
+            
+            self.#channelViews.push(channelView);
+            if(!self.isCreated()) return;
+            
+            self.#addChannelView(channelView);
+            
+            channelView.onTreeDisplayed();
+            
+            self.#updateChannelTree();
+        });
+        
+        this.#channel.onSubChannelRemove(function(channel) {
+            for(let i = 0; i < self.#channelViews.length; i++) {
+                const channelView = self.#channelViews[i];
+                if(channelView.getChannel() !== channel) continue;
+                
+                channelView.remove();
+                self.#channelViews.splice(i, 1);
+                break;
+            }
+        });
+        
         this.#channel.onClientAdd(function(client) {
-            const clientView = new ClientView(this, client);
+            const clientView = new ClientView(self, client);
             
             self.#clientViews.push(clientView);
             if(!self.isCreated()) return;
+            
             self.#addClientView(clientView);
             
             clientView.onTreeDisplayed();
@@ -166,6 +192,17 @@ export default class ChannelView {
     #addChannelView(channelView) {
         const channelElement = channelView.createElement();
         this.#channelContainer.appendChild(channelElement);
+    }
+    
+    #updateChannelTree() {
+        for(const channel of this.#channel.getSubChannels()) {
+            for(const channelView of this.#channelViews) {
+                if(channelView.getChannel() !== channel) continue;
+                
+                this.#channelContainer.appendChild(channelView.getElement());
+                break;
+            }
+        }
     }
     
     remove() {
