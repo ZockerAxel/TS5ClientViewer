@@ -47,6 +47,8 @@ export default class ChannelView {
             self.#addClientView(clientView);
             
             clientView.onTreeDisplayed();
+            
+            self.#updateClientTree();
         });
         
         this.#channel.onClientRemove(function(client) {
@@ -144,6 +146,17 @@ export default class ChannelView {
     #addClientView(clientView) {
         const clientElement = clientView.createElement();
         this.#clientContainer.appendChild(clientElement);
+    }
+    
+    #updateClientTree() {
+        for(const client of this.#channel.getClients()) {
+            for(const clientView of this.#clientViews) {
+                if(clientView.getClient() !== client) continue;
+                
+                this.#clientContainer.appendChild(clientView.getElement());
+                break;
+            }
+        }
     }
     
     /**
