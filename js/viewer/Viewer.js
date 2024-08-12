@@ -38,6 +38,8 @@ export default class Viewer {
     #avatarsShown;
     /**@type {boolean} */
     #spacersShown;
+    /**@type {boolean} */
+    #emptyChannelsHidden;
     
     /**@type {Server} */
     #server;
@@ -45,9 +47,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -61,6 +63,7 @@ export default class Viewer {
         this.setStatusHidden(statusHidden);
         this.setAvatarsShown(avatarsShown);
         this.setSpacersShown(spacersShown);
+        this.setEmptyChannelsHidden(emptyChannelsHidden);
         
         this.#registerEvents();
     }
@@ -282,6 +285,21 @@ export default class Viewer {
     }
     
     isSpacersShown() {
+        return this.#spacersShown;
+    }
+    
+    /**
+     * Sets whether empty channels will be hidden
+     * 
+     * @param {boolean} hidden Whether spacers should be hidden
+     */
+    setEmptyChannelsHidden(hidden) {
+        this.#emptyChannelsHidden = hidden;
+        
+        viewerDiv.classList.toggle("hide_empty_channels", hidden);
+    }
+    
+    isEmptyChannelsHidden() {
         return this.#spacersShown;
     }
     

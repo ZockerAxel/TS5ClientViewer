@@ -40,6 +40,7 @@ async function main() {
     const hideStatus = getParamBoolean("hide_status");
     const showAvatar = getParamBoolean("show_avatar");
     const showSpacers = getParamBoolean("show_spacers");
+    const hideEmptyChannels = getParamBoolean("hide_empty");
     
     const viewer = new Viewer(handler, {
         mode: viewerMode,
@@ -53,6 +54,7 @@ async function main() {
         statusHidden: hideStatus,
         avatarsShown: showAvatar,
         spacersShown: showSpacers,
+        emptyChannelsHidden: hideEmptyChannels,
     });
     
     viewer.updateSelectedServer();
