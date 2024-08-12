@@ -12,7 +12,7 @@
     --light-blue-color: hsl(203, 51%, 58%);
     
     --channel-text-color: hsl(0, 0%, 100%);
-    --client-text-color: hsl(211, 70%, 70%);
+    --client-text-color: hsl(211, 100%, 90%);
     --local-client-text-color: limegreen;
     
     /* Dynamic Values (Changed by URL Parameters) */

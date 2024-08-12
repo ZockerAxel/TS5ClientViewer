@@ -2,7 +2,7 @@
 import App from "./App.js";
 import { getEnvironment } from "./EnvironmentChecker.js";
 import Handler from "./ts/TSHandler.js";
-import { getParam, getParamInt } from "./UrlParamReader.js";
+import { getParam, getParamBoolean, getParamFloat, getParamInt } from "./UrlParamReader.js";
 import { getOrDefault } from "./Utils.js";
 import Viewer from "./viewer/Viewer.js";
 
@@ -32,11 +32,17 @@ async function main() {
     const viewerMode = getOrDefault(getParam("mode"), "tree");
     const serverSelectMode = getOrDefault(getParam("server"), "active");
     const serverSelectModeOptions = JSON.parse(getOrDefault(getParam("server_options"), "{}"));
+    const scale = getOrDefault(getParamFloat("scale"), 1);
+    const alignment = getOrDefault(getParam("align"), "start");
+    const localClientColor = !getParamBoolean("disable_local_client_color");
     
     const viewer = new Viewer(handler, {
         mode: viewerMode,
         serverSelectMode: serverSelectMode,
         serverSelectModeOptions: serverSelectModeOptions,
+        scale: scale,
+        alignment: alignment,
+        localClientColorEnabled: localClientColor,
     });
     
     viewer.updateSelectedServer();

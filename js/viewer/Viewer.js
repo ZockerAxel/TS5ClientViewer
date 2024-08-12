@@ -21,6 +21,12 @@ export default class Viewer {
     #serverSelectMode;
     /**@type {*} */
     #serverSelectModeOptions;
+    /**@type {number} */
+    #scale;
+    /**@type {string} */
+    #alignment;
+    /**@type {boolean} */
+    #localClientColorEnabled;
     
     /**@type {Server} */
     #server;
@@ -28,14 +34,17 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode?: ViewerMode, serverSelectMode?: ServerSelectMode, serverSelectModeOptions?: *}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean}} options 
      */
-    constructor(handler, {mode = "tree", serverSelectMode = "active", serverSelectModeOptions = {}} = {}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled}) {
         this.#handler = handler;
         
         this.#mode = mode;
         this.#serverSelectMode = serverSelectMode;
         this.#serverSelectModeOptions = serverSelectModeOptions;
+        this.setScale(scale);
+        this.setAlignment(alignment);
+        this.setLocalClientColorEnabled(localClientColorEnabled);
         
         this.#registerEvents();
     }
@@ -121,6 +130,55 @@ export default class Viewer {
     
     getServerSelectModeOptions() {
         return this.#serverSelectModeOptions;
+    }
+    
+    /**
+     * Set a new Scale
+     * 
+     * @param {number} scale Scale
+     */
+    setScale(scale) {
+        this.#scale = scale;
+        
+        viewerDiv.style.setProperty("--scale", `${scale}`);
+    }
+    
+    getScale() {
+        return this.#scale;
+    }
+    
+    /**
+     * Set a new Alignment
+     * 
+     * @param {string} alignment Alignment
+     */
+    setAlignment(alignment) {
+        this.#alignment = alignment;
+        
+        viewerDiv.style.setProperty("--alignment", `${alignment}`);
+    }
+    
+    getAlignment() {
+        return this.#alignment;
+    }
+    
+    /**
+     * Sets whether local client color is enabled
+     * 
+     * @param {boolean} enabled Whether the local client has a different color
+     */
+    setLocalClientColorEnabled(enabled) {
+        this.#localClientColorEnabled = enabled;
+        
+        if(enabled) {
+            viewerDiv.style.removeProperty("--local-client-text-color");
+        } else {
+            viewerDiv.style.setProperty("--local-client-text-color", "var(--client-text-color)");
+        }
+    }
+    
+    isLocalClientColorEnabled() {
+        return this.#localClientColorEnabled;
     }
     
     createTree() {
