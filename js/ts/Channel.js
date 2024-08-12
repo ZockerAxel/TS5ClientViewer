@@ -95,6 +95,11 @@ export default class Channel {
         return this.#name.replace(/^\[.*?spacer.*?\]\s*/, "")
     }
     
+    isSpacer() {
+        const regex = /\[.*spacer.*\]/i;
+        return regex.test(this.#name);
+    }
+    
     /**
      * Set a new order
      * 

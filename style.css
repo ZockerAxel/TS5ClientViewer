@@ -83,6 +83,10 @@ body {
     color: var(--channel-text-color);
 }
 
+#viewer:not(.show_spacers) .channel.spacer {
+    display: none;
+}
+
 .client {
     display: flex;
     align-items: center;

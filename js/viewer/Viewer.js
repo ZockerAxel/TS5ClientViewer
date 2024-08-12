@@ -36,6 +36,8 @@ export default class Viewer {
     #statusHidden;
     /**@type {boolean} */
     #avatarsShown;
+    /**@type {boolean} */
+    #spacersShown;
     
     /**@type {Server} */
     #server;
@@ -43,9 +45,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -58,6 +60,7 @@ export default class Viewer {
         this.setSilentClientsHidden(silentClientsHidden);
         this.setStatusHidden(statusHidden);
         this.setAvatarsShown(avatarsShown);
+        this.setSpacersShown(spacersShown);
         
         this.#registerEvents();
     }
@@ -255,7 +258,7 @@ export default class Viewer {
     /**
      * Sets whether avatars will be shown
      * 
-     * @param {boolean} shown Whether silent clients should be hidden
+     * @param {boolean} shown Whether avatars will be displayed
      */
     setAvatarsShown(shown) {
         this.#avatarsShown = shown;
@@ -265,6 +268,21 @@ export default class Viewer {
     
     isAvatarsShown() {
         return this.#avatarsShown;
+    }
+    
+    /**
+     * Sets whether spacers will be shown
+     * 
+     * @param {boolean} shown Whether spacers should be shown
+     */
+    setSpacersShown(shown) {
+        this.#spacersShown = shown;
+        
+        viewerDiv.classList.toggle("show_spacers", shown);
+    }
+    
+    isSpacersShown() {
+        return this.#spacersShown;
     }
     
     refreshViewer() {

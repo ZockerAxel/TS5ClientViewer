@@ -40,6 +40,7 @@ export default class ChannelView {
         
         this.#channel.onNameChange(function(name) {
             self.#channelNameElement.textContent = name;
+            self.#element.classList.toggle("spacer", self.#channel.isSpacer());
         });
         
         this.#channel.onDelete(function() {
@@ -156,6 +157,7 @@ export default class ChannelView {
     createElement() {
         this.#element = document.createElement("div");
         this.#element.classList.add("channel", "container");
+        this.#element.classList.toggle("spacer", this.#channel.isSpacer());
         
         this.#channelNameElement = document.createElement("div");
         this.#channelNameElement.classList.add("name");
