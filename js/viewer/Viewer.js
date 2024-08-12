@@ -294,7 +294,7 @@ export default class Viewer {
     /**
      * Sets whether empty channels will be hidden
      * 
-     * @param {boolean} hidden Whether spacers should be hidden
+     * @param {boolean} hidden Whether empty channels should be hidden
      */
     setEmptyChannelsHidden(hidden) {
         this.#emptyChannelsHidden = hidden;
@@ -307,9 +307,9 @@ export default class Viewer {
     }
     
     /**
-     * Sets whether empty channels will be hidden
+     * Sets whether query clients will be swown
      * 
-     * @param {boolean} shown Whether spacers should be hidden
+     * @param {boolean} shown Whether query clients should be shown
      */
     setQueryClientsShown(shown) {
         this.#queryClientsShown = shown;
