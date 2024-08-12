@@ -1,5 +1,5 @@
 //@ts-check
-import { interfaceCustomAppId, interfaceDiv, interfaceHideChannel, interfaceScale, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceUseCustomId, interfaceViewerMode } from "../PreloadedElements.js";
+import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceScale, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode } from "../PreloadedElements.js";
 import Handler from "../ts/Handler.js";
 import Server from "../ts/Server.js";
 import Viewer from "../viewer/Viewer.js";
@@ -32,6 +32,7 @@ export default class Interface {
         });
         
         this.#initDynamicInterface();
+        this.#initPreviewUpdater();
     }
     
     #initDynamicInterface() {
@@ -62,6 +63,66 @@ export default class Interface {
         
         interfaceScale.addEventListener("input", function() {
             interfaceScaleSlider.value = `${Math.max(0, Math.min(4, Number.parseFloat(interfaceScale.value)))}`;
+        });
+    }
+    
+    #initPreviewUpdater() {
+        const self = this;
+        
+        interfaceViewerMode.addEventListener("change", function() {
+            //@ts-ignore
+            self.#viewer.setMode(this.value);
+        });
+        
+        interfaceServer.addEventListener("change", function() {
+            //@ts-ignore
+            self.#viewer.setServerSelectMode(this.value, {name: interfaceServerName.value});
+        });
+        
+        interfaceAlignment.addEventListener("change", function() {
+            self.#viewer.setAlignment(this.value);
+        });
+        
+        interfaceHideChannel.addEventListener("change", function() {
+            self.#viewer.setChannelHidden(this.checked);
+        });
+        
+        interfaceHideStatus.addEventListener("change", function() {
+            self.#viewer.setStatusHidden(this.checked);
+        });
+        
+        interfaceOnlyTalking.addEventListener("change", function() {
+            self.#viewer.setSilentClientsHidden(this.checked);
+        });
+        
+        interfaceShowAvatars.addEventListener("change", function() {
+            self.#viewer.setAvatarsShown(this.checked);
+        });
+        
+        interfaceHideEmpty.addEventListener("change", function() {
+            self.#viewer.setEmptyChannelsHidden(this.checked);
+        });
+        
+        interfaceShowSpacers.addEventListener("change", function() {
+            self.#viewer.setSpacersShown(this.checked);
+        });
+        
+        interfaceDisableLocalClientColor.addEventListener("change", function() {
+            self.#viewer.setLocalClientColorEnabled(!this.checked);
+        });
+        
+        interfaceShowQueryClients.addEventListener("change", function() {
+            self.#viewer.setQueryClientsShown(this.checked);
+        });
+        
+        interfaceScaleSlider.addEventListener("input", function() {
+            self.#viewer.setScale(Number.parseFloat(this.value));
+            self.#viewer.refreshViewer();
+        });
+        
+        interfaceScale.addEventListener("input", function() {
+            self.#viewer.setScale(Number.parseFloat(this.value));
+            self.#viewer.refreshViewer();
         });
     }
     

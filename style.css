@@ -260,6 +260,8 @@ body {
 */
 #interface {
     display: none;
+    
+    overflow: auto;
 }
 
 #interface.active {
@@ -344,6 +346,12 @@ input[type="checkbox"] {
 
 :disabled {
     cursor: not-allowed;
+}
+
+#interface_generated_url {
+    background-color: white;
+    
+    user-select: all;
 }
 
 /* 
