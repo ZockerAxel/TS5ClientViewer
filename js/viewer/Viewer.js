@@ -69,7 +69,9 @@ export default class Viewer {
         });
         
         this.#handler.onNewServer(function(server) {
-            server.onLocalClientMoved(function(channel) {
+            self.updateSelectedServer();
+            
+            server.onLocalClientMoved(function() {
                 if(self.getServer() !== server) return;
                 if(self.getMode() !== "channel") return;
                 
