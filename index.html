@@ -19,7 +19,7 @@
             </div>
             <div id="interface">
                 <div id="interface_box">
-                    <h2>Settings</h2>
+                    <h2>Customization Interface</h2>
                     
                     <section>
                         <h3>App Settings</h3>
@@ -49,6 +49,8 @@
                                 <option value="standalone">Standalone</option>
                                 <option value="browser">With Interface</option>
                             </select>
+                            
+                            <div class="hint">Set the Display Mode (With Interface = Customization Interface, Standalone = No Customization Interface).</div>
                         </div>
                         
                         <div class="line">
@@ -57,6 +59,8 @@
                                 <option value="tree">Show Server Tree</option>
                                 <option value="channel">Show Channel</option>
                             </select>
+                            
+                            <div class="hint">Set whether to show the entire server tree or just your own channel.</div>
                         </div>
                         
                         <div class="line">
@@ -65,6 +69,8 @@
                                 <option value="active">Active Server</option>
                                 <option value="by_name">By Name</option>
                             </select>
+                            
+                            <div class="hint">Set how the displayed server is chosen.</div>
                         </div>
                         
                         <div class="line">
@@ -152,9 +158,15 @@
                         </div>
                     </section>
                     
-                    <div id="interface_url_wrapper">
-                        <output id="interface_generated_url"></output>
-                    </div>
+                    <section>
+                        <h3>Export</h3>
+                        
+                        <p>Use this URL to view with the chosen settings. You can then use it in a Browser Source in OBS for example.</p>
+                        
+                        <div id="interface_url_wrapper">
+                            <output id="interface_generated_url"></output>
+                        </div>
+                    </section>
                 </div>
             </div>
         </main>
