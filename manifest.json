@@ -3,9 +3,15 @@
     "icons": [
       {
           "src": "https://ts5viewer.endercentral.eu/resources/img/audio_input.svg",
-          "type": "image/png",
+          "type": "image/svg",
           "sizes": "192x192",
-          "purpose": "maskable"
+          "purpose": "any maskable"
+      },
+      {
+        "src": "https://ts5viewer.endercentral.eu/resources/img/audio_input.svg",
+        "type": "image/svg",
+        "sizes": "512x512",
+        "purpose": "any maskable"
       }
     ],
     "start_url": "/",
