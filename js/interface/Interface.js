@@ -1,5 +1,5 @@
 //@ts-check
-import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceScale, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode } from "../PreloadedElements.js";
+import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale } from "../PreloadedElements.js";
 import Handler from "../ts/Handler.js";
 import Server from "../ts/Server.js";
 import Viewer from "../viewer/Viewer.js";
@@ -33,9 +33,12 @@ export default class Interface {
         
         this.#initDynamicInterface();
         this.#initPreviewUpdater();
+        this.updateGeneratedURL();
     }
     
     #initDynamicInterface() {
+        const self = this;
+        
         interfaceUseCustomId.addEventListener("change", function() {
             interfaceCustomAppId.disabled = !interfaceUseCustomId.checked;
         });
@@ -49,6 +52,10 @@ export default class Interface {
         
         interfaceServerList.addEventListener("change", function() {
             interfaceServerName.value = interfaceServerList.value;
+            
+            self.#viewer.setServerSelectMode("by_name", {name: interfaceServerList.value});
+            
+            self.updateGeneratedURL();
         });
         
         interfaceViewerMode.addEventListener("change", function() {
@@ -69,61 +76,129 @@ export default class Interface {
     #initPreviewUpdater() {
         const self = this;
         
+        interfaceUseCustomId.addEventListener("change", function() {
+            self.updateGeneratedURL();
+        });
+        
+        interfaceCustomAppId.addEventListener("input", function() {
+            self.updateGeneratedURL();
+        });
+        
+        interfaceAppPort.addEventListener("input", function() {
+            self.updateGeneratedURL();
+        });
+        
         interfaceViewerMode.addEventListener("change", function() {
             //@ts-ignore
             self.#viewer.setMode(this.value);
+            
+            self.updateGeneratedURL();
         });
         
         interfaceServer.addEventListener("change", function() {
             //@ts-ignore
             self.#viewer.setServerSelectMode(this.value, {name: interfaceServerName.value});
+            
+            self.updateGeneratedURL();
         });
         
         interfaceAlignment.addEventListener("change", function() {
             self.#viewer.setAlignment(this.value);
+            
+            self.updateGeneratedURL();
         });
         
         interfaceHideChannel.addEventListener("change", function() {
             self.#viewer.setChannelHidden(this.checked);
+            
+            self.updateGeneratedURL();
         });
         
         interfaceHideStatus.addEventListener("change", function() {
             self.#viewer.setStatusHidden(this.checked);
+            
+            self.updateGeneratedURL();
         });
         
         interfaceOnlyTalking.addEventListener("change", function() {
             self.#viewer.setSilentClientsHidden(this.checked);
+            
+            self.updateGeneratedURL();
         });
         
         interfaceShowAvatars.addEventListener("change", function() {
             self.#viewer.setAvatarsShown(this.checked);
+            
+            self.updateGeneratedURL();
         });
         
         interfaceHideEmpty.addEventListener("change", function() {
             self.#viewer.setEmptyChannelsHidden(this.checked);
+            
+            self.updateGeneratedURL();
         });
         
         interfaceShowSpacers.addEventListener("change", function() {
             self.#viewer.setSpacersShown(this.checked);
+            
+            self.updateGeneratedURL();
         });
         
         interfaceDisableLocalClientColor.addEventListener("change", function() {
             self.#viewer.setLocalClientColorEnabled(!this.checked);
+            
+            self.updateGeneratedURL();
         });
         
         interfaceShowQueryClients.addEventListener("change", function() {
             self.#viewer.setQueryClientsShown(this.checked);
+            
+            self.updateGeneratedURL();
         });
         
         interfaceScaleSlider.addEventListener("input", function() {
             self.#viewer.setScale(Number.parseFloat(this.value));
             self.#viewer.refreshViewer();
+            
+            self.updateGeneratedURL();
         });
         
         interfaceScale.addEventListener("input", function() {
             self.#viewer.setScale(Number.parseFloat(this.value));
             self.#viewer.refreshViewer();
+            
+            self.updateGeneratedURL();
         });
+    }
+    
+    updateGeneratedURL() {
+        /**@type {string[]} */
+        const urlComponents = [];
+        
+        if(interfaceUseCustomId.checked && interfaceCustomAppId.value !== "") urlComponents.push(`custom_id=${interfaceCustomAppId.value}`);
+        if(interfaceAppPort.value !== "5899") urlComponents.push(`app_port=${interfaceAppPort.value}`);
+        urlComponents.push(`display=${interfaceDisplayMode.value}`);
+        urlComponents.push(`mode=${this.#viewer.getMode()}`);
+        urlComponents.push(`server=${this.#viewer.getServerSelectMode()}`);
+        if(this.#viewer.getServerSelectMode() === "by_name") urlComponents.push(`server_options=${JSON.stringify(this.#viewer.getServerSelectModeOptions())}`);
+        urlComponents.push(`align=${this.#viewer.getAlignment()}`);
+        if(this.#viewer.getMode() === "channel" && this.#viewer.isChannelHidden()) urlComponents.push(`hide_channel`);
+        if(this.#viewer.isStatusHidden()) urlComponents.push("hide_status");
+        if(this.#viewer.isSilentClientsHidden()) urlComponents.push("only_talking");
+        if(this.#viewer.isAvatarsShown()) urlComponents.push("show_avatars");
+        if(this.#viewer.isEmptyChannelsHidden()) urlComponents.push("hide_empty");
+        if(this.#viewer.isSpacersShown()) urlComponents.push("show_spacers");
+        if(!this.#viewer.isLocalClientColorEnabled()) urlComponents.push("disable_local_client_color");
+        if(this.#viewer.isQueryClientsShown()) urlComponents.push("show_query_clients");
+        if(this.#viewer.getScale() !== 1) urlComponents.push(`scale=${this.#viewer.getScale()}`);
+        
+        //Build URL
+        
+        let url = location.origin + "?";
+        
+        url += urlComponents.join("&");
+        
+        interfaceGeneratedUrl.textContent = url;
     }
     
     /**

@@ -81,3 +81,7 @@ if(!interfaceScaleSlider) throw new Error("Scale Slider not found in Document!")
 /**@type {HTMLInputElement} */
 export const interfaceScale = document.querySelector("#scale");
 if(!interfaceScale) throw new Error("Scale not found in Document!");
+
+/**@type {HTMLInputElement} */
+export const interfaceGeneratedUrl = document.querySelector("#interface_generated_url");
+if(!interfaceGeneratedUrl) throw new Error("Interface Generated URL not found in Document!");
