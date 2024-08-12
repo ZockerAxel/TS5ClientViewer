@@ -15,7 +15,7 @@
     --client-text-color: hsl(211, 27%, 37%);
     
     /* Dynamic Values (Changed by URL Parameters) */
-    --scale: 1.5;
+    --scale: 1;
     --alignment: start;
     
     width: 100dvw;
