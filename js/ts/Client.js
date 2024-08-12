@@ -14,6 +14,7 @@ export default class Client {
     #talking;
     
     #muted;
+    #mutedLocally;
     #hardwareMuted;
     #soundMuted;
     #away;
@@ -30,6 +31,8 @@ export default class Client {
     #talkingUpdateCallbacks = [];
     /**@type {((newValue: boolean) => void)[]} */
     #mutedUpdateCallbacks = [];
+    /**@type {((newValue: boolean) => void)[]} */
+    #mutedLocallyUpdateCallbacks = [];
     /**@type {((newValue: boolean) => void)[]} */
     #hardwareMutedUpdateCallbacks = [];
     /**@type {((newValue: boolean) => void)[]} */
@@ -49,13 +52,14 @@ export default class Client {
      * @param {string | null} avatarUrl The Avatar URL (from myTeamspeak-Avatar)
      * @param {boolean} talking Whether the client is currently talking
      * @param {boolean} muted Whether the client is currently muted
+     * @param {boolean} mutedLocally Whether the client is currently muted locally
      * @param {boolean} hardwareMuted Whether the client is currently hardware-muted
      * @param {boolean} soundMuted Whether the client is currently deaf
      * @param {boolean} away Whether the client is away
      * @param {string} awayMessage The away message (if they are away)
      * @param {number} talkPower The talk power (affects client order)
      */
-    constructor(server, id, type, nickname, avatarUrl, talking, muted, hardwareMuted, soundMuted, away, awayMessage, talkPower) {
+    constructor(server, id, type, nickname, avatarUrl, talking, muted, mutedLocally, hardwareMuted, soundMuted, away, awayMessage, talkPower) {
         this.#server = server;
         
         this.#id = id;
@@ -66,6 +70,7 @@ export default class Client {
         this.#talking = talking;
         
         this.#muted = muted;
+        this.#mutedLocally = mutedLocally;
         this.#hardwareMuted = hardwareMuted;
         this.#soundMuted = soundMuted;
         this.#away = away;
@@ -76,13 +81,14 @@ export default class Client {
     
     /**
      * 
-     * @param {{nickname?: string, avatarUrl?: string | null, talking?: boolean, muted?: boolean, hardwareMuted?: boolean, soundMuted?: boolean, away?: boolean, awayMessage?: string, talkPower?: number}} param0 
+     * @param {{nickname?: string, avatarUrl?: string | null, talking?: boolean, muted?: boolean, mutedLocally?: boolean, hardwareMuted?: boolean, soundMuted?: boolean, away?: boolean, awayMessage?: string, talkPower?: number}} param0 
      */
-    update({nickname = this.#nickname, avatarUrl = this.#avatarUrl, talking = this.#talking, muted = this.#muted, hardwareMuted = this.#hardwareMuted, soundMuted = this.#soundMuted, away = this.#away, awayMessage = this.#awayMessage, talkPower = this.#talkPower}) {
+    update({nickname = this.#nickname, avatarUrl = this.#avatarUrl, talking = this.#talking, muted = this.#muted, mutedLocally = this.#mutedLocally, hardwareMuted = this.#hardwareMuted, soundMuted = this.#soundMuted, away = this.#away, awayMessage = this.#awayMessage, talkPower = this.#talkPower}) {
         this.updateNickname(nickname);
         this.updateAvatarUrl(avatarUrl);
         this.updateTalking(talking);
         this.updateMuted(muted);
+        this.updateMutedLocally(mutedLocally);
         this.updateHardwareMuted(hardwareMuted);
         this.updateSoundMuted(soundMuted);
         this.updateAway(away, awayMessage);
@@ -116,6 +122,7 @@ export default class Client {
     onStatusChanged(callback) {
         this.onTalkingChange(callback);
         this.onMutedChange(callback);
+        this.onMutedLocallyChange(callback);
         this.onHardwareMutedChange(callback);
         this.onSoundMutedChange(callback);
         this.onAwayChange(callback);
@@ -227,6 +234,33 @@ export default class Client {
     
     isMuted() {
         return this.#muted;
+    }
+    
+    /**
+     * 
+     * @param {boolean} muted The new value
+     */
+    updateMutedLocally(muted) {
+        const changed = this.#mutedLocally !== muted;
+        this.#mutedLocally = muted;
+        
+        if(changed) {
+            for(const callback of this.#mutedLocallyUpdateCallbacks) {
+                callback(muted);
+            }
+        }
+    }
+    
+    /**
+     * 
+     * @param {(newValue: boolean) => void} callback The callback function
+     */
+    onMutedLocallyChange(callback) {
+        this.#mutedLocallyUpdateCallbacks.push(callback);
+    }
+    
+    isMutedLocally() {
+        return this.#mutedLocally;
     }
     
     /**

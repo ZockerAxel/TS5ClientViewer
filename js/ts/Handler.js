@@ -703,13 +703,14 @@ export default class Handler {
         const avatarUrl = readMyTsAvatarURL(properties.myteamspeakAvatar);
         const talking = properties.flagTalking;
         const muted = properties.inputMuted;
+        const mutedLocally = properties.isMuted;
         const hardwareMuted = !properties.inputHardware;
         const soundMuted = properties.outputMuted;
         const away = properties.away;
         const awayMessage = properties.awayMessage;
         const talkPower = properties.talkPower;
         
-        const client = new Client(server, clientId, clientType, nickname, avatarUrl, talking, muted, hardwareMuted, soundMuted, away, awayMessage, talkPower);
+        const client = new Client(server, clientId, clientType, nickname, avatarUrl, talking, muted, mutedLocally, hardwareMuted, soundMuted, away, awayMessage, talkPower);
         
         return client;
     }
@@ -725,6 +726,7 @@ export default class Handler {
         const avatarUrl = readMyTsAvatarURL(properties.myteamspeakAvatar);
         const talking = properties.flagTalking;
         const muted = properties.inputMuted;
+        const mutedLocally = properties.isMuted;
         const hardwareMuted = !properties.inputHardware;
         const soundMuted = properties.outputMuted;
         const away = properties.away;
@@ -736,6 +738,7 @@ export default class Handler {
             avatarUrl: avatarUrl,
             talking: talking,
             muted: muted,
+            mutedLocally: mutedLocally,
             hardwareMuted: hardwareMuted,
             soundMuted: soundMuted,
             away: away,

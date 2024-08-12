@@ -220,6 +220,19 @@ body {
     inset: 0;
 }
 
+.status[status="muted_local"]::before {
+    content: "";
+    
+    position: absolute;
+    
+    background-image: url("/resources/img/client_status/audio_input_muted_local.svg");
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    inset: 0;
+}
+
 .status[status="not_talking"] {
     background-image: linear-gradient(#21303A, #365369);
     

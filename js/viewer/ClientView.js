@@ -10,6 +10,7 @@ const CLIENT_STATUSES = [
     "away_and_sound_muted",
     "not_talking",
     "talking",
+    "muted_local",
 ];
 
 export default class ClientView {
@@ -82,6 +83,9 @@ export default class ClientView {
     }
     
     #getStatus() {
+        if(this.#client.isMutedLocally()) {
+            return "muted_local";
+        }
         if(this.#client.isAway()) {
             return this.#client.isSoundMuted() ? "away_and_sound_muted" : "away";
         }
