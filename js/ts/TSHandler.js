@@ -162,7 +162,7 @@ export default class Handler {
         console.log({message: "[Handler] Connecting ...", apiKey: this.#apiKey});
         
         if(this.#apiKey == null) {
-            const apiKey = await this.#connectWithoutAPIKey();
+            const apiKey = await this.connectWithoutAPIKey();
             this.#apiKey = apiKey;
             return apiKey;
         } else {
@@ -176,7 +176,7 @@ export default class Handler {
      * 
      * @returns {Promise<string>} The promise for the API Key
      */
-    async #connectWithoutAPIKey() {
+    async connectWithoutAPIKey() {
         /**@type {(value: any) => void} */
         let resolveFunction;
         /**@type {(value: any) => void} */

@@ -21,7 +21,11 @@ async function main() {
     
     const handler = new Handler(apiKey, apiPort, app);
     
-    apiKey = await handler.connect();
+    try {
+        apiKey = await handler.connect();
+    } catch(err) {
+        apiKey = await handler.connectWithoutAPIKey();
+    }
     
     localStorage.setItem("ts5viewer.apiKey", apiKey);
     
