@@ -17,7 +17,7 @@ const DEFAULT_ENVIRONMENT = VALID_ENVIRONMENTS[0];
  * @returns {EnvironmentType}
  */
 export function getEnvironment() {
-    if("obsstudio" in Window) {
+    if("obsstudio" in window) {
         return "obs";
     }
     
