@@ -336,6 +336,10 @@ body {
     visibility: visible;
 }
 
+#interface .line label {
+    user-select: none;
+}
+
 #interface input,
 #interface select {
     text-align: end;
