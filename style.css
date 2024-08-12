@@ -119,6 +119,10 @@ body {
 }
 
 /* Client Statuses */
+#viewer.hide_silent_clients .client:has(.status[status="talking"].hidden) {
+    display: none;
+}
+
 .status {
     position: relative;
     

@@ -30,6 +30,8 @@ export default class Viewer {
     #localClientColorEnabled;
     /**@type {boolean} */
     #channelHidden;
+    /**@type {boolean} */
+    #silentClientsHidden;
     
     /**@type {Server} */
     #server;
@@ -37,9 +39,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -49,6 +51,7 @@ export default class Viewer {
         this.setAlignment(alignment);
         this.setLocalClientColorEnabled(localClientColorEnabled);
         this.#channelHidden = channelHidden;
+        this.setSilentClientsHidden(silentClientsHidden);
         
         this.#registerEvents();
     }
@@ -199,7 +202,7 @@ export default class Viewer {
     /**
      * Sets whether the channel is hidden (not applicable for mode "tree")
      * 
-     * @param {boolean} hidden 
+     * @param {boolean} hidden Whether channel name will be hidden
      */
     setChannelHidden(hidden) {
         this.#channelHidden = hidden;
@@ -209,6 +212,21 @@ export default class Viewer {
     
     isChannelHidden() {
         return this.#channelHidden;
+    }
+    
+    /**
+     * Sets whether silent clients will be hidden
+     * 
+     * @param {boolean} hidden Whether silent clients should be hidden
+     */
+    setSilentClientsHidden(hidden) {
+        this.#silentClientsHidden = hidden;
+        
+        viewerDiv.classList.toggle("hide_silent_clients", hidden);
+    }
+    
+    isSilentClientsHidden() {
+        return this.#silentClientsHidden;
     }
     
     refreshViewer() {

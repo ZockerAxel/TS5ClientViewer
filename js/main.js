@@ -36,6 +36,7 @@ async function main() {
     const alignment = getOrDefault(getParam("align"), "start");
     const localClientColor = !getParamBoolean("disable_local_client_color");
     const hideChannelName = getParamBoolean("hide_channel");
+    const hideSilentClients = getParamBoolean("only_talking");
     
     const viewer = new Viewer(handler, {
         mode: viewerMode,
@@ -45,6 +46,7 @@ async function main() {
         alignment: alignment,
         localClientColorEnabled: localClientColor,
         channelHidden: hideChannelName,
+        silentClientsHidden: hideSilentClients,
     });
     
     viewer.updateSelectedServer();
