@@ -35,6 +35,7 @@ export default class Viewer {
         
         this.#mode = mode;
         this.#serverSelectMode = serverSelectMode;
+        this.#serverSelectModeOptions = serverSelectModeOptions;
         
         this.#registerEvents();
     }
