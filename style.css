@@ -266,6 +266,10 @@ body:has(#interface.active) {
     margin-inline-start: 0.25em;
 }
 
+#viewer.hide_status .away_message {
+    display: none;
+}
+
 .away_message::before {
     content: "[";
 }
