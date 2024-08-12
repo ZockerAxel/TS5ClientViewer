@@ -77,6 +77,8 @@ export default class ClientView {
         }
         
         this.#awayMessageElement.classList.toggle("hidden", !this.#client.isAway() || this.#client.getAwayMessage().length === 0);
+        
+        this.onTreeDisplayed();
     }
     
     #getStatus() {
@@ -150,6 +152,7 @@ export default class ClientView {
     
     onTreeDisplayed() {
         this.#element.style.setProperty("--height", `${this.#element.clientHeight}px`);
+        console.log("updated height");
     }
     
     remove() {
