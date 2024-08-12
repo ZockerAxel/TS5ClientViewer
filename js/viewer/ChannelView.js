@@ -12,6 +12,9 @@ export default class ChannelView {
     #element;
     
     /**@type {HTMLDivElement} */
+    #channelNameElement;
+    
+    /**@type {HTMLDivElement} */
     #clientContainer;
     /**@type {HTMLDivElement} */
     #channelContainer;
@@ -62,6 +65,10 @@ export default class ChannelView {
                 self.#channelViews.splice(i, 1);
                 break;
             }
+        });
+        
+        this.#channel.onNameChange(function(name) {
+            self.#channelNameElement.textContent = name;
         });
         
         this.#channel.onClientAdd(function(client) {
@@ -129,11 +136,11 @@ export default class ChannelView {
         this.#element = document.createElement("div");
         this.#element.classList.add("channel", "container");
         
-        const channelName = document.createElement("div");
-        channelName.classList.add("name");
-        channelName.textContent = `${this.#channel.getDisplayName()}`;
+        this.#channelNameElement = document.createElement("div");
+        this.#channelNameElement.classList.add("name");
+        this.#channelNameElement.textContent = `${this.#channel.getDisplayName()}`;
         
-        this.#element.appendChild(channelName);
+        this.#element.appendChild(this.#channelNameElement);
         
         this.#clientContainer = document.createElement("div");
         this.#clientContainer.classList.add("client_list");

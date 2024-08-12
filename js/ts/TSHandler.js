@@ -424,17 +424,18 @@ export default class Handler {
             
             const server = self.getServer(connectionId);
             
-            if(server === null) throw new Error(`Channel moved in unknown Server (ID: ${connectionId})`);
+            if(server === null) throw new Error(`Channel edited in unknown Server (ID: ${connectionId})`);
             
             const channelId = Number.parseInt(data.payload.channelId);
             
             const channel = server.getChannel(channelId);
             
-            if(channel === null) throw new Error(`Unknown Channel (ID: ${channelId}) moved in Server '${server.getName()}' (ID: ${connectionId})`);
+            if(channel === null) throw new Error(`Unknown Channel (ID: ${channelId}) edited in Server '${server.getName()}' (ID: ${connectionId})`);
             
             const order = Number.parseInt(data.payload.properties.order);
             
             self.#onChannelMoved(channel, null, order);
+            self.#updateChannel(channel, data.payload.properties);
         });
     }
     
@@ -555,6 +556,18 @@ export default class Handler {
         parent.addSubChannel(channel);
         
         console.log({message: "Moved Channel", channel: channel, oldParent: oldParent, parent: parent, order: order});
+    }
+    
+    /**
+     * Updates a Channel with the provided Properties
+     * 
+     * @param {Channel} channel The Channel to update
+     * @param {*} properties The Channel Properties
+     */
+    #updateChannel(channel, properties) {
+        const name = properties.name;
+        
+        channel.updateName(name);
     }
     
     #loadServer({id, properties, channelInfos = {rootChannels: [], subChannels: {}}, clientInfos = [], clientId}) {
