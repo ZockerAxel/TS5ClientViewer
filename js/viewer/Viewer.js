@@ -1,6 +1,6 @@
 //@ts-check
 import Server from "../ts/Server.js";
-import Handler from "../ts/TSHandler.js";
+import Handler from "../ts/Handler.js";
 import { viewerDiv, interfaceDiv } from "../PreloadedElements.js";
 import ServerView from "./ServerView.js";
 
