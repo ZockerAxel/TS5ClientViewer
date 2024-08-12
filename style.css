@@ -84,6 +84,10 @@ body {
     color: var(--client-text-color);
 }
 
+.client:first-child {
+    margin-top: 0;
+}
+
 .client.self {
     color: var(--local-client-text-color);
 }
