@@ -218,16 +218,12 @@ body {
     
     position: absolute;
     
-    background-image: url("/resources/img/client_status/input_muted.png");
+    background-image: url("/resources/img/client_status/audio_input_muted.svg");
     background-size: 100%;
     background-position: center;
     background-repeat: no-repeat;
     
     inset: 0;
-    
-    top: 0.05em;
-    
-    filter: invert(100%) hue-rotate(180deg) saturate(4);
 }
 
 .status[status="not_talking"] {
