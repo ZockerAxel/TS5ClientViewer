@@ -722,6 +722,7 @@ export default class Handler {
      */
     #updateClient(client, properties) {
         const nickname = properties.nickname;
+        const avatarUrl = readMyTsAvatarURL(properties.myteamspeakAvatar);
         const talking = properties.flagTalking;
         const muted = properties.inputMuted;
         const hardwareMuted = !properties.inputHardware;
@@ -732,6 +733,7 @@ export default class Handler {
         
         client.update({
             nickname: nickname,
+            avatarUrl: avatarUrl,
             talking: talking,
             muted: muted,
             hardwareMuted: hardwareMuted,
