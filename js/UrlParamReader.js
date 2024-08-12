@@ -4,7 +4,7 @@
 const lookupMap = new Map();
 
 function init() {
-    const params = location.search.substring(1);
+    const params = decodeURIComponent(location.search.substring(1));
     
     const paramList = params.split("&");
     
