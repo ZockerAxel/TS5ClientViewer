@@ -7,7 +7,7 @@ import ChannelView from "./ChannelView.js";
 
 /**
  * @typedef ViewerMode
- * @type {"tree" | "channel" | "talking"}
+ * @type {"tree" | "channel"}
  */
 
 /**
@@ -65,7 +65,7 @@ export default class Viewer {
         this.#handler.onNewServer(function(server) {
             server.onLocalClientMoved(function(channel) {
                 if(self.getServer() !== server) return;
-                if(self.getMode() !== "channel" && self.getMode() !== "talking") return;
+                if(self.getMode() !== "channel") return;
                 
                 self.refreshViewer();
             });
@@ -219,9 +219,6 @@ export default class Viewer {
             case "channel":
                 this.createOwnChannel();
                 break;
-            case "talking":
-                this.createTalking();
-                break;
         }
     }
     
@@ -262,12 +259,5 @@ export default class Viewer {
         channelView.onTreeDisplayed();
         
         channelView.setChannelNameHidden(this.isChannelHidden());
-    }
-    
-    createTalking() {
-        console.log({message: "[Viewer] Creating Talking ..."});
-        viewerDiv.textContent = "";//Clear Viewer
-        
-        
     }
 }
