@@ -598,7 +598,7 @@ export default class Handler {
         }
         
         while(allChannelInfos.length > 0) {
-            console.log({message: "Collecting Channels ...", remainingChannels: allChannelInfos.length});
+            console.log({message: "Collecting Channels ...", server: server, remainingChannels: allChannelInfos.length});
             
             for(const channelInfo of [...allChannelInfos]) {
                 const parentId = channelInfo.parentId;
