@@ -7,12 +7,13 @@
 :root {
     font-family: "Roboto", sans-serif;
     
-    --box-bg: hsl(0, 0%, 85%);
+    --box-bg: hsla(0, 0%, 15%, 70%);
     
     --light-blue-color: hsl(203, 51%, 58%);
     
-    --channel-text-color: hsl(0, 0%, 10%);
-    --client-text-color: hsl(211, 27%, 37%);
+    --channel-text-color: hsl(0, 0%, 100%);
+    --client-text-color: hsl(211, 70%, 70%);
+    --local-client-text-color: limegreen;
     
     /* Dynamic Values (Changed by URL Parameters) */
     --scale: 1;
@@ -36,21 +37,22 @@ body {
 */
 
 #viewer {
-    font-size: calc(var(--scale) * 1em);
+    font-size: calc(var(--scale) * 1.2em);
+    font-weight: bold;
     
     display: flex;
     flex-direction: column;
     align-items: var(--alignment);
     
     user-select: none;
-    
-    & .container {
-        display: flex;
+}
+
+#viewer .container {
+    display: flex;
         flex-direction: column;
         align-items: var(--alignment);
         gap: 0.025em;
         margin-block: 0.025em;
-    }
 }
 
 .client_list, .channel_list {
@@ -79,15 +81,14 @@ body {
     --height: 0;
     
     color: var(--client-text-color);
-    
-    &.self {
-        font-weight: bold;
-        color: var(--light-blue-color);
-    }
-    
-    & > .name {
-        margin-inline-start: 0.25em;
-    }
+}
+
+.client.self {
+    color: var(--local-client-text-color);
+}
+
+.client > .name {
+    margin-inline-start: 0.25em;
 }
 
 .server > .channel {
@@ -100,8 +101,6 @@ body {
     --padding: 0.4em;
     
     padding: var(--padding);
-    
-    border: 0.1em solid var(--client-text-color);
     
     width: fit-content;
 }
