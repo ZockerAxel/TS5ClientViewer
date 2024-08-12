@@ -1,6 +1,7 @@
 //@ts-check
 import App from "./App.js";
 import { getEnvironment } from "./EnvironmentChecker.js";
+import Interface from "./interface/Interface.js";
 import Handler from "./ts/Handler.js";
 import { getParam, getParamBoolean, getParamFloat, getParamInt } from "./UrlParamReader.js";
 import { getOrDefault } from "./Utils.js";
@@ -60,6 +61,14 @@ async function main() {
     });
     
     viewer.updateSelectedServer();
+    
+    if(environment === "browser") {
+        const ui = new Interface(handler, viewer);
+        
+        ui.show();
+        
+        window["UI"] = ui;
+    }
 }
 
 main();

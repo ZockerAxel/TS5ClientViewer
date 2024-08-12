@@ -258,6 +258,95 @@ body {
 /* 
     Interface
 */
+#interface {
+    display: none;
+}
+
+#interface.active {
+    position: fixed;
+    
+    display: flex;
+    flex-direction: column;
+    
+    inset: 0;
+}
+
+#interface_box {
+    font-size: 1.4rem;
+    
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-self: end;
+    text-align: center;
+    
+    padding: 1em;
+    
+    background-color: hsla(0, 0%, 80%, 85%);
+}
+
+#interface_box > section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+}
+
+#interface h2 {
+    font-size: 1.4em;
+}
+
+#interface h3 {
+    font-size: 1.2em;
+}
+
+#interface .line {
+    position: relative;
+    
+    display: flex;
+    gap: 0.3em;
+    align-items: center;
+}
+
+#interface .line :first-child {
+    margin-inline-end: auto;
+}
+
+#interface .line > .hint {
+    position: absolute;
+    z-index: 1;
+    
+    top: calc(100% + 0.25em);
+    left: 0;
+    right: 0;
+    
+    background-color: white;
+    
+    border: 0.1em solid black;
+    
+    visibility: hidden;
+    
+    pointer-events: none;
+}
+
+#interface .line:hover > .hint {
+    visibility: visible;
+}
+
+#interface input,
+#interface select {
+    text-align: end;
+}
+
+input[type="checkbox"] {
+    width: 1em;
+    height: 1em;
+    
+    cursor: pointer;
+}
+
+:disabled {
+    cursor: not-allowed;
+}
 
 /* 
     Utility
