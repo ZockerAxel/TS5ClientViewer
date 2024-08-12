@@ -1,0 +1,16 @@
+{
+    "name": "TS5 Client Viewer",
+    "icons": [
+      {
+          "src": "https://ts5viewer.endercentral.eu/resources/img/audio_input.svg",
+          "type": "image/png",
+          "sizes": "192x192",
+          "purpose": "maskable"
+      }
+    ],
+    "start_url": "/",
+    "background_color": "#263238",
+    "display": "browser",
+    "scope": "/",
+    "theme_color": "#37474f"
+  }
