@@ -19,6 +19,9 @@ export default class ClientView {
     /**@type {HTMLDivElement} */
     #element;
     
+    /**@type {HTMLDivElement} */
+    #nicknameElement;
+    
     /**@type {string} */
     #currentStatus;
     
@@ -50,6 +53,10 @@ export default class ClientView {
         this.#client.onAwayChange(function(newValue, message) {
             self.#awayMessageElement.textContent = message;
             self.#awayMessageElement.classList.toggle("hidden", !newValue || message.length === 0);
+        });
+        
+        this.#client.onNicknameChange(function(newValue) {
+            self.#nicknameElement.textContent = newValue;
         });
     }
     
@@ -114,11 +121,11 @@ export default class ClientView {
             this.#element.appendChild(statusElement);
         }
         
-        const clientName = document.createElement("div");
-        clientName.classList.add("name");
-        clientName.textContent = `${this.#client.getNickname()}`;
+        this.#nicknameElement = document.createElement("div");
+        this.#nicknameElement.classList.add("name");
+        this.#nicknameElement.textContent = `${this.#client.getNickname()}`;
         
-        this.#element.appendChild(clientName);
+        this.#element.appendChild(this.#nicknameElement);
         
         this.#awayMessageElement = document.createElement("div");
         this.#awayMessageElement.classList.add("away_message");
