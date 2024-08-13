@@ -84,6 +84,8 @@ export default class ClientView extends View {
         
         this.#awayMessageElement.classList.toggle("hidden", !this.#client.isAway() || this.#client.getAwayMessage().length === 0);
         
+        this.#element.classList.toggle("talking", this.#currentStatus === "talking");
+        
         this.onTreeDisplayed();
     }
     

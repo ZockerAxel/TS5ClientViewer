@@ -258,6 +258,7 @@ export default class ChannelView extends View {
     
     onViewerUpdate() {
         this.#scrollIntoViewIfEnabled();
+        this.#updateHasClients();
     }
     
     #scrollIntoViewIfEnabled() {
@@ -267,6 +268,35 @@ export default class ChannelView extends View {
         this.#element.scrollIntoView({
             behavior: "smooth",
         });
+    }
+    
+    #updateHasClients() {
+        this.#element.classList.toggle("has_clients", this.#hasClients());
+        this.#element.classList.toggle("has_regular_clients", this.#hasRegularClients());
+        
+        this.onTreeDisplayed();
+    }
+    
+    #hasClients() {
+        if(this.#clientViews.length > 0) return true;
+        
+        for(const channelView of this.#channelViews) {
+            if(channelView.#hasClients()) return true;
+        }
+        
+        return false;
+    }
+    
+    #hasRegularClients() {
+        for(const clientView of this.#clientViews) {
+            if(clientView.getClient().getType() === 0) return true;
+        }
+        
+        for(const channelView of this.#channelViews) {
+            if(channelView.#hasRegularClients()) return true;
+        }
+        
+        return false;
     }
     
     remove() {

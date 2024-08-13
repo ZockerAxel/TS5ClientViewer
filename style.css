@@ -89,9 +89,9 @@ body:has(#interface.active) {
     color: var(--channel-text-color);
 }
 
-#viewer:not(.show_spacers) .channel.spacer:not(:has(.client)),
-#viewer.hide_empty_channels .channel:not(:has(.client)),
-#viewer.hide_empty_channels:not(.show_query_clients) .channel:not(:has(.client.regular_client)) {
+#viewer:not(.show_spacers) .channel.spacer:not(.has_clients),
+#viewer.hide_empty_channels .channel:not(.has_clients),
+#viewer.hide_empty_channels:not(.show_query_clients) .channel:not(.has_regular_clients) {
     display: none;
 }
 
@@ -140,7 +140,7 @@ body:has(#interface.active) {
 }
 
 /* Client Statuses */
-#viewer.hide_silent_clients .client:has(.status[status="talking"].hidden) {
+#viewer.hide_silent_clients .client:not(.talking) {
     display: none;
 }
 
