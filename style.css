@@ -90,6 +90,8 @@ body:has(#interface.active) {
 }
 
 #viewer:not(.show_spacers) .channel.spacer:not(.has_clients),
+#viewer:not(.show_spacers):not(.show_query_clients) .channel.spacer:not(.has_regular_clients),
+
 #viewer.hide_empty_channels .channel:not(.has_clients),
 #viewer.hide_empty_channels:not(.show_query_clients) .channel:not(.has_regular_clients) {
     display: none;
