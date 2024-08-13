@@ -27,6 +27,8 @@ export default class Interface {
         
         interfaceAppPort.value = `${appPort}`;
         
+        interfaceViewerMode.value = mode;
+        
         //Init
         this.#init();
     }
