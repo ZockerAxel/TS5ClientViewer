@@ -51,6 +51,8 @@ export default class Interface {
         
         interfaceDisableLocalClientColor.checked = !localClientColorEnabled;
         
+        interfaceShowQueryClients.checked = queryClientsShown;
+        
         //Init
         this.#init();
     }
