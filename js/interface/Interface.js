@@ -41,6 +41,8 @@ export default class Interface {
         
         interfaceHideStatus.checked = statusHidden;
         
+        interfaceOnlyTalking.checked = silentClientsHidden;
+        
         //Init
         this.#init();
     }
