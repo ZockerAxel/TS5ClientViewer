@@ -2,6 +2,7 @@
 import Channel from "../ts/Channel.js";
 import ClientView from "./ClientView.js";
 import View from "./View.js";
+import Viewer from "./Viewer.js";
 
 export default class ChannelView extends View {
     #parentView;
@@ -26,11 +27,12 @@ export default class ChannelView extends View {
     
     /**
      * 
+     * @param {Viewer} viewer The Viewer
      * @param {ChannelView | null} parentView The View of this' Channels parent
      * @param {Channel} channel The Channel
      */
-    constructor(parentView, channel) {
-        super();
+    constructor(viewer, parentView, channel) {
+        super(viewer);
         
         this.#parentView = parentView;
         this.#channel = channel;
@@ -55,7 +57,7 @@ export default class ChannelView extends View {
         const self = this;
         
         this.#channel.onClientAdd(function(client) {
-            const clientView = new ClientView(self, client);
+            const clientView = new ClientView(self.getViewer(), self, client);
             
             self.#clientViews.push(clientView);
             if(!self.isCreated()) return;
@@ -83,7 +85,7 @@ export default class ChannelView extends View {
         const self = this;
         
         this.#channel.onSubChannelAdd(function(channel) {
-            const channelView = new ChannelView(self, channel);
+            const channelView = new ChannelView(self.getViewer(), self, channel);
             channelView.buildTree();
             
             self.#channelViews.push(channelView);
@@ -124,6 +126,10 @@ export default class ChannelView extends View {
         return this.#element !== undefined && this.#element.parentElement !== undefined;
     }
     
+    isLocalClientsChannel() {
+        return this.#channel.getServer().getLocalClient()?.getChannel() === this.#channel;
+    }
+    
     /**
      * Sets whether the channel name will be hidden
      * 
@@ -140,7 +146,7 @@ export default class ChannelView extends View {
     
     buildClientTree() {
         for(const client of this.#channel.getClients()) {
-            this.#clientViews.push(new ClientView(this, client));
+            this.#clientViews.push(new ClientView(this.getViewer(), this, client));
         }
         
         this.#registerClientEvents();
@@ -148,7 +154,7 @@ export default class ChannelView extends View {
     
     buildChannelTree() {
         for(const channel of this.#channel.getSubChannels()) {
-            const channelView = new ChannelView(this, channel);
+            const channelView = new ChannelView(this.getViewer(), this, channel);
             channelView.buildTree();
             
             this.#channelViews.push(channelView);
@@ -248,6 +254,19 @@ export default class ChannelView extends View {
         }
         
         this.onViewerUpdate();
+    }
+    
+    onViewerUpdate() {
+        this.#scrollIntoViewIfEnabled();
+    }
+    
+    #scrollIntoViewIfEnabled() {
+        if(!this.getViewer().isChannelFollowed()) return;
+        if(!this.isLocalClientsChannel()) return;
+        
+        this.#element.scrollIntoView({
+            behavior: "smooth",
+        });
     }
     
     remove() {

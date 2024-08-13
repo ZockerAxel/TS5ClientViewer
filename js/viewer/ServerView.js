@@ -2,6 +2,7 @@
 import Server from "../ts/Server.js";
 import ChannelView from "./ChannelView.js";
 import View from "./View.js";
+import Viewer from "./Viewer.js";
 
 export default class ServerView extends View {
     #server;
@@ -13,10 +14,11 @@ export default class ServerView extends View {
     
     /**
      * 
+     * @param {Viewer} viewer The Viewer
      * @param {Server} server The Server
      */
-    constructor(server) {
-        super();
+    constructor(viewer, server) {
+        super(viewer);
         
         this.#server = server;
     }
@@ -30,7 +32,7 @@ export default class ServerView extends View {
     }
     
     buildTree() {
-        this.#rootChannelView = new ChannelView(null, this.#server.getRootChannel());
+        this.#rootChannelView = new ChannelView(this.getViewer(), null, this.#server.getRootChannel());
         this.#rootChannelView.buildTree();
     }
     

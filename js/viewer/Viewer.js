@@ -49,6 +49,9 @@ export default class Viewer {
     /**@type {Server} */
     #server;
     
+    /**@type {ServerView | ChannelView | null} */
+    #currentView = null;
+    
     /**
      * 
      * @param {Handler} handler
@@ -73,6 +76,7 @@ export default class Viewer {
         this.#channelFollowed = channelFollowed;
         
         this.#registerEvents();
+        this.#addViewerChangeObserver();
     }
     
     #registerEvents() {
@@ -93,6 +97,19 @@ export default class Viewer {
                 
                 self.refreshViewer();
             });
+        });
+    }
+    
+    #addViewerChangeObserver() {
+        const self = this;
+        
+        const observer = new MutationObserver(function() {
+            self.#currentView?.propagateViewerUpdate();
+        });
+        
+        observer.observe(viewerDiv, {
+            childList: true,
+            subtree: true,
         });
     }
     
@@ -356,7 +373,8 @@ export default class Viewer {
         
         const server = this.getServer();
         
-        const serverView = new ServerView(server);
+        const serverView = new ServerView(this, server);
+        this.#currentView = serverView;
         
         serverView.buildTree();
         
@@ -378,7 +396,8 @@ export default class Viewer {
         
         if(channel === null) throw new Error("Channel of Local Client not found");;
         
-        const channelView = new ChannelView(null, channel);
+        const channelView = new ChannelView(this, null, channel);
+        this.#currentView = channelView;
         
         channelView.buildClientTree();
         
