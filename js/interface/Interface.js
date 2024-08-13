@@ -40,17 +40,11 @@ export default class Interface {
         interfaceHideChannel.disabled = mode !== "channel";
         
         interfaceHideStatus.checked = statusHidden;
-        
         interfaceOnlyTalking.checked = silentClientsHidden;
-        
         interfaceShowAvatars.checked = avatarsShown;
-        
         interfaceHideEmpty.checked = emptyChannelsHidden;
-        
         interfaceShowSpacers.checked = spacersShown;
-        
         interfaceDisableLocalClientColor.checked = !localClientColorEnabled;
-        
         interfaceShowQueryClients.checked = queryClientsShown;
         
         interfaceScaleSlider.value = `${Math.max(0, Math.min(4, scale))}`;
