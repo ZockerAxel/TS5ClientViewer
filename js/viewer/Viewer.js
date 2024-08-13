@@ -43,6 +43,8 @@ export default class Viewer {
     #emptyChannelsHidden;
     /**@type {boolean} */
     #queryClientsShown;
+    /**@type {boolean} */
+    #channelFollowed;
     
     /**@type {Server} */
     #server;
@@ -50,9 +52,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -68,6 +70,7 @@ export default class Viewer {
         this.setSpacersShown(spacersShown);
         this.setEmptyChannelsHidden(emptyChannelsHidden);
         this.setQueryClientsShown(queryClientsShown);
+        this.#channelFollowed = channelFollowed;
         
         this.#registerEvents();
     }
@@ -321,6 +324,19 @@ export default class Viewer {
     
     isQueryClientsShown() {
         return this.#queryClientsShown;
+    }
+    
+    /**
+     * Sets whether channel will be followed
+     * 
+     * @param {boolean} channelFollowed Whether channel will be followed
+     */
+    setChannelFollowed(channelFollowed) {
+        this.#channelFollowed = channelFollowed;
+    }
+    
+    isChannelFollowed() {
+        return this.#channelFollowed;
     }
     
     refreshViewer() {
