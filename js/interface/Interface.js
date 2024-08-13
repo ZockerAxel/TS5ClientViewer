@@ -37,7 +37,7 @@ export default class Interface {
         interfaceAlignment.value = alignment;
         
         interfaceHideChannel.checked = channelHidden;
-        
+        interfaceHideChannel.disabled = mode !== "channel";
         
         //Init
         this.#init();
