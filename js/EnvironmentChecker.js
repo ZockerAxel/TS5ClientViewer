@@ -46,3 +46,17 @@ function getEnvironmentByParam() {
     
     return DEFAULT_ENVIRONMENT;
 }
+
+const LOCAL_HOSTS = [
+    "localhost",
+    "127.0.0.1",
+];
+
+/**
+ * Gets whether the host is local
+ * 
+ * @returns {boolean} Whether the host is local 
+ */
+export function isLocal() {
+    return LOCAL_HOSTS.indexOf(location.hostname) !== -1;
+}
