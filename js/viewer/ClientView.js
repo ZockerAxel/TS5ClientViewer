@@ -162,7 +162,7 @@ export default class ClientView extends View {
     }
     
     propagateViewerUpdate() {
-        //Do Nothing
+        this.onViewerUpdate();
     }
     
     remove() {

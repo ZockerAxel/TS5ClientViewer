@@ -246,6 +246,8 @@ export default class ChannelView extends View {
         for(const channelView of this.#channelViews) {
             channelView.propagateViewerUpdate();
         }
+        
+        this.onViewerUpdate();
     }
     
     remove() {
