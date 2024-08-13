@@ -1,6 +1,6 @@
 //@ts-check
 import App from "./App.js";
-import { getEnvironment } from "./EnvironmentChecker.js";
+import { getEnvironment, isLocal } from "./EnvironmentChecker.js";
 import Interface from "./interface/Interface.js";
 import { logger } from "./Logger.js";
 import { registerServiceWorker } from "./ServiceWorkerRegisterer.js";
@@ -15,7 +15,14 @@ async function main() {
     registerServiceWorker();
     
     const environment = getEnvironment();
-    const customIdSuffix = getParam("custom_id");
+    let customIdSuffix = getParam("custom_id");
+    if(isLocal()) {
+        if(customIdSuffix) {
+            customIdSuffix += "-local";
+        } else {
+            customIdSuffix = "local";
+        }
+    }
     
     const app = App.load(environment, customIdSuffix);
     
