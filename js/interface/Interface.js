@@ -49,6 +49,8 @@ export default class Interface {
         
         interfaceShowSpacers.checked = spacersShown;
         
+        interfaceDisableLocalClientColor.checked = !localClientColorEnabled;
+        
         //Init
         this.#init();
     }
