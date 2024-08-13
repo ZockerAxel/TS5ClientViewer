@@ -1,4 +1,4 @@
-import { logger } from "./Logger";
+import { logger } from "./Logger.js";
 
 //@ts-check
 export async function registerServiceWorker() {
