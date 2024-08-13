@@ -29,6 +29,8 @@ export default class Interface {
         
         interfaceViewerMode.value = mode;
         
+        interfaceServer.value = serverSelectMode;
+        
         //Init
         this.#init();
     }
