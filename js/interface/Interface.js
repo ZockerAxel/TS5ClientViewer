@@ -25,6 +25,8 @@ export default class Interface {
             interfaceCustomAppId.disabled = false;
         }
         
+        interfaceAppPort.value = `${appPort}`;
+        
         //Init
         this.#init();
     }
