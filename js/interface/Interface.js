@@ -43,6 +43,8 @@ export default class Interface {
         
         interfaceOnlyTalking.checked = silentClientsHidden;
         
+        interfaceShowAvatars.checked = avatarsShown;
+        
         //Init
         this.#init();
     }
