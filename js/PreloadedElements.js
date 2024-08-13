@@ -47,6 +47,10 @@ export const interfaceHideChannel = document.querySelector("#hide_channel");
 if(!interfaceHideChannel) throw new Error("Hide Channel not found in Document!");
 
 /**@type {HTMLInputElement} */
+export const interfaceFollowChannel = document.querySelector("#follow_channel");
+if(!interfaceFollowChannel) throw new Error("Follow Channel not found in Document!");
+
+/**@type {HTMLInputElement} */
 export const interfaceHideStatus = document.querySelector("#hide_status");
 if(!interfaceHideStatus) throw new Error("Hide Status not found in Document!");
 

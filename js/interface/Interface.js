@@ -1,5 +1,5 @@
 //@ts-check
-import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale } from "../PreloadedElements.js";
+import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale, interfaceFollowChannel } from "../PreloadedElements.js";
 import Handler from "../ts/Handler.js";
 import Server from "../ts/Server.js";
 import Viewer from "../viewer/Viewer.js";
@@ -37,7 +37,12 @@ export default class Interface {
         interfaceAlignment.value = alignment;
         
         interfaceHideChannel.checked = channelHidden;
-        interfaceHideChannel.disabled = mode !== "channel";
+        interfaceFollowChannel.checked = channelFollowed;
+        
+        const channelHideable = mode === "channel";
+        const channelFollowable = !channelHideable;
+        interfaceHideChannel.parentElement?.classList.toggle("hidden", !channelHideable);
+        interfaceFollowChannel.parentElement?.classList.toggle("hidden", !channelFollowable);
         
         interfaceHideStatus.checked = statusHidden;
         interfaceOnlyTalking.checked = silentClientsHidden;
@@ -94,8 +99,10 @@ export default class Interface {
         
         interfaceViewerMode.addEventListener("change", function() {
             const channelHideable = interfaceViewerMode.value === "channel";
+            const channelFollowable = !channelHideable;
             
-            interfaceHideChannel.disabled = !channelHideable;
+            interfaceHideChannel.parentElement?.classList.toggle("hidden", !channelHideable);
+            interfaceFollowChannel.parentElement?.classList.toggle("hidden", !channelFollowable);
         });
         
         interfaceScaleSlider.addEventListener("input", function() {
@@ -144,6 +151,12 @@ export default class Interface {
         
         interfaceHideChannel.addEventListener("change", function() {
             self.#viewer.setChannelHidden(this.checked);
+            
+            self.updateGeneratedURL();
+        });
+        
+        interfaceFollowChannel.addEventListener("change", function() {
+            self.#viewer.setChannelFollowed(this.checked);
             
             self.updateGeneratedURL();
         });
@@ -217,6 +230,7 @@ export default class Interface {
         if(this.#viewer.getServerSelectMode() === "by_name") urlComponents.push(`server_options=${JSON.stringify(this.#viewer.getServerSelectModeOptions())}`);
         urlComponents.push(`align=${this.#viewer.getAlignment()}`);
         if(this.#viewer.getMode() === "channel" && this.#viewer.isChannelHidden()) urlComponents.push(`hide_channel`);
+        if(this.#viewer.getMode() === "tree" && this.#viewer.isChannelFollowed()) urlComponents.push(`follow_channel`);
         if(this.#viewer.isStatusHidden()) urlComponents.push("hide_status");
         if(this.#viewer.isSilentClientsHidden()) urlComponents.push("only_talking");
         if(this.#viewer.isAvatarsShown()) urlComponents.push("show_avatars");
