@@ -1,5 +1,6 @@
 //@ts-check
 import App from "../App.js";
+import { logger } from "../Logger.js";
 import { readMyTsAvatarURL } from "../Utils.js";
 import Channel from "./Channel.js";
 import Client from "./Client.js";
@@ -140,6 +141,8 @@ export default class Handler {
      * @param {Server} server The new active Server
      */
     #setActiveServer(server) {
+        if(this.#servers.indexOf(server) === -1) return;//Do not set servers as active if they are not in the server list
+        
         const changed = this.#activeServer !== server;
         this.#activeServer = server;
         
@@ -147,6 +150,8 @@ export default class Handler {
             for(const callback of this.#activeServerChangeCallbacks) {
                 callback(server);
             }
+            
+            logger.log({message: "Active Server Changed", server: server});
         }
     }
     
@@ -168,7 +173,7 @@ export default class Handler {
      * @returns {Promise<string>} The API Key
      */
     async connect() {
-        console.log({message: "[Handler] Connecting ...", apiKey: this.#apiKey});
+        logger.log({message: "[Handler] Connecting ...", apiKey: this.#apiKey});
         
         if(this.#apiKey == null) {
             const apiKey = await this.connectWithoutAPIKey();
@@ -205,7 +210,7 @@ export default class Handler {
         });
         
         this.#api.on("apiReady", function(/** @type {{ payload: { apiKey: string; }; }} */ data) {
-            console.log({message: "[Handler] API Ready.", apiKey: data.payload.apiKey});
+            logger.log({message: "[Handler] API Ready.", apiKey: data.payload.apiKey});
             resolveFunction(data.payload.apiKey);
         });
         
@@ -239,7 +244,7 @@ export default class Handler {
         });
         
         this.#api.on("apiReady", function(/** @type {{ payload: { apiKey: string; }; }} */ data) {
-            console.log({message: "[Handler] API Ready.", apiKey: data.payload.apiKey});
+            logger.log({message: "[Handler] API Ready.", apiKey: data.payload.apiKey});
             resolveFunction(data.payload.apiKey);
         });
         
@@ -393,7 +398,7 @@ export default class Handler {
             
             const channel = new Channel(server, channelId, channelName, channelOrder);
             
-            console.log({message: "Created new Channel", channel: channel, parent: parent});
+            logger.log({message: "New Channel created", channel: channel, parent: parent});
             
             parent.addSubChannel(channel);
         });
@@ -463,7 +468,7 @@ export default class Handler {
             
             if(channel === null) throw new Error(`Unknown Channel (ID: ${channelId}) deleted in Server '${server.getName()}' (ID: ${connectionId})`);
             
-            console.log({message: "Deleted Channel", channel: channel});
+            logger.log({message: "Channel deleted", channel: channel});
             
             channel.delete();
         });
@@ -493,8 +498,6 @@ export default class Handler {
         
         if(channelId === 0) {
             //If channel id is 0, client disconnected
-            console.log({message: "Client disconnected", clientId: clientId});
-            
             const client = server.getClient(clientId);
             
             if(client === null) throw new Error(`Unknown Client (ID: ${clientId}) disconnected`);
@@ -505,6 +508,8 @@ export default class Handler {
             
             channel.removeClient(client);
             
+            logger.log({message: "Client disconnected", client: client});
+            
             return;
         }
         
@@ -514,7 +519,7 @@ export default class Handler {
             //If properties exist, it's a freshly connected client
             const client = this.#loadClient(server, clientId, properties);
             
-            console.log({message: "Client connected", client: client});
+            logger.log({message: "Client connected", client: client});
             
             const to = server.getChannel(channelId);
             
@@ -524,7 +529,7 @@ export default class Handler {
             
             if(client.isLocalClient()) {
                 if(!client.isHardwareMuted()) this.#setActiveServer(server);//Set this server as the active one if local client is not hardware muted
-            
+                
                 client.onHardwareMutedChange(function(hardwareMuted) {
                     if(!hardwareMuted) self.#setActiveServer(server);//Set the server as the active one as soon as local client is no longer hardware-muted
                 });
@@ -549,7 +554,7 @@ export default class Handler {
                 server.updateLocalClientChannel(to);
             }
             
-            console.log({message: "Client switched Channel", from: oldChannel, to: to});
+            logger.log({message: "Client switched Channel", client: client, from: oldChannel, to: to});
         }
     }
     
@@ -569,7 +574,7 @@ export default class Handler {
         oldParent.removeSubChannel(channel);
         parent.addSubChannel(channel);
         
-        console.log({message: "Moved Channel", channel: channel, oldParent: oldParent, parent: parent, order: order});
+        logger.log({message: "Channel moved", channel: channel, oldParent: oldParent, parent: parent, order: order});
     }
     
     /**
@@ -599,7 +604,7 @@ export default class Handler {
         }
         
         while(allChannelInfos.length > 0) {
-            console.log({message: "Collecting Channels ...", server: server, remainingChannels: allChannelInfos.length});
+            logger.log({message: "Collecting Channels ...", server: server, remainingChannels: allChannelInfos.length});
             
             for(const channelInfo of [...allChannelInfos]) {
                 const parentId = channelInfo.parentId;
@@ -632,6 +637,8 @@ export default class Handler {
             }
         }
         
+        logger.log({message: "Channels collected.", server: server});
+        
         //Sort all channels initally to make sure they are in the correct order (they should already be given in the correct order, but you can never be sure enough)
         server.getRootChannel().sortSubChannelsRecursively();
         
@@ -663,7 +670,7 @@ export default class Handler {
         }
         
         while(allChannelInfos.length > 0) {
-            console.log({message: "Collecting Channels ...", remainingChannels: allChannelInfos.length});
+            logger.log({message: "Collecting Channels ...", remainingChannels: allChannelInfos.length});
             
             for(const channelInfo of [...allChannelInfos]) {
                 const parentId = channelInfo.parentId;
@@ -684,6 +691,8 @@ export default class Handler {
                 allChannelInfos.splice(index, 1);
             }
         }
+        
+        logger.log({message: "Channels collected."});
         
         //Sort all channels initally to make sure they are in the correct order (they should already be given in the correct order, but you can never be sure enough)
         server.getRootChannel().sortSubChannelsRecursively();

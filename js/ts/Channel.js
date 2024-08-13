@@ -1,4 +1,5 @@
 //@ts-check
+import { logger } from "../Logger.js";
 import { createLengthString } from "../Utils.js";
 import Client from "./Client.js";
 import Server from "./Server.js";
@@ -76,6 +77,8 @@ export default class Channel {
             for(const callback of this.#nameUpdateCallbacks) {
                 callback(name);
             }
+            
+            logger.log({message: "Channel Name changed", channel: this, name: name});
         }
     }
     

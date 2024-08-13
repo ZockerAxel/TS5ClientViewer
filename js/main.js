@@ -2,6 +2,7 @@
 import App from "./App.js";
 import { getEnvironment } from "./EnvironmentChecker.js";
 import Interface from "./interface/Interface.js";
+import { logger } from "./Logger.js";
 import { registerServiceWorker } from "./ServiceWorkerRegisterer.js";
 import Handler from "./ts/Handler.js";
 import { getParam, getParamBoolean, getParamFloat, getParamInt } from "./UrlParamReader.js";
@@ -18,7 +19,7 @@ async function main() {
     
     const app = App.load(environment, customIdSuffix);
     
-    console.log({message: "App has been loaded.", app: app.toObject()});
+    logger.log({message: "App has been loaded.", app: app.toObject()});
     
     let apiKey = localStorage.getItem("ts5viewer.apiKey");
     const apiPort = getOrDefault(getParamInt("app_port"), DEFAULT_APP_PORT);

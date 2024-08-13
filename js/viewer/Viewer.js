@@ -4,6 +4,7 @@ import Handler from "../ts/Handler.js";
 import { viewerDiv, interfaceDiv } from "../PreloadedElements.js";
 import ServerView from "./ServerView.js";
 import ChannelView from "./ChannelView.js";
+import { logger } from "../Logger.js";
 
 /**
  * @typedef ViewerMode
@@ -334,7 +335,7 @@ export default class Viewer {
     }
     
     createTree() {
-        console.log({message: "[Viewer] Creating new Tree ..."});
+        logger.log({message: "[Viewer] Creating Tree ..."});
         viewerDiv.textContent = "";//Clear Viewer
         
         const server = this.getServer();
@@ -349,7 +350,7 @@ export default class Viewer {
     }
     
     createOwnChannel() {
-        console.log({message: "[Viewer] Creating Own Channel ..."});
+        logger.log({message: "[Viewer] Creating Own Channel ..."});
         viewerDiv.textContent = "";//Clear Viewer
         
         const server = this.getServer();

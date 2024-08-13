@@ -1,6 +1,8 @@
+import { logger } from "./Logger";
+
 //@ts-check
 export async function registerServiceWorker() {
-    console.log("Registering Service Worker ...");
+    logger.log("Registering Service Worker ...");
     /**@type {ServiceWorkerRegistration} */
     var reg;
     //Service Worker
@@ -8,7 +10,7 @@ export async function registerServiceWorker() {
         try {
             reg = await navigator.serviceWorker.register("/service-worker.js");
         } catch(err) {
-            console.log("Error while registering Service Worker: " + err);
+            logger.log("Error while registering Service Worker: " + err);
         }
     }
 }
