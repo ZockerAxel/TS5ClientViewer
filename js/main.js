@@ -77,7 +77,7 @@ async function main() {
     
     if(app.isInterfaceShown()) {
         const ui = new Interface(handler, viewer, {
-            customId: getOrDefault(getParam("custom_id"), ""),
+            customId: getParam("custom_id"),
             appPort: apiPort,
             ...viewerOptions
         });
