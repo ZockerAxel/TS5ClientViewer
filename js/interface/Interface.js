@@ -47,6 +47,8 @@ export default class Interface {
         
         interfaceHideEmpty.checked = emptyChannelsHidden;
         
+        interfaceShowSpacers.checked = spacersShown;
+        
         //Init
         this.#init();
     }
