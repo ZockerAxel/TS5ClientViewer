@@ -39,6 +39,8 @@ export default class Interface {
         interfaceHideChannel.checked = channelHidden;
         interfaceHideChannel.disabled = mode !== "channel";
         
+        interfaceHideStatus.checked = statusHidden;
+        
         //Init
         this.#init();
     }
