@@ -55,7 +55,7 @@ async function main() {
     const hideEmptyChannels = getParamBoolean("hide_empty");
     const showQueryClients = getParamBoolean("show_query_clients");
     
-    const viewer = new Viewer(handler, {
+    const viewerOptions = {
         mode: viewerMode,
         serverSelectMode: serverSelectMode,
         serverSelectModeOptions: serverSelectModeOptions,
@@ -69,12 +69,18 @@ async function main() {
         spacersShown: showSpacers,
         emptyChannelsHidden: hideEmptyChannels,
         queryClientsShown: showQueryClients,
-    });
+    };
+    
+    const viewer = new Viewer(handler, viewerOptions);
     
     viewer.updateSelectedServer();
     
     if(app.isInterfaceShown()) {
-        const ui = new Interface(handler, viewer);
+        const ui = new Interface(handler, viewer, {
+            customId: getOrDefault(getParam("custom_id"), ""),
+            appPort: apiPort,
+            ...viewerOptions
+        });
         
         ui.show();
         

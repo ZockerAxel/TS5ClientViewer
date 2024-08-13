@@ -12,8 +12,9 @@ export default class Interface {
      * 
      * @param {Handler} handler
      * @param {Viewer} viewer 
+     * @param {{customId: string, appPort: number, mode: import("../viewer/Viewer.js").ViewerMode, serverSelectMode: import("../viewer/Viewer.js").ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean}} prefillOptions 
      */
-    constructor(handler, viewer) {
+    constructor(handler, viewer, {customId, appPort, mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown}) {
         this.#handler = handler;
         this.#viewer = viewer;
         
