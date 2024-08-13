@@ -89,7 +89,7 @@ body:has(#interface.active) {
     color: var(--channel-text-color);
 }
 
-#viewer:not(.show_spacers) .channel.spacer,
+#viewer:not(.show_spacers) .channel.spacer:not(:has(.client)),
 #viewer.hide_empty_channels .channel:not(:has(.client)),
 #viewer.hide_empty_channels:not(.show_query_clients) .channel:not(:has(.client.regular_client)) {
     display: none;
