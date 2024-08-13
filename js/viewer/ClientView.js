@@ -1,6 +1,7 @@
 //@ts-check
 import Client from "../ts/Client.js";
 import ChannelView from "./ChannelView.js";
+import View from "./View.js";
 
 const CLIENT_STATUSES = [
     "hardware_muted",
@@ -13,7 +14,7 @@ const CLIENT_STATUSES = [
     "muted_local",
 ];
 
-export default class ClientView {
+export default class ClientView extends View {
     #channelView;
     
     #client;
@@ -38,6 +39,8 @@ export default class ClientView {
      * @param {Client} client The Client
      */
     constructor(channelView, client) {
+        super();
+        
         this.#channelView = channelView;
         this.#client = client;
         
@@ -156,6 +159,10 @@ export default class ClientView {
     
     onTreeDisplayed() {
         this.#element.style.setProperty("--height", `${this.#element.clientHeight}px`);
+    }
+    
+    propagateViewerUpdate() {
+        //Do Nothing
     }
     
     remove() {

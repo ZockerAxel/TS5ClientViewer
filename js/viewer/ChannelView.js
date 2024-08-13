@@ -1,8 +1,9 @@
 //@ts-check
 import Channel from "../ts/Channel.js";
 import ClientView from "./ClientView.js";
+import View from "./View.js";
 
-export default class ChannelView {
+export default class ChannelView extends View {
     #parentView;
     
     #channel;
@@ -29,6 +30,8 @@ export default class ChannelView {
      * @param {Channel} channel The Channel
      */
     constructor(parentView, channel) {
+        super();
+        
         this.#parentView = parentView;
         this.#channel = channel;
         
@@ -232,6 +235,16 @@ export default class ChannelView {
                 this.#channelContainer.appendChild(channelView.getElement());
                 break;
             }
+        }
+    }
+    
+    propagateViewerUpdate() {
+        for(const clientView of this.#clientViews) {
+            clientView.propagateViewerUpdate();
+        }
+        
+        for(const channelView of this.#channelViews) {
+            channelView.propagateViewerUpdate();
         }
     }
     
