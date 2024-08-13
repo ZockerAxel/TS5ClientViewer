@@ -50,5 +50,6 @@ export default class ServerView extends View {
     
     propagateViewerUpdate() {
         this.#rootChannelView.propagateViewerUpdate();
+        this.onViewerUpdate();
     }
 }
