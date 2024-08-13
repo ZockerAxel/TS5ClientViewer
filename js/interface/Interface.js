@@ -53,6 +53,9 @@ export default class Interface {
         
         interfaceShowQueryClients.checked = queryClientsShown;
         
+        interfaceScaleSlider.value = `${Math.max(0, Math.min(4, scale))}`;
+        interfaceScale.value = `${scale}`;
+        
         //Init
         this.#init();
     }
