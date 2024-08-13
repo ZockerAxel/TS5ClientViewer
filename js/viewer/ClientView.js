@@ -2,6 +2,7 @@
 import Client from "../ts/Client.js";
 import ChannelView from "./ChannelView.js";
 import View from "./View.js";
+import Viewer from "./Viewer.js";
 
 const CLIENT_STATUSES = [
     "hardware_muted",
@@ -35,11 +36,12 @@ export default class ClientView extends View {
     
     /**
      * 
+     * @param {Viewer} viewer The Viewer
      * @param {ChannelView} channelView The Channel View this Client View is in
      * @param {Client} client The Client
      */
-    constructor(channelView, client) {
-        super();
+    constructor(viewer, channelView, client) {
+        super(viewer);
         
         this.#channelView = channelView;
         this.#client = client;
