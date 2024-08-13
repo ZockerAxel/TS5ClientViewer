@@ -31,6 +31,10 @@ export default class Interface {
         
         interfaceServer.value = serverSelectMode;
         
+        if(serverSelectMode === "by_name") {
+            interfaceServerName.value = serverSelectModeOptions.name;
+        }
+        
         //Init
         this.#init();
     }
