@@ -1,8 +1,9 @@
 //@ts-check
 import Server from "../ts/Server.js";
 import ChannelView from "./ChannelView.js";
+import View from "./View.js";
 
-export default class ServerView {
+export default class ServerView extends View {
     #server;
     /**@type {HTMLDivElement} */
     #element;
@@ -15,6 +16,8 @@ export default class ServerView {
      * @param {Server} server The Server
      */
     constructor(server) {
+        super();
+        
         this.#server = server;
     }
     
@@ -43,5 +46,9 @@ export default class ServerView {
     
     onTreeDisplayed() {
         this.#rootChannelView.onTreeDisplayed();
+    }
+    
+    propagateViewerUpdate() {
+        this.#rootChannelView.propagateViewerUpdate();
     }
 }
