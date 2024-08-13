@@ -1,4 +1,4 @@
-![Preview|327x112](upload://wEpcyx8LVdjRS73IYy7KgFVjiks.png)
+![Preview|327x112](https://discourse-forums-images.s3.dualstack.us-east-2.amazonaws.com/original/3X/e/4/e4d6dc9e83a23ed933427f1d412a901e1d7d4614.png)
 
 # About
 This is an external Client Viewer which you can use as an Overlay for a Stream, Video or something else (for example in OBS). It's highly customizable to fit your needs.
