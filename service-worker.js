@@ -80,7 +80,7 @@ self.addEventListener("fetch", function(event) {
         return;
     }
     
-    if(location.hostname !== pageDomain) {
+    if(location.hostname !== pageDomain && !event.request.url.includes("/resources/")) {
         worker.log("Detected Page on alternative Domain, fetching first ...");
         event.respondWith(fromFetchFirst(options));
         return;
