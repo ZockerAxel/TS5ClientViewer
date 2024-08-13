@@ -54,6 +54,7 @@ async function main() {
     const showSpacers = getParamBoolean("show_spacers");
     const hideEmptyChannels = getParamBoolean("hide_empty");
     const showQueryClients = getParamBoolean("show_query_clients");
+    const followChannel = getParamBoolean("follow_channel");
     
     const viewerOptions = {
         mode: viewerMode,
@@ -69,6 +70,7 @@ async function main() {
         spacersShown: showSpacers,
         emptyChannelsHidden: hideEmptyChannels,
         queryClientsShown: showQueryClients,
+        channelFollowed : followChannel,
     };
     
     const viewer = new Viewer(handler, viewerOptions);
