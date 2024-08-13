@@ -30,10 +30,11 @@ export default class Interface {
         interfaceViewerMode.value = mode;
         
         interfaceServer.value = serverSelectMode;
-        
         if(serverSelectMode === "by_name") {
             interfaceServerName.value = serverSelectModeOptions.name;
         }
+        
+        interfaceAlignment.value = alignment;
         
         //Init
         this.#init();
