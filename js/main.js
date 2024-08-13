@@ -65,7 +65,7 @@ async function main() {
     
     viewer.updateSelectedServer();
     
-    if(environment === "browser") {
+    if(app.isInterfaceShown()) {
         const ui = new Interface(handler, viewer);
         
         ui.show();
