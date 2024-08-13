@@ -45,6 +45,8 @@ export default class Interface {
         
         interfaceShowAvatars.checked = avatarsShown;
         
+        interfaceHideEmpty.checked = emptyChannelsHidden;
+        
         //Init
         this.#init();
     }
