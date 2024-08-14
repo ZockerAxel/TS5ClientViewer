@@ -603,7 +603,14 @@ export default class Handler {
             }
         }
         
+        let channelCollectIterations = 0;
+        
         while(allChannelInfos.length > 0) {
+            if(channelCollectIterations >= 1000) {
+                logger.error(`Could not collect ${allChannelInfos.length} Channels of Server '${server.getName()}' (ID: ${server.getId()}). Their parent does not seem to exist.`);
+                break;
+            }
+            
             logger.log({message: "Collecting Channels ...", server: server, remainingChannels: allChannelInfos.length});
             
             for(const channelInfo of [...allChannelInfos]) {
@@ -635,6 +642,8 @@ export default class Handler {
                 if(index === -1) continue;
                 allChannelInfos.splice(index, 1);
             }
+            
+            channelCollectIterations++;
         }
         
         logger.log({message: "Channels collected.", server: server});
