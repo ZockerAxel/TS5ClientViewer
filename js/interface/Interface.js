@@ -129,6 +129,10 @@ export default class Interface {
             self.updateGeneratedURL();
         });
         
+        interfaceDisplayMode.addEventListener("change", function() {
+            self.updateGeneratedURL();
+        });
+        
         interfaceViewerMode.addEventListener("change", function() {
             //@ts-ignore
             self.#viewer.setMode(this.value);
