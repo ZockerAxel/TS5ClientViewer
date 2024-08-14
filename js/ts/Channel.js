@@ -1,6 +1,6 @@
 //@ts-check
 import { logger } from "../Logger.js";
-import { createLengthString } from "../utils.js";
+import { createLengthString } from "../Utils.js";
 import Client from "./Client.js";
 import Server from "./Server.js";
 
