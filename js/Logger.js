@@ -22,6 +22,17 @@ class Logger {
         
         console.log(message);
     }
+    
+    /**
+     * Logs an error message to the console, if the logger is enabled
+     * 
+     * @param {*} message The error message to log (may be any type of object)
+     */
+    error(message) {
+        if(!this.#enabled) return;
+        
+        console.error(message);
+    }
 }
 
 export const logger = new Logger();
