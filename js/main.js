@@ -1,12 +1,12 @@
 //@ts-check
-import App from "./App.js";
+import App from "./app.js";
 import { getEnvironment, isLocal } from "./EnvironmentChecker.js";
 import Interface from "./interface/Interface.js";
 import { logger } from "./Logger.js";
 import { registerServiceWorker } from "./ServiceWorkerRegisterer.js";
 import Handler from "./ts/Handler.js";
 import { getParam, getParamBoolean, getParamFloat, getParamInt } from "./UrlParamReader.js";
-import { getOrDefault } from "./Utils.js";
+import { getOrDefault } from "./utils.js";
 import Viewer from "./viewer/Viewer.js";
 
 const DEFAULT_APP_PORT = 5899;

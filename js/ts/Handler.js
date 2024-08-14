@@ -1,7 +1,7 @@
 //@ts-check
-import App from "../App.js";
+import App from "../app.js";
 import { logger } from "../Logger.js";
-import { readMyTsAvatarURL } from "../Utils.js";
+import { readMyTsAvatarURL } from "../utils.js";
 import Channel from "./Channel.js";
 import Client from "./Client.js";
 import Server from "./Server.js";
