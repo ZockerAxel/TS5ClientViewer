@@ -350,6 +350,15 @@ export default class Viewer {
      */
     setChannelFollowed(channelFollowed) {
         this.#channelFollowed = channelFollowed;
+        
+        this.#currentView?.propagateViewerUpdate();
+        
+        if(!channelFollowed) {
+            document.body.scrollTo({
+                behavior: "smooth",
+                top: 0,
+            });
+        }
     }
     
     isChannelFollowed() {
