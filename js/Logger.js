@@ -36,3 +36,4 @@ class Logger {
 }
 
 export const logger = new Logger();
+window["logger"] = logger;
