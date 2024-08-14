@@ -13,12 +13,13 @@ Features:
 - Automatically select server or set used server by name
 - Align the Viewer to the left or right
 - Option to hide Channel Name
+- Option to follow Channel
 - Option to hide Client Status (status = talking, not talking, muted, etc.)
 - Option to only show talking clients
 - Option to show myTeamSpeak Avatar instead of blue dot
 - Option to hide empty channels
 - Option to show spacer channels
-- Option to remove special color of local client
+- Option to show local client in special color
 - Option to show Server Query Clients
 - Scale the viewer
 
