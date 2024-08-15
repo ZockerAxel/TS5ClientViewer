@@ -15,8 +15,10 @@ const precacheResources = [
     //JS Files
     "/js/App.js",
     "/js/EnvironmentChecker.js",
+    "/js/Logger.js",
     "/js/Main.js",
     "/js/PreloadedElements.js",
+    "/js/ServiceWorkerRegisterer.js",
     "/js/UrlParamReader.js",
     "/js/Utils.js",
     
@@ -34,6 +36,7 @@ const precacheResources = [
     "/js/viewer/ChannelView.js",
     "/js/viewer/ClientView.js",
     "/js/viewer/ServerView.js",
+    "/js/viewer/View.js",
     "/js/viewer/Viewer.js",
     
     "/libs/ts5-remote-apps-wrapper.min.js",
@@ -50,6 +53,7 @@ const precacheResources = [
     //  Images
     "/resources/img/audio_input.svg",
     "/resources/img/client_status/audio_input_muted_hardware.svg",
+    "/resources/img/client_status/audio_input_muted_local.svg",
     "/resources/img/client_status/audio_input_muted.svg",
     "/resources/img/client_status/audio_output_muted.svg",
     "/resources/img/client_status/away_and_sound_muted.svg",
