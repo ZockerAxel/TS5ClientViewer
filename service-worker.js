@@ -28,6 +28,7 @@ const precacheResources = [
     
     "/js/interface/Interface.js",
     
+    "/js/ts/remote_app/RemoteAppConnection.js",
     "/js/ts/Channel.js",
     "/js/ts/Client.js",
     "/js/ts/Handler.js",
@@ -38,8 +39,6 @@ const precacheResources = [
     "/js/viewer/ServerView.js",
     "/js/viewer/View.js",
     "/js/viewer/Viewer.js",
-    
-    "/libs/ts5-remote-apps-wrapper.min.js",
     
     //Data
     "/data/interface_app.json",
