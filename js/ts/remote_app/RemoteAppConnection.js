@@ -1,6 +1,8 @@
 //@ts-check
 import { logger } from "../../Logger.js";
 
+const LOG_CATEGORY = "connection";
+
 export default class RemoteAppConnection {
     #config;
     
@@ -111,7 +113,7 @@ export default class RemoteAppConnection {
             
             if(message.type === "auth") self.#setAuthenticated(message.payload.apiKey);
             
-            console.log(message);
+            logger.log(message, LOG_CATEGORY);
             
             self.#callEvent(`ts:${message.type}`, message.payload);
         });
