@@ -607,7 +607,7 @@ export default class Handler {
         
         while(allChannelInfos.length > 0) {
             if(channelCollectIterations >= 1000) {
-                logger.error(`Could not collect ${allChannelInfos.length} Channels of Server '${server.getName()}' (ID: ${server.getId()}). Their parent does not seem to exist.`);
+                logger.error({message: "Could not collect all Channels. Are they not part of the server tree?", uncollectedChannels: [...allChannelInfos], server: server});
                 break;
             }
             
