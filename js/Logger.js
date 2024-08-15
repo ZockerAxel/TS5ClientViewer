@@ -35,10 +35,7 @@ class Logger {
      * @param {*} message The message to log (may be any type of object)
      */
     log(message) {
-        if(this.isDisabled() && typeof(message) === "object") {
-            console.error(JSON.stringify(message));
-            return;
-        }
+        if(this.isDisabled()) return;
         
         console.log(message);
     }
@@ -49,7 +46,10 @@ class Logger {
      * @param {*} message The error message to log (may be any type of object)
      */
     error(message) {
-        if(this.isDisabled()) return;
+        if(this.isDisabled() && typeof(message) === "object") {
+            console.error(JSON.stringify(message));
+            return;
+        }
         
         console.error(message);
     }
