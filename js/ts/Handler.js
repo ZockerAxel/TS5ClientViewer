@@ -43,6 +43,19 @@ export default class Handler {
     }
     
     /**
+     * Set a new API Port to use next time the API connects
+     * 
+     * @param {number} apiPort The new API Port
+     */
+    setApiPort(apiPort) {
+        this.#apiPort = apiPort;
+    }
+    
+    getApiPort() {
+        return this.#apiPort;
+    }
+    
+    /**
      * Gets a server by it's ID
      * 
      * @param {number} id The Server ID
@@ -184,6 +197,13 @@ export default class Handler {
             this.#apiKey = apiKey;
             return apiKey;
         }
+    }
+    
+    /**
+     * Disconnects from the Client
+     */
+    disconnect() {
+        this.#api?.disconnect();
     }
     
     /**

@@ -1,5 +1,5 @@
 //@ts-check
-import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale, interfaceFollowChannel, interfaceHideAwayMessage } from "../PreloadedElements.js";
+import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale, interfaceFollowChannel, interfaceHideAwayMessage, viewerDiv } from "../PreloadedElements.js";
 import Handler from "../ts/Handler.js";
 import Server from "../ts/Server.js";
 import Viewer from "../viewer/Viewer.js";
@@ -81,6 +81,13 @@ export default class Interface {
         
         interfaceUseCustomId.addEventListener("change", function() {
             interfaceCustomAppId.disabled = !interfaceUseCustomId.checked;
+        });
+        
+        interfaceAppPort.addEventListener("change", function() {
+            self.#handler.disconnect();
+            self.#handler.setApiPort(Number.parseInt(this.value));
+            self.#handler.connect();
+            viewerDiv.textContent = "";
         });
         
         interfaceServer.addEventListener("change", function() {
