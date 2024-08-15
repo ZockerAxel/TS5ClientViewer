@@ -45,6 +45,8 @@ export default class Viewer {
     #queryClientsShown;
     /**@type {boolean} */
     #channelFollowed;
+    /**@type {boolean} */
+    #awayMessageHidden;
     
     /**@type {Server} */
     #server;
@@ -55,9 +57,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, awayMessageHidden: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, awayMessageHidden}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -74,6 +76,7 @@ export default class Viewer {
         this.setEmptyChannelsHidden(emptyChannelsHidden);
         this.setQueryClientsShown(queryClientsShown);
         this.#channelFollowed = channelFollowed;
+        this.setAwayMessageHidden(awayMessageHidden);
         
         this.#registerEvents();
         this.#addViewerChangeObserver();
@@ -363,6 +366,21 @@ export default class Viewer {
     
     isChannelFollowed() {
         return this.#channelFollowed;
+    }
+    
+    /**
+     * Sets whether away message will be hidden
+     * 
+     * @param {boolean} hidden Whether away message should be hidden
+     */
+    setAwayMessageHidden(hidden) {
+        this.#awayMessageHidden = hidden;
+        
+        viewerDiv.classList.toggle("hide_away_message", hidden);
+    }
+    
+    isAwayMessageHidden() {
+        return this.#awayMessageHidden;
     }
     
     refreshViewer() {

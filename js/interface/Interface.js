@@ -1,5 +1,5 @@
 //@ts-check
-import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale, interfaceFollowChannel } from "../PreloadedElements.js";
+import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale, interfaceFollowChannel, interfaceHideAwayMessage } from "../PreloadedElements.js";
 import Handler from "../ts/Handler.js";
 import Server from "../ts/Server.js";
 import Viewer from "../viewer/Viewer.js";
@@ -12,9 +12,9 @@ export default class Interface {
      * 
      * @param {Handler} handler
      * @param {Viewer} viewer 
-     * @param {{customId: string | undefined, appPort: number, mode: import("../viewer/Viewer.js").ViewerMode, serverSelectMode: import("../viewer/Viewer.js").ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean}} prefillOptions 
+     * @param {{customId: string | undefined, appPort: number, mode: import("../viewer/Viewer.js").ViewerMode, serverSelectMode: import("../viewer/Viewer.js").ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, awayMessageHidden: boolean}} prefillOptions 
      */
-    constructor(handler, viewer, {customId, appPort, mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed}) {
+    constructor(handler, viewer, {customId, appPort, mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, awayMessageHidden}) {
         this.#handler = handler;
         this.#viewer = viewer;
         
@@ -45,6 +45,7 @@ export default class Interface {
         interfaceFollowChannel.parentElement?.classList.toggle("hidden", !channelFollowable);
         
         interfaceHideStatus.checked = statusHidden;
+        interfaceHideAwayMessage.checked = awayMessageHidden;
         interfaceOnlyTalking.checked = silentClientsHidden;
         interfaceShowAvatars.checked = avatarsShown;
         interfaceHideEmpty.checked = emptyChannelsHidden;
@@ -171,6 +172,12 @@ export default class Interface {
             self.updateGeneratedURL();
         });
         
+        interfaceHideAwayMessage.addEventListener("change", function() {
+            self.#viewer.setAwayMessageHidden(this.checked);
+            
+            self.updateGeneratedURL();
+        });
+        
         interfaceOnlyTalking.addEventListener("change", function() {
             self.#viewer.setSilentClientsHidden(this.checked);
             
@@ -236,6 +243,7 @@ export default class Interface {
         if(this.#viewer.getMode() === "channel" && this.#viewer.isChannelHidden()) urlComponents.push(`hide_channel`);
         if(this.#viewer.getMode() === "tree" && this.#viewer.isChannelFollowed()) urlComponents.push(`follow_channel`);
         if(this.#viewer.isStatusHidden()) urlComponents.push("hide_status");
+        if(this.#viewer.isAwayMessageHidden()) urlComponents.push("hide_away_message");
         if(this.#viewer.isSilentClientsHidden()) urlComponents.push("only_talking");
         if(this.#viewer.isAvatarsShown()) urlComponents.push("show_avatars");
         if(this.#viewer.isEmptyChannelsHidden()) urlComponents.push("hide_empty");

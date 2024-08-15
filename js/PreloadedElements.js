@@ -55,6 +55,10 @@ export const interfaceHideStatus = document.querySelector("#hide_status");
 if(!interfaceHideStatus) throw new Error("Hide Status not found in Document!");
 
 /**@type {HTMLInputElement} */
+export const interfaceHideAwayMessage = document.querySelector("#hide_away_message");
+if(!interfaceHideAwayMessage) throw new Error("Hide Away Message not found in Document!");
+
+/**@type {HTMLInputElement} */
 export const interfaceOnlyTalking = document.querySelector("#only_talking");
 if(!interfaceOnlyTalking) throw new Error("Only Talking not found in Document!");
 
