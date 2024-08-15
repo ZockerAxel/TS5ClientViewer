@@ -16,7 +16,7 @@ const precacheResources = [
     "/js/App.js",
     "/js/EnvironmentChecker.js",
     "/js/Main.js",
-    "/js/PreloadedElement.js",
+    "/js/PreloadedElements.js",
     "/js/UrlParamReader.js",
     "/js/Utils.js",
     
