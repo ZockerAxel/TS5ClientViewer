@@ -268,7 +268,7 @@ body:has(#interface.active) {
     margin-inline-start: 0.25em;
 }
 
-#viewer.hide_status .away_message {
+#viewer.hide_away_message .away_message {
     display: none;
 }
 

@@ -1,91 +1,41 @@
-/**@type {HTMLDivElement} */
-export const viewerDiv = document.querySelector("#viewer");
-if(!viewerDiv) throw new Error("Viewer not found in Document!");
+//@ts-check
+/**
+ * Preloads an Element
+ * 
+ * @param {string} query The Query
+ * @param {{new (): T}} requiredClass The required Class
+ * @returns {T} The Element
+ * @template T The required Class Type
+ */
+function preload(query, requiredClass) {
+    const element = document.querySelector(query);
+    if(!element) throw new Error(`'${query}' not found in Document.`);
+    if(!(element instanceof requiredClass)) throw new Error(`'${query}' Element did not match required class '${requiredClass.prototype}'`); 
+    
+    return element;
+}
 
-/**@type {HTMLDivElement} */
-export const interfaceDiv = document.querySelector("#interface");
-if(!interfaceDiv) throw new Error("Interface not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceUseCustomId = document.querySelector("#use_custom_id");
-if(!interfaceUseCustomId) throw new Error("Use Custom ID not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceCustomAppId = document.querySelector("#app_custom_id");
-if(!interfaceCustomAppId) throw new Error("Custom App ID not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceAppPort = document.querySelector("#app_port");
-if(!interfaceAppPort) throw new Error("App Port not found in Document!");
-
-/**@type {HTMLSelectElement} */
-export const interfaceDisplayMode = document.querySelector("#display_mode");
-if(!interfaceDisplayMode) throw new Error("Display Mode not found in Document!");
-
-/**@type {HTMLSelectElement} */
-export const interfaceViewerMode = document.querySelector("#mode");
-if(!interfaceViewerMode) throw new Error("Viwer Mode not found in Document!");
-
-/**@type {HTMLSelectElement} */
-export const interfaceServer = document.querySelector("#server");
-if(!interfaceServer) throw new Error("Server not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceServerName = document.querySelector("#server_name");
-if(!interfaceServerName) throw new Error("Server Name not found in Document!");
-
-/**@type {HTMLSelectElement} */
-export const interfaceServerList = document.querySelector("#server_list");
-if(!interfaceServerList) throw new Error("Server List not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceAlignment = document.querySelector("#alignment");
-if(!interfaceAlignment) throw new Error("Alignment not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceHideChannel = document.querySelector("#hide_channel");
-if(!interfaceHideChannel) throw new Error("Hide Channel not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceFollowChannel = document.querySelector("#follow_channel");
-if(!interfaceFollowChannel) throw new Error("Follow Channel not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceHideStatus = document.querySelector("#hide_status");
-if(!interfaceHideStatus) throw new Error("Hide Status not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceOnlyTalking = document.querySelector("#only_talking");
-if(!interfaceOnlyTalking) throw new Error("Only Talking not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceShowAvatars = document.querySelector("#show_avatars");
-if(!interfaceShowAvatars) throw new Error("Show Avatars not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceHideEmpty = document.querySelector("#hide_empty");
-if(!interfaceHideEmpty) throw new Error("Hide Empty not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceShowSpacers = document.querySelector("#show_spacers");
-if(!interfaceShowSpacers) throw new Error("Show Spacers not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceDisableLocalClientColor = document.querySelector("#disable_local_client_color");
-if(!interfaceDisableLocalClientColor) throw new Error("Disable Local Client Color not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceShowQueryClients = document.querySelector("#show_query_clients");
-if(!interfaceShowQueryClients) throw new Error("Show Query Clients not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceScaleSlider = document.querySelector("#scale_slider");
-if(!interfaceScaleSlider) throw new Error("Scale Slider not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceScale = document.querySelector("#scale");
-if(!interfaceScale) throw new Error("Scale not found in Document!");
-
-/**@type {HTMLInputElement} */
-export const interfaceGeneratedUrl = document.querySelector("#interface_generated_url");
-if(!interfaceGeneratedUrl) throw new Error("Interface Generated URL not found in Document!");
+export const viewerDiv = preload("#viewer", HTMLDivElement);
+export const interfaceDiv = preload("#interface", HTMLDivElement);
+export const interfaceUseCustomId = preload("#use_custom_id", HTMLInputElement);
+export const interfaceCustomAppId = preload("#app_custom_id", HTMLInputElement);
+export const interfaceAppPort = preload("#app_port", HTMLInputElement);
+export const interfaceDisplayMode = preload("#display_mode", HTMLSelectElement);
+export const interfaceViewerMode = preload("#mode", HTMLSelectElement);
+export const interfaceServer = preload("#server", HTMLSelectElement);
+export const interfaceServerName = preload("#server_name", HTMLInputElement);
+export const interfaceServerList = preload("#server_list", HTMLSelectElement);
+export const interfaceAlignment = preload("#alignment", HTMLSelectElement);
+export const interfaceHideChannel = preload("#hide_channel", HTMLInputElement);
+export const interfaceFollowChannel = preload("#follow_channel", HTMLInputElement);
+export const interfaceHideStatus = preload("#hide_status", HTMLInputElement);
+export const interfaceHideAwayMessage = preload("#hide_away_message", HTMLInputElement);
+export const interfaceOnlyTalking = preload("#only_talking", HTMLInputElement);
+export const interfaceShowAvatars = preload("#show_avatars", HTMLInputElement);
+export const interfaceHideEmpty = preload("#hide_empty", HTMLInputElement);
+export const interfaceShowSpacers = preload("#show_spacers", HTMLInputElement);
+export const interfaceDisableLocalClientColor = preload("#disable_local_client_color", HTMLInputElement);
+export const interfaceShowQueryClients = preload("#show_query_clients", HTMLInputElement);
+export const interfaceScaleSlider = preload("#scale_slider", HTMLInputElement);
+export const interfaceScale = preload("#scale", HTMLInputElement);
+export const interfaceGeneratedUrl = preload("#interface_generated_url", HTMLOutputElement);
