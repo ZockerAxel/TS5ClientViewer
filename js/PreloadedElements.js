@@ -15,7 +15,13 @@ function preload(query, requiredClass) {
     return element;
 }
 
+//Viewer
 export const viewerDiv = preload("#viewer", HTMLDivElement);
+
+//Hint Screen
+export const hintScreenDiv = preload("#hint_screen", HTMLDivElement);
+
+//Interface
 export const interfaceDiv = preload("#interface", HTMLDivElement);
 export const interfaceUseCustomId = preload("#use_custom_id", HTMLInputElement);
 export const interfaceCustomAppId = preload("#app_custom_id", HTMLInputElement);

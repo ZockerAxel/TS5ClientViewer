@@ -1,7 +1,7 @@
 //@ts-check
 import Server from "../ts/Server.js";
 import Handler from "../ts/Handler.js";
-import { viewerDiv, interfaceDiv } from "../PreloadedElements.js";
+import { viewerDiv, interfaceDiv, hintScreenDiv } from "../PreloadedElements.js";
 import ServerView from "./ServerView.js";
 import ChannelView from "./ChannelView.js";
 import { logger } from "../Logger.js";
@@ -397,6 +397,7 @@ export default class Viewer {
     createTree() {
         logger.log({message: "[Viewer] Creating Tree ..."});
         viewerDiv.textContent = "";//Clear Viewer
+        hintScreenDiv.classList.add("hidden");
         
         const server = this.getServer();
         
@@ -413,6 +414,7 @@ export default class Viewer {
     createOwnChannel() {
         logger.log({message: "[Viewer] Creating Own Channel ..."});
         viewerDiv.textContent = "";//Clear Viewer
+        hintScreenDiv.classList.add("hidden");
         
         const server = this.getServer();
         const client = server.getLocalClient();
