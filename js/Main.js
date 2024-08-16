@@ -1,6 +1,6 @@
 //@ts-check
 import App from "./App.js";
-import { getEnvironment, isLocal } from "./EnvironmentChecker.js";
+import { getApiKeyLocalStorageKeyByEnvironment, getEnvironment, isLocal } from "./EnvironmentChecker.js";
 import Interface from "./interface/Interface.js";
 import { logger } from "./Logger.js";
 import { registerServiceWorker } from "./ServiceWorkerRegisterer.js";
@@ -30,7 +30,9 @@ async function main() {
     
     logger.log({message: "App has been loaded.", app: app.toObject()});
     
-    let apiKey = localStorage.getItem("ts5viewer.apiKey");
+    const apiKeyStorageKey = getApiKeyLocalStorageKeyByEnvironment(environment);
+    
+    let apiKey = localStorage.getItem(apiKeyStorageKey);
     const apiPort = getOrDefault(getParamInt("app_port"), DEFAULT_APP_PORT);
     
     const handler = new Handler(apiKey, apiPort, app);
@@ -47,7 +49,7 @@ async function main() {
         }
     }
     
-    if(apiKey) localStorage.setItem("ts5viewer.apiKey", apiKey);
+    if(apiKey) localStorage.setItem(apiKeyStorageKey, apiKey);
 }
 
 /**
