@@ -1,6 +1,7 @@
 //@ts-check
 import App from "../App.js";
 import { logger } from "../Logger.js";
+import { hintScreenDiv } from "../PreloadedElements.js";
 import { readMyTsAvatarURL } from "../Utils.js";
 import Channel from "./Channel.js";
 import Client from "./Client.js";
@@ -300,6 +301,10 @@ export default class Handler {
         const self = this;
         this.#api.addEventListener("ts:auth", function(data) {
             self.#onAuth(data);
+            
+            self.#api.addEventListener("api:disconnect", function() {
+                location.reload();
+            });
         });
     }
     
@@ -499,6 +504,7 @@ export default class Handler {
     }
     
     #onAuth(payload) {
+        hintScreenDiv.classList.add("hidden");
         this.#servers.length = 0;//Clear Servers
         
         for(const connection of payload.connections) {
