@@ -215,7 +215,7 @@ export default class Handler {
     async connectWithoutAPIKey() {
         /**@type {(value: any) => void} */
         let resolveFunction;
-        /**@type {(value: any) => void} */
+        /**@type {() => void} */
         let rejectFunction;
         const promise = new Promise(function(resolve, reject) {
             resolveFunction = resolve;
@@ -237,6 +237,10 @@ export default class Handler {
             resolveFunction(data.apiKey);
         });
         
+        this.#api.addEventListener("api:disconnect", function() {
+            rejectFunction();
+        });
+        
         this.registerEvents();
         
         return promise;
@@ -245,7 +249,7 @@ export default class Handler {
     async #connectWithAPIKey() {
         /**@type {(value: any) => void} */
         let resolveFunction;
-        /**@type {(value: any) => void} */
+        /**@type {() => void} */
         let rejectFunction;
         const promise = new Promise(function(resolve, reject) {
             resolveFunction = resolve;
@@ -266,6 +270,10 @@ export default class Handler {
         this.#api.addEventListener("api:ready", function(/** @type {{ apiKey: string; }} */ data) {
             logger.log({message: "[Handler] API Ready.", apiKey: data.apiKey});
             resolveFunction(data.apiKey);
+        });
+        
+        this.#api.addEventListener("api:disconnect", function() {
+            rejectFunction();
         });
         
         this.registerEvents();

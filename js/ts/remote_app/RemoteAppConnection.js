@@ -105,21 +105,33 @@ export default class RemoteAppConnection {
         this.#webSocket = new WebSocket(`ws://${this.#config.api.host}:${this.#config.api.port}`);
         
         this.#webSocket.addEventListener("open", function(event) {
+            logger.log({message: "Web Socket opened"}, LOG_CATEGORY);
+            
             self.#authenticate();
         });
         
         this.#webSocket.addEventListener("message", function(event) {
             const message = JSON.parse(event.data);
             
-            if(message.type === "auth") self.#setAuthenticated(message.payload.apiKey);
+            logger.log({message: "Web Socket Message received", payload: message}, LOG_CATEGORY);
             
-            logger.log(message, LOG_CATEGORY);
+            if(message.type === "auth") self.#setAuthenticated(message.payload.apiKey);
             
             self.#callEvent(`ts:${message.type}`, message.payload);
         });
         
-        this.#webSocket.addEventListener("close", function() {
+        this.#webSocket.addEventListener("error", function(event) {
+            logger.log({message: "Web Socket Error", event: event}, LOG_CATEGORY);
+            
+            self.#callEvent(`api:error`, event);
+        });
+        
+        this.#webSocket.addEventListener("close", function(event) {
             self.#authenticated = false;
+            
+            logger.log({message: "Web Socket disconnected"}, LOG_CATEGORY);
+            
+            self.#callEvent(`api:disconnect`, event);
         });
     }
     
