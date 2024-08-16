@@ -30,7 +30,7 @@ async function main() {
     
     logger.log({message: "App has been loaded.", app: app.toObject()});
     
-    const apiKeyStorageKey = getApiKeyLocalStorageKeyByEnvironment(environment);
+    const apiKeyStorageKey = getApiKeyLocalStorageKeyByEnvironment(environment, customIdSuffix);
     
     let apiKey = localStorage.getItem(apiKeyStorageKey);
     const apiPort = getOrDefault(getParamInt("app_port"), DEFAULT_APP_PORT);

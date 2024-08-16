@@ -65,10 +65,11 @@ export function isLocal() {
  * Get the Api Key Local Storage Key
  * 
  * @param {EnvironmentType} environment The environment used
+ * @param {string | undefined} customIdSuffix The Custom ID Suffix to use
  * @returns {string} The Storage Key
  */
-export function getApiKeyLocalStorageKeyByEnvironment(environment) {
+export function getApiKeyLocalStorageKeyByEnvironment(environment, customIdSuffix) {
     if(environment === "browser") return "ts5viewer.apiKey";//Backwards-compatible API Keys
     
-    return `ts5viewer.${environment}.apiKey`;
+    return `ts5viewer.${environment}${customIdSuffix}.apiKey`;
 }
