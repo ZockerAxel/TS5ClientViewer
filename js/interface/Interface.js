@@ -274,15 +274,15 @@ export default class Interface {
      * @param {Server} server The Server to register
      */
     #registerServer(server) {
+        for(const existingOption of interfaceServerList.options) {
+            if(existingOption.value === server.getName()) return;//Prevent duplicates
+        }
+        
         const option = document.createElement("option");
         option.value = server.getName();
         option.textContent = server.getName();
         
         interfaceServerList.appendChild(option);
-        
-        server.onDelete(function() {
-            option.remove();
-        });
     }
     
     getViewer() {
