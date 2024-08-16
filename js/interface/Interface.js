@@ -1,5 +1,5 @@
 //@ts-check
-import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale, interfaceFollowChannel, interfaceHideAwayMessage, viewerDiv, hintScreenDiv } from "../PreloadedElements.js";
+import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale, interfaceFollowChannel, interfaceHideAwayMessage, viewerDiv, hintScreenDiv, interfaceFollowChannelName, interfaceFollowSpecificChannel } from "../PreloadedElements.js";
 import Handler from "../ts/Handler.js";
 import Server from "../ts/Server.js";
 import Viewer from "../viewer/Viewer.js";
@@ -12,9 +12,9 @@ export default class Interface {
      * 
      * @param {Handler} handler
      * @param {Viewer} viewer 
-     * @param {{customId: string | undefined, appPort: number, mode: import("../viewer/Viewer.js").ViewerMode, serverSelectMode: import("../viewer/Viewer.js").ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, awayMessageHidden: boolean}} prefillOptions 
+     * @param {{customId: string | undefined, appPort: number, mode: import("../viewer/Viewer.js").ViewerMode, serverSelectMode: import("../viewer/Viewer.js").ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean}} prefillOptions 
      */
-    constructor(handler, viewer, {customId, appPort, mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, awayMessageHidden}) {
+    constructor(handler, viewer, {customId, appPort, mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden}) {
         this.#handler = handler;
         this.#viewer = viewer;
         
@@ -38,11 +38,13 @@ export default class Interface {
         
         interfaceHideChannel.checked = channelHidden;
         interfaceFollowChannel.checked = channelFollowed;
+        interfaceFollowChannelName.value = followChannelName;
         
         const channelHideable = mode === "channel";
         const channelFollowable = !channelHideable;
         interfaceHideChannel.parentElement?.classList.toggle("hidden", !channelHideable);
         interfaceFollowChannel.parentElement?.classList.toggle("hidden", !channelFollowable);
+        interfaceFollowChannelName.parentElement?.classList.toggle("hidden", !channelFollowable);
         
         interfaceHideStatus.checked = statusHidden;
         interfaceHideAwayMessage.checked = awayMessageHidden;
@@ -112,6 +114,22 @@ export default class Interface {
             
             interfaceHideChannel.parentElement?.classList.toggle("hidden", !channelHideable);
             interfaceFollowChannel.parentElement?.classList.toggle("hidden", !channelFollowable);
+            interfaceFollowChannelName.parentElement?.classList.toggle("hidden", !channelFollowable);
+        });
+        
+        interfaceFollowChannel.addEventListener("change", function() {
+            if(this.checked) {
+                interfaceFollowSpecificChannel.checked = false;
+                self.#viewer.setFollowChannelName("");
+                self.updateGeneratedURL();
+            }
+        });
+        
+        interfaceFollowSpecificChannel.addEventListener("change", function() {
+            interfaceFollowChannelName.disabled = !this.checked;
+            interfaceFollowChannel.checked = false;
+            self.#viewer.setChannelFollowed(false);
+            self.updateGeneratedURL();
         });
         
         interfaceScaleSlider.addEventListener("input", function() {
@@ -170,6 +188,18 @@ export default class Interface {
         
         interfaceFollowChannel.addEventListener("change", function() {
             self.#viewer.setChannelFollowed(this.checked);
+            
+            self.updateGeneratedURL();
+        });
+        
+        interfaceFollowChannelName.addEventListener("change", function() {
+            self.#viewer.setFollowChannelName(this.value);
+            
+            self.updateGeneratedURL();
+        });
+        
+        interfaceFollowSpecificChannel.addEventListener("change", function() {
+            if(this.checked) self.#viewer.setFollowChannelName(interfaceFollowChannelName.value);
             
             self.updateGeneratedURL();
         });
@@ -250,6 +280,7 @@ export default class Interface {
         urlComponents.push(`align=${this.#viewer.getAlignment()}`);
         if(this.#viewer.getMode() === "channel" && this.#viewer.isChannelHidden()) urlComponents.push(`hide_channel`);
         if(this.#viewer.getMode() === "tree" && this.#viewer.isChannelFollowed()) urlComponents.push(`follow_channel`);
+        if(this.#viewer.getMode() === "tree" && this.#viewer.isSpecificChannelFollowed()) urlComponents.push(`follow_channel_name=${this.#viewer.getFollowChannelName()}`);
         if(this.#viewer.isStatusHidden()) urlComponents.push("hide_status");
         if(this.#viewer.isAwayMessageHidden()) urlComponents.push("hide_away_message");
         if(this.#viewer.isSilentClientsHidden()) urlComponents.push("only_talking");
