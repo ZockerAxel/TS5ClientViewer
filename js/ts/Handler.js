@@ -1,7 +1,7 @@
 //@ts-check
 import App from "../App.js";
 import { logger } from "../Logger.js";
-import { hintScreenDiv } from "../PreloadedElements.js";
+import { hintScreenDiv, viewerDiv } from "../PreloadedElements.js";
 import { readMyTsAvatarURL } from "../Utils.js";
 import Channel from "./Channel.js";
 import Client from "./Client.js";
@@ -303,7 +303,8 @@ export default class Handler {
             self.#onAuth(data);
             
             self.#api.addEventListener("api:disconnect", function() {
-                location.reload();
+                viewerDiv.textContent = "";
+                hintScreenDiv.classList.remove("hidden");
             });
         });
     }
