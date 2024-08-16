@@ -38,10 +38,14 @@ async function main() {
     try {
         apiKey = await handler.connect();
     } catch(err) {
-        apiKey = await handler.connectWithoutAPIKey();
+        try {
+            apiKey = await handler.connectWithoutAPIKey();
+        } catch(err) {
+            logger.error("Could not connect with, nor without, API Key.");
+        }
     }
     
-    localStorage.setItem("ts5viewer.apiKey", apiKey);
+    if(apiKey) localStorage.setItem("ts5viewer.apiKey", apiKey);
     
     const viewerMode = getOrDefault(getParam("mode"), "tree");
     const serverSelectMode = getOrDefault(getParam("server"), "active");
