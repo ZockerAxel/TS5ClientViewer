@@ -1,7 +1,7 @@
 //@ts-check
 import Server from "../ts/Server.js";
 import Handler from "../ts/Handler.js";
-import { viewerDiv, interfaceDiv } from "../PreloadedElements.js";
+import { viewerDiv, interfaceDiv, hintScreenDiv } from "../PreloadedElements.js";
 import ServerView from "./ServerView.js";
 import ChannelView from "./ChannelView.js";
 import { logger } from "../Logger.js";
@@ -45,6 +45,8 @@ export default class Viewer {
     #queryClientsShown;
     /**@type {boolean} */
     #channelFollowed;
+    /**@type {string} */
+    #followChannelName;
     /**@type {boolean} */
     #awayMessageHidden;
     
@@ -57,9 +59,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, awayMessageHidden: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, awayMessageHidden}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -76,6 +78,7 @@ export default class Viewer {
         this.setEmptyChannelsHidden(emptyChannelsHidden);
         this.setQueryClientsShown(queryClientsShown);
         this.#channelFollowed = channelFollowed;
+        this.#followChannelName = followChannelName;
         this.setAwayMessageHidden(awayMessageHidden);
         
         this.#registerEvents();
@@ -369,6 +372,32 @@ export default class Viewer {
     }
     
     /**
+     * Set the channel to follow
+     * 
+     * @param {string} name The channel to follow
+     */
+    setFollowChannelName(name) {
+        this.#followChannelName = name;
+        
+        this.#currentView?.propagateViewerUpdate();
+        
+        if(name === "") {
+            document.body.scrollTo({
+                behavior: "smooth",
+                top: 0,
+            });
+        }
+    }
+    
+    getFollowChannelName() {
+        return this.isChannelFollowed() ? "" : this.#followChannelName;
+    }
+    
+    isSpecificChannelFollowed() {
+        return !this.isChannelFollowed() && this.#followChannelName !== "";
+    }
+    
+    /**
      * Sets whether away message will be hidden
      * 
      * @param {boolean} hidden Whether away message should be hidden
@@ -397,6 +426,7 @@ export default class Viewer {
     createTree() {
         logger.log({message: "[Viewer] Creating Tree ..."});
         viewerDiv.textContent = "";//Clear Viewer
+        hintScreenDiv.classList.add("hidden");
         
         const server = this.getServer();
         
@@ -413,6 +443,7 @@ export default class Viewer {
     createOwnChannel() {
         logger.log({message: "[Viewer] Creating Own Channel ..."});
         viewerDiv.textContent = "";//Clear Viewer
+        hintScreenDiv.classList.add("hidden");
         
         const server = this.getServer();
         const client = server.getLocalClient();

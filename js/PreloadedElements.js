@@ -15,7 +15,13 @@ function preload(query, requiredClass) {
     return element;
 }
 
+//Viewer
 export const viewerDiv = preload("#viewer", HTMLDivElement);
+
+//Hint Screen
+export const hintScreenDiv = preload("#hint_screen", HTMLDivElement);
+
+//Interface
 export const interfaceDiv = preload("#interface", HTMLDivElement);
 export const interfaceUseCustomId = preload("#use_custom_id", HTMLInputElement);
 export const interfaceCustomAppId = preload("#app_custom_id", HTMLInputElement);
@@ -28,6 +34,8 @@ export const interfaceServerList = preload("#server_list", HTMLSelectElement);
 export const interfaceAlignment = preload("#alignment", HTMLSelectElement);
 export const interfaceHideChannel = preload("#hide_channel", HTMLInputElement);
 export const interfaceFollowChannel = preload("#follow_channel", HTMLInputElement);
+export const interfaceFollowSpecificChannel = preload("#follow_specific_channel", HTMLInputElement);
+export const interfaceFollowChannelName = preload("#follow_channel_name", HTMLInputElement);
 export const interfaceHideStatus = preload("#hide_status", HTMLInputElement);
 export const interfaceHideAwayMessage = preload("#hide_away_message", HTMLInputElement);
 export const interfaceOnlyTalking = preload("#only_talking", HTMLInputElement);

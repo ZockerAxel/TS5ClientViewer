@@ -1,6 +1,6 @@
 //@ts-check
 import App from "./App.js";
-import { getEnvironment, isLocal } from "./EnvironmentChecker.js";
+import { getApiKeyLocalStorageKeyByEnvironment, getEnvironment, isLocal } from "./EnvironmentChecker.js";
 import Interface from "./interface/Interface.js";
 import { logger } from "./Logger.js";
 import { registerServiceWorker } from "./ServiceWorkerRegisterer.js";
@@ -15,6 +15,8 @@ async function main() {
     registerServiceWorker();
     
     const environment = getEnvironment();
+    document.body.classList.add(`environment_${environment}`);
+    
     let customIdSuffix = getParam("custom_id");
     if(isLocal()) {
         if(customIdSuffix) {
@@ -28,19 +30,36 @@ async function main() {
     
     logger.log({message: "App has been loaded.", app: app.toObject()});
     
-    let apiKey = localStorage.getItem("ts5viewer.apiKey");
+    const apiKeyStorageKey = getApiKeyLocalStorageKeyByEnvironment(environment);
+    
+    let apiKey = localStorage.getItem(apiKeyStorageKey);
     const apiPort = getOrDefault(getParamInt("app_port"), DEFAULT_APP_PORT);
     
     const handler = new Handler(apiKey, apiPort, app);
     
+    showViewer(app, handler, apiPort);
+    
     try {
         apiKey = await handler.connect();
     } catch(err) {
-        apiKey = await handler.connectWithoutAPIKey();
+        try {
+            apiKey = await handler.connectWithoutAPIKey();
+        } catch(err) {
+            logger.error("Could not connect with, nor without, API Key.");
+        }
     }
     
-    localStorage.setItem("ts5viewer.apiKey", apiKey);
-    
+    if(apiKey) localStorage.setItem(apiKeyStorageKey, apiKey);
+}
+
+/**
+ * Show the Viewer
+ * 
+ * @param {App} app The App
+ * @param {Handler} handler The Handler
+ * @param {number} apiPort The API Port
+ */
+function showViewer(app, handler, apiPort) {
     const viewerMode = getOrDefault(getParam("mode"), "tree");
     const serverSelectMode = getOrDefault(getParam("server"), "active");
     const serverSelectModeOptions = JSON.parse(getOrDefault(getParam("server_options"), "{}"));
@@ -55,6 +74,7 @@ async function main() {
     const hideEmptyChannels = getParamBoolean("hide_empty");
     const showQueryClients = getParamBoolean("show_query_clients");
     const followChannel = getParamBoolean("follow_channel");
+    const followChannelName = getOrDefault(getParam("follow_channel_name"), "");
     const hideAwayMessage = getParamBoolean("hide_away_message");
     
     const viewerOptions = {
@@ -72,6 +92,7 @@ async function main() {
         emptyChannelsHidden: hideEmptyChannels,
         queryClientsShown: showQueryClients,
         channelFollowed: followChannel,
+        followChannelName: followChannelName,
         awayMessageHidden: hideAwayMessage,
     };
     

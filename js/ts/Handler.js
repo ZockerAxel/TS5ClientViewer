@@ -1,15 +1,18 @@
 //@ts-check
 import App from "../App.js";
 import { logger } from "../Logger.js";
+import { hintScreenDiv, viewerDiv } from "../PreloadedElements.js";
 import { readMyTsAvatarURL } from "../Utils.js";
 import Channel from "./Channel.js";
 import Client from "./Client.js";
+import RemoteAppConnection from "./remote_app/RemoteAppConnection.js";
 import Server from "./Server.js";
 
 export default class Handler {
     #apiKey;
     #apiPort;
     #app;
+    /**@type {RemoteAppConnection} */
     #api;
     
     /**@type {Server[]} */
@@ -40,6 +43,19 @@ export default class Handler {
     restart() {
         this.#api.disconnect();
         this.#api.connect();
+    }
+    
+    /**
+     * Set a new API Port to use next time the API connects
+     * 
+     * @param {number} apiPort The new API Port
+     */
+    setApiPort(apiPort) {
+        this.#apiPort = apiPort;
+    }
+    
+    getApiPort() {
+        return this.#apiPort;
     }
     
     /**
@@ -187,13 +203,20 @@ export default class Handler {
     }
     
     /**
+     * Disconnects from the Client
+     */
+    disconnect() {
+        this.#api?.disconnect();
+    }
+    
+    /**
      * 
      * @returns {Promise<string>} The promise for the API Key
      */
     async connectWithoutAPIKey() {
         /**@type {(value: any) => void} */
         let resolveFunction;
-        /**@type {(value: any) => void} */
+        /**@type {() => void} */
         let rejectFunction;
         const promise = new Promise(function(resolve, reject) {
             resolveFunction = resolve;
@@ -201,21 +224,22 @@ export default class Handler {
         });
         
         // @ts-ignore
-        this.#api = new TSRemoteAppWrapper.TSApiWrapper({
+        this.#api = new RemoteAppConnection({
             api: {
+                host: "localhost",
                 port: this.#apiPort,
-                // tsEventDebug: true,
             },
             app: this.#app.toRemoteAPIApp(),
         });
+        this.#api.connect();
         
-        this.#api.on("apiReady", function(/** @type {{ payload: { apiKey: string; }; }} */ data) {
-            logger.log({message: "[Handler] API Ready.", apiKey: data.payload.apiKey});
-            resolveFunction(data.payload.apiKey);
+        this.#api.addEventListener("api:ready", function(/** @type {{ apiKey: string; }} */ data) {
+            logger.log({message: "[Handler] API Ready.", apiKey: data.apiKey});
+            resolveFunction(data.apiKey);
         });
         
-        this.#api.on("apiError", function(data) {
-            rejectFunction(data.exception.message);
+        this.#api.addEventListener("api:disconnect", function() {
+            rejectFunction();
         });
         
         this.registerEvents();
@@ -226,7 +250,7 @@ export default class Handler {
     async #connectWithAPIKey() {
         /**@type {(value: any) => void} */
         let resolveFunction;
-        /**@type {(value: any) => void} */
+        /**@type {() => void} */
         let rejectFunction;
         const promise = new Promise(function(resolve, reject) {
             resolveFunction = resolve;
@@ -234,22 +258,23 @@ export default class Handler {
         });
         
         // @ts-ignore
-        this.#api = new TSRemoteAppWrapper.TSApiWrapper({
+        this.#api = new RemoteAppConnection({
             api: {
-                key: this.#apiKey,
+                host: "localhost",
                 port: this.#apiPort,
-                // tsEventDebug: true,
+                key: this.#apiKey,
             },
             app: this.#app.toRemoteAPIApp(),
         });
+        this.#api.connect();
         
-        this.#api.on("apiReady", function(/** @type {{ payload: { apiKey: string; }; }} */ data) {
-            logger.log({message: "[Handler] API Ready.", apiKey: data.payload.apiKey});
-            resolveFunction(data.payload.apiKey);
+        this.#api.addEventListener("api:ready", function(/** @type {{ apiKey: string; }} */ data) {
+            logger.log({message: "[Handler] API Ready.", apiKey: data.apiKey});
+            resolveFunction(data.apiKey);
         });
         
-        this.#api.on("apiError", function(data) {
-            rejectFunction(data.exception.message);
+        this.#api.addEventListener("api:disconnect", function() {
+            rejectFunction();
         });
         
         this.registerEvents();
@@ -274,53 +299,58 @@ export default class Handler {
     
     registerAuthEvent() {
         const self = this;
-        this.#api.on("tsOnAuth", function(data) {
-            self.#onAuth(data.payload);
+        this.#api.addEventListener("ts:auth", function(data) {
+            self.#onAuth(data);
+            
+            self.#api.addEventListener("api:disconnect", function() {
+                viewerDiv.textContent = "";
+                hintScreenDiv.classList.remove("hidden");
+            });
         });
     }
     
     registerClientMovedEvent() {
         const self = this;
-        this.#api.on("tsOnClientMoved", function(data) {
-            self.#onClientMoved(data.payload);
+        this.#api.addEventListener("ts:clientMoved", function(data) {
+            self.#onClientMoved(data);
         });
     }
     
     registerClientPropertiesUpdatedEvent() {
         const self = this;
-        this.#api.on("tsOnClientPropertiesUpdated", function(data) {
-            const serverId = Number.parseInt(data.payload.connectionId);
+        this.#api.addEventListener("ts:clientPropertiesUpdated", function(data) {
+            const serverId = Number.parseInt(data.connectionId);
             
             const server = self.getServer(serverId);
             
             if(server == null) throw new Error(`Client Properties updated in unkown Server (ID: ${serverId})`);
             
-            const clientId = Number.parseInt(data.payload.clientId);
+            const clientId = Number.parseInt(data.clientId);
             
             const client = server.getClient(clientId);
             
             if(client === null) throw new Error(`Client Properties updated for unkown Client (ID: ${clientId}) in Server '${server.getName()}' (ID: ${serverId})`);
             
-            self.#updateClient(client, data.payload.properties);
+            self.#updateClient(client, data.properties);
         });
     }
     
     registerTalkStatusChangedEvent() {
         const self = this;
-        this.#api.on("tsOnTalkStatusChanged", function(data) {
-            const serverId = Number.parseInt(data.payload.connectionId);
+        this.#api.addEventListener("ts:talkStatusChanged", function(data) {
+            const serverId = Number.parseInt(data.connectionId);
             
             const server = self.getServer(serverId);
             
             if(server == null) throw new Error(`Client Talk Status updated in unkown Server (ID: ${serverId})`);
             
-            const clientId = Number.parseInt(data.payload.clientId);
+            const clientId = Number.parseInt(data.clientId);
             
             const client = server.getClient(clientId);
             
             if(client === null) throw new Error(`Client Talk Status updated for unkown Client (ID: ${clientId}) in Server '${server.getName()}' (ID: ${serverId})`);
             
-            const status = Number.parseInt(data.payload.status);
+            const status = Number.parseInt(data.status);
             
             client.update({
                 talking: status !== 0,
@@ -330,9 +360,9 @@ export default class Handler {
     
     registerConnectStatusChangedEvent() {
         const self = this;
-        this.#api.on("tsOnConnectStatusChanged", function(data) {
-            const connectionId = Number.parseInt(data.payload.connectionId);
-            const status = Number.parseInt(data.payload.status);
+        this.#api.addEventListener("ts:connectStatusChanged", function(data) {
+            const connectionId = Number.parseInt(data.connectionId);
+            const status = Number.parseInt(data.status);
             
             let server = self.getServer(connectionId);
             
@@ -340,8 +370,8 @@ export default class Handler {
                 //If server is null, User just connected to a new server (or something went really bad lmao)
                 if(status !== 2) return;//Only handle status 2, as this status is used for when server name is sent. Status 3 does not seem to send any useful info
                 
-                const clientId = Number.parseInt(data.payload.info.clientId);
-                const serverName = data.payload.info.serverName;
+                const clientId = Number.parseInt(data.info.clientId);
+                const serverName = data.info.serverName;
                 
                 server = self.#loadServer({
                     id: connectionId,
@@ -364,37 +394,43 @@ export default class Handler {
     
     registerChannelsEvent() {
         const self = this;
-        this.#api.on("tsOnChannels", function(data) {
-            const connectionId = Number.parseInt(data.payload.connectionId);
+        this.#api.addEventListener("ts:channels", function(data) {
+            const connectionId = Number.parseInt(data.connectionId);
             
             const server = self.getServer(connectionId);
             
             if(server === null) throw new Error(`Received Channels for Unknown Server (ID: ${connectionId})`);
             
-            const channelInfos = data.payload.info;
+            const channelInfos = data.info;
             
             self.#loadChannels(server, channelInfos);
+            
+            const movePayloads = server.getAndResetRememberedMovePayloads();
+            
+            for(const payload of movePayloads) {
+                self.#onClientMoved(payload);
+            }
         });
     }
     
     registerChannelCreatedEvent() {
         const self = this;
-        this.#api.on("tsOnChannelCreated", function(data) {
-            const connectionId = Number.parseInt(data.payload.connectionId);
+        this.#api.addEventListener("ts:channelCreated", function(data) {
+            const connectionId = Number.parseInt(data.connectionId);
             
             const server = self.getServer(connectionId);
             
             if(server === null) throw new Error(`Channel Created in Unknown Server (ID: ${connectionId})`);
             
-            const parentId = data.payload.parentId;
+            const parentId = data.parentId;
             
             const parent = server.getChannel(parentId);
             
             if(parent === null) throw new Error(`Channel created with Unknown Parent Channel (ID: ${parentId}) on Server '${server.getName()}' (ID: ${connectionId})`);
             
-            const channelId = Number.parseInt(data.payload.channelId);
-            const channelName = data.payload.properties.name;
-            const channelOrder = Number.parseInt(data.payload.properties.order);
+            const channelId = Number.parseInt(data.channelId);
+            const channelName = data.properties.name;
+            const channelOrder = Number.parseInt(data.properties.order);
             
             const channel = new Channel(server, channelId, channelName, channelOrder);
             
@@ -406,26 +442,26 @@ export default class Handler {
     
     registerChannelMovedEvent() {
         const self = this;
-        this.#api.on("tsOnChannelMoved", function(data) {
-            const connectionId = Number.parseInt(data.payload.connectionId);
+        this.#api.addEventListener("ts:channelMoved", function(data) {
+            const connectionId = Number.parseInt(data.connectionId);
             
             const server = self.getServer(connectionId);
             
             if(server === null) throw new Error(`Channel moved in unknown Server (ID: ${connectionId})`);
             
-            const channelId = Number.parseInt(data.payload.channelId);
+            const channelId = Number.parseInt(data.channelId);
             
             const channel = server.getChannel(channelId);
             
             if(channel === null) throw new Error(`Unknown Channel (ID: ${channelId}) moved in Server '${server.getName()}' (ID: ${connectionId})`);
             
-            const parentId = Number.parseInt(data.payload.parentId);
+            const parentId = Number.parseInt(data.parentId);
             
             const parent = server.getChannel(parentId);
             
             if(parent === null) throw new Error(`Channel '${channel.getName()}' (ID: ${channelId}) moved to unknown Parent Channel (ID: ${parentId}) in Server '${server.getName()}' (ID: ${connectionId})`);
             
-            const order = Number.parseInt(data.payload.order);
+            const order = Number.parseInt(data.order);
             
             self.#onChannelMoved(channel, parent, order);
         });
@@ -433,36 +469,36 @@ export default class Handler {
     
     registerChannelEditedEvent() {
         const self = this;
-        this.#api.on("tsOnChannelEdited", function(data) {
-            const connectionId = Number.parseInt(data.payload.connectionId);
+        this.#api.addEventListener("ts:channelEdited", function(data) {
+            const connectionId = Number.parseInt(data.connectionId);
             
             const server = self.getServer(connectionId);
             
             if(server === null) throw new Error(`Channel edited in unknown Server (ID: ${connectionId})`);
             
-            const channelId = Number.parseInt(data.payload.channelId);
+            const channelId = Number.parseInt(data.channelId);
             
             const channel = server.getChannel(channelId);
             
             if(channel === null) throw new Error(`Unknown Channel (ID: ${channelId}) edited in Server '${server.getName()}' (ID: ${connectionId})`);
             
-            const order = Number.parseInt(data.payload.properties.order);
+            const order = Number.parseInt(data.properties.order);
             
             self.#onChannelMoved(channel, null, order);
-            self.#updateChannel(channel, data.payload.properties);
+            self.#updateChannel(channel, data.properties);
         });
     }
     
     registerChannelDeletedEvent() {
         const self = this;
-        this.#api.on("tsOnChannelDeleted", function(data) {
-            const connectionId = Number.parseInt(data.payload.connectionId);
+        this.#api.addEventListener("ts:channelDeleted", function(data) {
+            const connectionId = Number.parseInt(data.connectionId);
             
             const server = self.getServer(connectionId);
             
             if(server === null) throw new Error(`Channel deleted in unknown Server (ID: ${connectionId})`);
             
-            const channelId = Number.parseInt(data.payload.channelId);
+            const channelId = Number.parseInt(data.channelId);
             
             const channel = server.getChannel(channelId);
             
@@ -475,6 +511,7 @@ export default class Handler {
     }
     
     #onAuth(payload) {
+        hintScreenDiv.classList.add("hidden");
         this.#servers.length = 0;//Clear Servers
         
         for(const connection of payload.connections) {
@@ -523,7 +560,11 @@ export default class Handler {
             
             const to = server.getChannel(channelId);
             
-            if(to === null) throw new Error(`Client moved into unkown Channel (ID: ${channelId})`);
+            if(to === null) {
+                if(server.getRootChannel().getSubChannels().length > 0) throw new Error(`Client '${client.getNickname()}' (ID: ${clientId}) moved into unkown Channel (ID: ${channelId})`);
+                server.rememberMovePayload(payload);
+                return;
+            }
             
             to.addClient(client);
             

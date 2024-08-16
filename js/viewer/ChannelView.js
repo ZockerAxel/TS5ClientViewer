@@ -258,12 +258,22 @@ export default class ChannelView extends View {
     
     onViewerUpdate() {
         this.#scrollIntoViewIfEnabled();
+        this.#scrollIntoViewIfEnabledByName();
         this.#updateHasClients();
     }
     
     #scrollIntoViewIfEnabled() {
         if(!this.getViewer().isChannelFollowed()) return;
         if(!this.isLocalClientsChannel()) return;
+        
+        this.#element.scrollIntoView({
+            behavior: "smooth",
+        });
+    }
+    
+    #scrollIntoViewIfEnabledByName() {
+        if(!this.getViewer().isSpecificChannelFollowed()) return;
+        if(this.getViewer().getFollowChannelName() !== this.getChannel().getName()) return;
         
         this.#element.scrollIntoView({
             behavior: "smooth",

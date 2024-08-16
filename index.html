@@ -12,13 +12,20 @@
         <link rel="stylesheet" href="/resources/font/roboto/font-family.css">
         <link rel="stylesheet" href="/style.css">
         
-        <script type="text/javascript" src="/libs/ts5-remote-apps-wrapper.min.js" defer></script>
         <script type="module" src="/js/Main.js"></script>
     </head>
     <body>
         <main>
             <div id="viewer">
-                <p style="font-size: 2em;">Make sure to allow the Remote App in your TeamSpeak 5 Client. (see your notifications)</p>
+                
+            </div>
+            <div id="hint_screen">
+                <p>Connecting ...</p>
+                
+                <p>If you are stuck on this screen, make sure to allow the Remote App in your TeamSpeak 5 Client. (see your notifications)</p>
+                <img src="/resources/img/hint/accept_authorization.png" alt="The Image shows an image the top left corner of a TeamSpeak 5 Client. The Notification Area is expanded and shows an authorization request from the Client Viewer.">
+                <p class="browser_only">If there is no notification, check your Remote App Settings in your TeamSpeak 5 Client.</p>
+                <img class="browser_only" src="/resources/img/hint/remote_app_settings.png" alt="The Image shows the Remote Apps Page in the TeamSpeak 5 Client Settings. The Settings 'Enabled' and 'Port' aswell ass the section 'Permission Requests' are outlined in red.">
             </div>
             <div id="interface">
                 <div id="interface_box">
@@ -69,7 +76,7 @@
                         <div class="line">
                             <label for="server">Server Selection</label>
                             <select name="server" id="server">
-                                <option value="active">Active Server</option>
+                                <option value="active">Auto</option>
                                 <option value="by_name">By Name</option>
                             </select>
                             
@@ -104,8 +111,16 @@
                         </div>
                         
                         <div class="line">
-                            <label for="follow_channel">Follow Channel</label>
+                            <label for="follow_channel">Follow Own Channel</label>
                             <input type="checkbox" name="follow_channel" id="follow_channel">
+                            
+                            <div class="hint">Will always keep the Channel you're in at the top of the Viewer by scrolling to it.<br>Only for Viewer Mode "Show Server Tree".</div>
+                        </div>
+                        
+                        <div class="line">
+                            <label for="follow_specific_channel">Follow Specific Channel</label>
+                            <input type="checkbox" name="follow_specific_channel" id="follow_specific_channel">
+                            <input type="text" name="follow_channel_name" id="follow_channel_name" disabled>
                             
                             <div class="hint">Will always keep the Channel you're in at the top of the Viewer by scrolling to it.<br>Only for Viewer Mode "Show Server Tree".</div>
                         </div>

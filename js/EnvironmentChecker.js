@@ -60,3 +60,15 @@ const LOCAL_HOSTS = [
 export function isLocal() {
     return LOCAL_HOSTS.indexOf(location.hostname) !== -1;
 }
+
+/**
+ * Get the Api Key Local Storage Key
+ * 
+ * @param {EnvironmentType} environment The environment used
+ * @returns {string} The Storage Key
+ */
+export function getApiKeyLocalStorageKeyByEnvironment(environment) {
+    if(environment === "browser") return "ts5viewer.apiKey";//Backwards-compatible API Keys
+    
+    return `ts5viewer.${environment}.apiKey`;
+}

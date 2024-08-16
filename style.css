@@ -281,6 +281,24 @@ body:has(#interface.active) {
 }
 
 /* 
+    Hint Screen
+*/
+#hint_screen p {
+    font-size: 2rem;
+    
+    color: black;
+    background-color: white;
+}
+
+#hint_screen p:first-child {
+    font-weight: bold;
+}
+
+#hint_screen img {
+    min-width: 30rem;
+}
+
+/* 
     Interface
 */
 #interface {
@@ -406,6 +424,10 @@ input[type="checkbox"] {
 /* 
     Utility
 */
+
+body:not(.environment_browser) .browser_only {
+    display: none;
+}
 
 .hidden {
     display: none !important;

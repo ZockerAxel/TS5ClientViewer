@@ -1,5 +1,5 @@
 const pageDomain = "ts5viewer.endercentral.eu";
-const cacheVersion = 6;
+const cacheVersion = 7;
 const beta = pageDomain !== location.hostname;
 const currentCacheKey = `v${cacheVersion}${beta ? "-beta" : ""}`;
 
@@ -15,8 +15,10 @@ const precacheResources = [
     //JS Files
     "/js/App.js",
     "/js/EnvironmentChecker.js",
+    "/js/Logger.js",
     "/js/Main.js",
-    "/js/PreloadedElement.js",
+    "/js/PreloadedElements.js",
+    "/js/ServiceWorkerRegisterer.js",
     "/js/UrlParamReader.js",
     "/js/Utils.js",
     
@@ -26,6 +28,7 @@ const precacheResources = [
     
     "/js/interface/Interface.js",
     
+    "/js/ts/remote_app/RemoteAppConnection.js",
     "/js/ts/Channel.js",
     "/js/ts/Client.js",
     "/js/ts/Handler.js",
@@ -34,9 +37,8 @@ const precacheResources = [
     "/js/viewer/ChannelView.js",
     "/js/viewer/ClientView.js",
     "/js/viewer/ServerView.js",
+    "/js/viewer/View.js",
     "/js/viewer/Viewer.js",
-    
-    "/libs/ts5-remote-apps-wrapper.min.js",
     
     //Data
     "/data/interface_app.json",
@@ -50,6 +52,7 @@ const precacheResources = [
     //  Images
     "/resources/img/audio_input.svg",
     "/resources/img/client_status/audio_input_muted_hardware.svg",
+    "/resources/img/client_status/audio_input_muted_local.svg",
     "/resources/img/client_status/audio_input_muted.svg",
     "/resources/img/client_status/audio_output_muted.svg",
     "/resources/img/client_status/away_and_sound_muted.svg",
