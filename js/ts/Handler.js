@@ -553,7 +553,7 @@ export default class Handler {
             
             const to = server.getChannel(channelId);
             
-            if(to === null) throw new Error(`Client moved into unkown Channel (ID: ${channelId})`);
+            if(to === null) throw new Error(`Client '${client.getNickname()}' (ID: ${clientId}) moved into unkown Channel (ID: ${channelId})`);
             
             to.addClient(client);
             
