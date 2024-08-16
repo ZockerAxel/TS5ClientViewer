@@ -15,6 +15,9 @@ export default class Server {
     /**@type {(() => void)[]} */
     #deleteCallbacks = [];
     
+    /**@type {*[]} */
+    #rememberedMovePayloads = []
+    
     /**
      * Creates a Server, represents a Connection to a TeamSpeak Server and contains all channels and connected clients.
      * 
@@ -81,6 +84,19 @@ export default class Server {
         for(const callback of this.#localClientMoveCallbacks) {
             callback(channel);
         }
+    }
+    
+    /**
+     * Remember a Move Payload
+     * 
+     * @param {*} payload The Payload
+     */
+    rememberMovePayload(payload) {
+        this.#rememberedMovePayloads.push(payload);
+    }
+    
+    getAndResetRememberedMovePayloads() {
+        return this.#rememberedMovePayloads;
     }
     
     /**

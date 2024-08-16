@@ -403,6 +403,12 @@ export default class Handler {
             const channelInfos = data.info;
             
             self.#loadChannels(server, channelInfos);
+            
+            const movePayloads = server.getAndResetRememberedMovePayloads();
+            
+            for(const payload of movePayloads) {
+                self.#onClientMoved(payload);
+            }
         });
     }
     
@@ -553,7 +559,11 @@ export default class Handler {
             
             const to = server.getChannel(channelId);
             
-            if(to === null) throw new Error(`Client '${client.getNickname()}' (ID: ${clientId}) moved into unkown Channel (ID: ${channelId})`);
+            if(to === null) {
+                if(server.getRootChannel().getSubChannels().length > 0) throw new Error(`Client '${client.getNickname()}' (ID: ${clientId}) moved into unkown Channel (ID: ${channelId})`);
+                server.rememberMovePayload(payload);
+                return;
+            }
             
             to.addClient(client);
             
