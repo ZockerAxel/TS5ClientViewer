@@ -35,6 +35,8 @@ async function main() {
     
     const handler = new Handler(apiKey, apiPort, app);
     
+    showViewer(app, handler, apiPort);
+    
     try {
         apiKey = await handler.connect();
     } catch(err) {
@@ -46,7 +48,16 @@ async function main() {
     }
     
     if(apiKey) localStorage.setItem("ts5viewer.apiKey", apiKey);
-    
+}
+
+/**
+ * Show the Viewer
+ * 
+ * @param {App} app The App
+ * @param {Handler} handler The Handler
+ * @param {number} apiPort The API Port
+ */
+function showViewer(app, handler, apiPort) {
     const viewerMode = getOrDefault(getParam("mode"), "tree");
     const serverSelectMode = getOrDefault(getParam("server"), "active");
     const serverSelectModeOptions = JSON.parse(getOrDefault(getParam("server_options"), "{}"));
