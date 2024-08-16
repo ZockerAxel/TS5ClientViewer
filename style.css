@@ -425,6 +425,10 @@ input[type="checkbox"] {
     Utility
 */
 
+body:not(.environment_browser) .browser_only {
+    display: none;
+}
+
 .hidden {
     display: none !important;
 }

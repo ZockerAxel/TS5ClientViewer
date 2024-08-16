@@ -15,6 +15,8 @@ async function main() {
     registerServiceWorker();
     
     const environment = getEnvironment();
+    document.body.classList.add(`environment_${environment}`);
+    
     let customIdSuffix = getParam("custom_id");
     if(isLocal()) {
         if(customIdSuffix) {
