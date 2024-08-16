@@ -113,7 +113,7 @@ export default class RemoteAppConnection {
         this.#webSocket.addEventListener("message", function(event) {
             const message = JSON.parse(event.data);
             
-            logger.log({message: "Web Socket Message received", payload: message}, LOG_CATEGORY);
+            logger.log(message, LOG_CATEGORY);
             
             if(message.type === "auth") self.#setAuthenticated(message.payload.apiKey);
             
