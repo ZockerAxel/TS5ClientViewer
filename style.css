@@ -337,19 +337,27 @@ body:has(#interface.active) {
     
     display: flex;
     flex-direction: column;
-    gap: 1em;
+    gap: 0.25em;
     align-self: var(--alignment, end);
     text-align: center;
     
-    padding: 1em;
+    padding: 0.5em;
     
     background-color: hsla(0, 0%, 80%, 85%);
 }
 
-#interface_box > section {
+#interface_box section {
     display: flex;
     flex-direction: column;
-    gap: 0.5em;
+    gap: 0.25em;
+}
+
+#interface_box > section > section {
+    border: 0.1em dashed hsl(0, 0%, 100%);
+    border-radius: 0.2em;
+    
+    padding-block: 0.2em;
+    padding-inline-end: 0.2em;
 }
 
 #interface h2 {
@@ -360,12 +368,22 @@ body:has(#interface.active) {
     font-size: 1.2em;
 }
 
+#interface h4 {
+    font-size: 1.05em;
+    
+    text-align: start;
+    
+    margin-inline-start: 0.2em;
+}
+
 #interface .line {
     position: relative;
     
     display: flex;
     gap: 0.3em;
     align-items: center;
+    
+    margin-inline-start: 0.5em;
 }
 
 #interface .line :first-child {

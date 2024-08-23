@@ -53,147 +53,159 @@
                     <section>
                         <h3>Viewer Settings</h3>
                         
-                        <div class="line">
-                            <label for="display_mode">Display Mode</label>
-                            <select name="display_mode" id="display_mode">
-                                <option value="standalone">Standalone</option>
-                                <option value="browser">With Interface</option>
-                            </select>
+                        <section>
+                            <h4>General</h4>
                             
-                            <div class="hint">Set the Display Mode (With Interface = Customization Interface, Standalone = No Customization Interface).</div>
-                        </div>
+                            <div class="line">
+                                <label for="display_mode">Display Mode</label>
+                                <select name="display_mode" id="display_mode">
+                                    <option value="standalone">Standalone</option>
+                                    <option value="browser">With Interface</option>
+                                </select>
+                                
+                                <div class="hint">Set the Display Mode (With Interface = Customization Interface, Standalone = No Customization Interface).</div>
+                            </div>
+                            
+                            <div class="line">
+                                <label for="mode">Viewer Mode</label>
+                                <select name="mode" id="mode">
+                                    <option value="tree">Show Server Tree</option>
+                                    <option value="channel">Show Channel</option>
+                                </select>
+                                
+                                <div class="hint">Set whether to show the entire server tree or just your own channel.</div>
+                            </div>
+                            
+                            <div class="line">
+                                <label for="server">Server Selection</label>
+                                <select name="server" id="server">
+                                    <option value="active">Auto</option>
+                                    <option value="by_name">By Name</option>
+                                </select>
+                                
+                                <div class="hint">Set how the displayed server is chosen.</div>
+                            </div>
+                            
+                            <div class="line">
+                                <label for="server_name">Server Name</label>
+                                <input name="server_name" id="server_name" placeholder="Enter Server Name" disabled>
+                                <select name="server_list" id="server_list" disabled>
+                                    <option value="">Select Server</option>
+                                </select>
+                                
+                                <div class="hint">The Server Name to use. Only if Server Selection is set to "By Name".</div>
+                            </div>
+                            
+                            <div class="line">
+                                <label for="alignment">Alignment</label>
+                                <select name="alignment" id="alignment">
+                                    <option value="start">Left</option>
+                                    <option value="end">Right</option>
+                                </select>
+                                
+                                <div class="hint">Which side to align the Viewer with</div>
+                            </div>
+                        </section>
                         
-                        <div class="line">
-                            <label for="mode">Viewer Mode</label>
-                            <select name="mode" id="mode">
-                                <option value="tree">Show Server Tree</option>
-                                <option value="channel">Show Channel</option>
-                            </select>
+                        <section>
+                            <h4>Channels</h4>
                             
-                            <div class="hint">Set whether to show the entire server tree or just your own channel.</div>
-                        </div>
+                            <div class="line hidden">
+                                <label for="hide_channel">Hide Channel</label>
+                                <input type="checkbox" name="hide_channel" id="hide_channel">
+                                
+                                <div class="hint">Hides the Channel if ticked.<br>Only for Viewer Mode "Show Channel".</div>
+                            </div>
+                            
+                            <div class="line hidden">
+                                <label for="show_subchannels">Show Subchannels</label>
+                                <input type="checkbox" name="show_subchannels" id="show_subchannels">
+                                
+                                <div class="hint">Shows Subchannels if ticked.<br>Only for Viewer Mode "Show Channel".</div>
+                            </div>
+                            
+                            <div class="line">
+                                <label for="follow_channel">Follow Own Channel</label>
+                                <input type="checkbox" name="follow_channel" id="follow_channel">
+                                
+                                <div class="hint">Will always keep the Channel you're in at the top of the Viewer by scrolling to it.<br>Only for Viewer Mode "Show Server Tree".</div>
+                            </div>
+                            
+                            <div class="line">
+                                <label for="follow_specific_channel">Follow Specific Channel</label>
+                                <input type="checkbox" name="follow_specific_channel" id="follow_specific_channel">
+                                <input type="text" name="follow_channel_name" id="follow_channel_name" placeholder="Channel Name" disabled>
+                                
+                                <div class="hint">Will always keep the Channel you're in at the top of the Viewer by scrolling to it.<br>Only for Viewer Mode "Show Server Tree".</div>
+                            </div>
+                            
+                            <div class="line">
+                                <label for="hide_empty">Hide empty Channels</label>
+                                <input type="checkbox" name="hide_empty" id="hide_empty">
+                                
+                                <div class="hint">Hides Channels without clients in them.</div>
+                            </div>
+                            
+                            <div class="line">
+                                <label for="show_spacers">Show Spacer Channels</label>
+                                <input type="checkbox" name="show_spacers" id="show_spacers">
+                                
+                                <div class="hint">Shows Spacer Channels (does not support special formatting)</div>
+                            </div>
+                        </section>
                         
-                        <div class="line">
-                            <label for="server">Server Selection</label>
-                            <select name="server" id="server">
-                                <option value="active">Auto</option>
-                                <option value="by_name">By Name</option>
-                            </select>
+                        <section>
+                            <h4>Clients</h4>
                             
-                            <div class="hint">Set how the displayed server is chosen.</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="server_name">Server Name</label>
-                            <input name="server_name" id="server_name" placeholder="Enter Server Name" disabled>
-                            <select name="server_list" id="server_list" disabled>
-                                <option value="">Select Server</option>
-                            </select>
+                            <div class="line">
+                                <label for="hide_status">Hide Status</label>
+                                <input type="checkbox" name="hide_status" id="hide_status">
+                                
+                                <div class="hint">Hides the Status of Clients. Only their name will appear.</div>
+                            </div>
                             
-                            <div class="hint">The Server Name to use. Only if Server Selection is set to "By Name".</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="alignment">Alignment</label>
-                            <select name="alignment" id="alignment">
-                                <option value="start">Left</option>
-                                <option value="end">Right</option>
-                            </select>
+                            <div class="line">
+                                <label for="hide_away_message">Hide Away Message</label>
+                                <input type="checkbox" name="hide_away_message" id="hide_away_message">
+                                
+                                <div class="hint">Hides the Away Message that Clients can set.</div>
+                            </div>
                             
-                            <div class="hint">Which side to align the Viewer with</div>
-                        </div>
-                        
-                        <div class="line hidden">
-                            <label for="hide_channel">Hide Channel</label>
-                            <input type="checkbox" name="hide_channel" id="hide_channel">
+                            <div class="line">
+                                <label for="only_talking">Only show talking Clients</label>
+                                <input type="checkbox" name="only_talking" id="only_talking">
+                                
+                                <div class="hint">Only shows Clients that are talking.</div>
+                            </div>
                             
-                            <div class="hint">Hides the Channel if ticked.<br>Only for Viewer Mode "Show Channel".</div>
-                        </div>
-                        
-                        <div class="line hidden">
-                            <label for="show_subchannels">Show Subchannels</label>
-                            <input type="checkbox" name="show_subchannels" id="show_subchannels">
+                            <div class="line">
+                                <label for="show_avatars">Show myTeamSpeak Avatars</label>
+                                <input type="checkbox" name="show_avatars" id="show_avatars">
+                                
+                                <div class="hint">Whether to display myTeamSpeak Avatars instead of the Blue Dot.</div>
+                            </div>
                             
-                            <div class="hint">Shows Subchannels if ticked.<br>Only for Viewer Mode "Show Channel".</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="follow_channel">Follow Own Channel</label>
-                            <input type="checkbox" name="follow_channel" id="follow_channel">
+                            <div class="line">
+                                <label for="hide_local_client">Hide local Client</label>
+                                <input type="checkbox" name="hide_local_client" id="hide_local_client">
+                                
+                                <div class="hint">Hides the local Client from the Viewer.</div>
+                            </div>
                             
-                            <div class="hint">Will always keep the Channel you're in at the top of the Viewer by scrolling to it.<br>Only for Viewer Mode "Show Server Tree".</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="follow_specific_channel">Follow Specific Channel</label>
-                            <input type="checkbox" name="follow_specific_channel" id="follow_specific_channel">
-                            <input type="text" name="follow_channel_name" id="follow_channel_name" placeholder="Channel Name" disabled>
+                            <div class="line">
+                                <label for="disable_local_client_color">Disable local Client Color</label>
+                                <input type="checkbox" name="disable_local_client_color" id="disable_local_client_color">
+                                
+                                <div class="hint">Shows local Client in same color as other Clients.</div>
+                            </div>
                             
-                            <div class="hint">Will always keep the Channel you're in at the top of the Viewer by scrolling to it.<br>Only for Viewer Mode "Show Server Tree".</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="hide_status">Hide Status</label>
-                            <input type="checkbox" name="hide_status" id="hide_status">
-                            
-                            <div class="hint">Hides the Status of Clients. Only their name will appear.</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="hide_away_message">Hide Away Message</label>
-                            <input type="checkbox" name="hide_away_message" id="hide_away_message">
-                            
-                            <div class="hint">Hides the Away Message that Clients can set.</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="only_talking">Only show talking Clients</label>
-                            <input type="checkbox" name="only_talking" id="only_talking">
-                            
-                            <div class="hint">Only shows Clients that are talking.</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="show_avatars">Show myTeamSpeak Avatars</label>
-                            <input type="checkbox" name="show_avatars" id="show_avatars">
-                            
-                            <div class="hint">Whether to display myTeamSpeak Avatars instead of the Blue Dot.</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="hide_empty">Hide empty Channels</label>
-                            <input type="checkbox" name="hide_empty" id="hide_empty">
-                            
-                            <div class="hint">Hides Channels without clients in them.</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="show_spacers">Show Spacer Channels</label>
-                            <input type="checkbox" name="show_spacers" id="show_spacers">
-                            
-                            <div class="hint">Shows Spacer Channels (does not support special formatting)</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="hide_local_client">Hide local Client</label>
-                            <input type="checkbox" name="hide_local_client" id="hide_local_client">
-                            
-                            <div class="hint">Hides the local Client from the Viewer.</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="disable_local_client_color">Disable local Client Color</label>
-                            <input type="checkbox" name="disable_local_client_color" id="disable_local_client_color">
-                            
-                            <div class="hint">Shows local Client in same color as other Clients.</div>
-                        </div>
-                        
-                        <div class="line">
-                            <label for="show_query_clients">Show Query Clients</label>
-                            <input type="checkbox" name="show_query_clients" id="show_query_clients">
-                            
-                            <div class="hint">Shows Query Clients.</div>
-                        </div>
+                            <div class="line">
+                                <label for="show_query_clients">Show Server Query Clients</label>
+                                <input type="checkbox" name="show_query_clients" id="show_query_clients">
+                                
+                                <div class="hint">Shows Server Query Clients.</div>
+                            </div>
+                        </section>
                         
                         <div class="line">
                             <label for="scale">Scale</label>
