@@ -418,6 +418,11 @@ export default class Viewer {
         return this.#awayMessageHidden;
     }
     
+    /**
+     * Sets whether sub channels will be shown
+     * 
+     * @param {boolean} shown Whether sub channels should be shown
+     */
     setSubChannelsShown(shown) {
         this.#subChannelsShown = shown;
         
