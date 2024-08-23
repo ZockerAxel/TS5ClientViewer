@@ -418,6 +418,8 @@ export default class Viewer {
         this.#subChannelsShown = shown;
         
         viewerDiv.classList.toggle("show_subchannels", shown);
+        
+        this.updateViewer();//Update Viewer to make sure status icons are displayed
     }
     
     isSubChannelsShown() {
@@ -433,6 +435,10 @@ export default class Viewer {
                 this.createOwnChannel();
                 break;
         }
+    }
+    
+    updateViewer() {
+        this.#currentView?.onViewerUpdate();
     }
     
     createTree() {
