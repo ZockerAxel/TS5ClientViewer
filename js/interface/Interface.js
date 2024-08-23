@@ -1,5 +1,5 @@
 //@ts-check
-import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale, interfaceFollowChannel, interfaceHideAwayMessage, viewerDiv, hintScreenDiv, interfaceFollowChannelName, interfaceFollowSpecificChannel, interfaceShowSubchannels } from "../PreloadedElements.js";
+import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale, interfaceFollowChannel, interfaceHideAwayMessage, viewerDiv, hintScreenDiv, interfaceFollowChannelName, interfaceFollowSpecificChannel, interfaceShowSubchannels, interfaceHideLocalClient } from "../PreloadedElements.js";
 import Handler from "../ts/Handler.js";
 import Server from "../ts/Server.js";
 import Viewer from "../viewer/Viewer.js";
@@ -12,9 +12,9 @@ export default class Interface {
      * 
      * @param {Handler} handler
      * @param {Viewer} viewer 
-     * @param {{customId: string | undefined, appPort: number, mode: import("../viewer/Viewer.js").ViewerMode, serverSelectMode: import("../viewer/Viewer.js").ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean}} prefillOptions 
+     * @param {{customId: string | undefined, appPort: number, mode: import("../viewer/Viewer.js").ViewerMode, serverSelectMode: import("../viewer/Viewer.js").ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean, localClientHidden}} prefillOptions 
      */
-    constructor(handler, viewer, {customId, appPort, mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown}) {
+    constructor(handler, viewer, {customId, appPort, mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown, localClientHidden}) {
         this.#handler = handler;
         this.#viewer = viewer;
         
@@ -55,8 +55,11 @@ export default class Interface {
         interfaceShowAvatars.checked = avatarsShown;
         interfaceHideEmpty.checked = emptyChannelsHidden;
         interfaceShowSpacers.checked = spacersShown;
+        interfaceHideLocalClient.checked = localClientHidden;
         interfaceDisableLocalClientColor.checked = !localClientColorEnabled;
         interfaceShowQueryClients.checked = queryClientsShown;
+        
+        interfaceDisableLocalClientColor.disabled = interfaceHideLocalClient.checked;
         
         interfaceScaleSlider.value = `${Math.max(0, Math.min(4, scale))}`;
         interfaceScale.value = `${scale}`;
@@ -135,6 +138,10 @@ export default class Interface {
             interfaceFollowChannel.checked = false;
             self.#viewer.setChannelFollowed(false);
             self.updateGeneratedURL();
+        });
+        
+        interfaceHideLocalClient.addEventListener("change", function() {
+            interfaceDisableLocalClientColor.disabled = this.checked;
         });
         
         interfaceScaleSlider.addEventListener("input", function() {
@@ -251,6 +258,12 @@ export default class Interface {
             self.updateGeneratedURL();
         });
         
+        interfaceHideLocalClient.addEventListener("change", function() {
+            self.#viewer.setLocalClientHidden(this.checked);
+            
+            self.updateGeneratedURL();
+        });
+        
         interfaceDisableLocalClientColor.addEventListener("change", function() {
             self.#viewer.setLocalClientColorEnabled(!this.checked);
             
@@ -299,7 +312,8 @@ export default class Interface {
         if(this.#viewer.isAvatarsShown()) urlComponents.push("show_avatars");
         if(this.#viewer.isEmptyChannelsHidden()) urlComponents.push("hide_empty");
         if(this.#viewer.isSpacersShown()) urlComponents.push("show_spacers");
-        if(!this.#viewer.isLocalClientColorEnabled()) urlComponents.push("disable_local_client_color");
+        if(this.#viewer.isLocalClientHidden()) urlComponents.push("hide_local_client");
+        if(!this.#viewer.isLocalClientHidden() && !this.#viewer.isLocalClientColorEnabled()) urlComponents.push("disable_local_client_color");
         if(this.#viewer.isQueryClientsShown()) urlComponents.push("show_query_clients");
         if(this.#viewer.getScale() !== 1) urlComponents.push(`scale=${this.#viewer.getScale()}`);
         

@@ -77,6 +77,7 @@ function showViewer(app, handler, apiPort) {
     const followChannelName = getOrDefault(getParam("follow_channel_name"), "");
     const hideAwayMessage = getParamBoolean("hide_away_message");
     const showSubchannels = getParamBoolean("show_subchannels");
+    const hideLocalClient = getParamBoolean("hide_local_client");
     
     const viewerOptions = {
         mode: viewerMode,
@@ -96,6 +97,7 @@ function showViewer(app, handler, apiPort) {
         followChannelName: followChannelName,
         awayMessageHidden: hideAwayMessage,
         subChannelsShown: showSubchannels,
+        localClientHidden: hideLocalClient,
     };
     
     const viewer = new Viewer(handler, viewerOptions);

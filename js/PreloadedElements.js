@@ -43,6 +43,7 @@ export const interfaceOnlyTalking = preload("#only_talking", HTMLInputElement);
 export const interfaceShowAvatars = preload("#show_avatars", HTMLInputElement);
 export const interfaceHideEmpty = preload("#hide_empty", HTMLInputElement);
 export const interfaceShowSpacers = preload("#show_spacers", HTMLInputElement);
+export const interfaceHideLocalClient = preload("#hide_local_client", HTMLInputElement);
 export const interfaceDisableLocalClientColor = preload("#disable_local_client_color", HTMLInputElement);
 export const interfaceShowQueryClients = preload("#show_query_clients", HTMLInputElement);
 export const interfaceScaleSlider = preload("#scale_slider", HTMLInputElement);

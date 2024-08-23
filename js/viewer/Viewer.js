@@ -51,6 +51,8 @@ export default class Viewer {
     #awayMessageHidden;
     /**@type {boolean} */
     #subChannelsShown;
+    /**@type {boolean} */
+    #localClientHidden;
     
     /**@type {Server} */
     #server;
@@ -61,9 +63,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean, localClientHidden: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown, localClientHidden}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -83,6 +85,7 @@ export default class Viewer {
         this.#followChannelName = followChannelName;
         this.setAwayMessageHidden(awayMessageHidden);
         this.setSubChannelsShown(subChannelsShown);
+        this.setLocalClientHidden(localClientHidden);
         
         this.#registerEvents();
         this.#addViewerChangeObserver();
@@ -427,6 +430,23 @@ export default class Viewer {
         return this.#subChannelsShown;
     }
     
+    /**
+     * Sets whether the local client will be hidden
+     * 
+     * @param {boolean} hidden Whether the local client should be hidden
+     */
+    setLocalClientHidden(hidden) {
+        this.#localClientHidden = hidden;
+        
+        viewerDiv.classList.toggle("hide_local_client", hidden);
+        
+        this.updateViewer();
+    }
+    
+    isLocalClientHidden() {
+        return this.#localClientHidden;
+    }
+    
     refreshViewer() {
         switch(this.#mode) {
             case "tree":
@@ -439,7 +459,7 @@ export default class Viewer {
     }
     
     updateViewer() {
-        this.#currentView?.onViewerUpdate();
+        this.#currentView?.propagateViewerUpdate();
     }
     
     createTree() {
