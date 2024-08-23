@@ -82,6 +82,7 @@ export default class Viewer {
         this.#channelFollowed = channelFollowed;
         this.#followChannelName = followChannelName;
         this.setAwayMessageHidden(awayMessageHidden);
+        this.setSubChannelsShown(subChannelsShown);
         
         this.#registerEvents();
         this.#addViewerChangeObserver();
