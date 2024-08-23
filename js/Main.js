@@ -76,6 +76,7 @@ function showViewer(app, handler, apiPort) {
     const followChannel = getParamBoolean("follow_channel");
     const followChannelName = getOrDefault(getParam("follow_channel_name"), "");
     const hideAwayMessage = getParamBoolean("hide_away_message");
+    const showSubchannels = getParamBoolean("show_subchannels");
     
     const viewerOptions = {
         mode: viewerMode,
@@ -94,6 +95,7 @@ function showViewer(app, handler, apiPort) {
         channelFollowed: followChannel,
         followChannelName: followChannelName,
         awayMessageHidden: hideAwayMessage,
+        subChannelsShown: showSubchannels,
     };
     
     const viewer = new Viewer(handler, viewerOptions);

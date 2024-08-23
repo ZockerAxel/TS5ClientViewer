@@ -33,6 +33,7 @@ export const interfaceServerName = preload("#server_name", HTMLInputElement);
 export const interfaceServerList = preload("#server_list", HTMLSelectElement);
 export const interfaceAlignment = preload("#alignment", HTMLSelectElement);
 export const interfaceHideChannel = preload("#hide_channel", HTMLInputElement);
+export const interfaceShowSubchannels = preload("#show_subchannels", HTMLInputElement);
 export const interfaceFollowChannel = preload("#follow_channel", HTMLInputElement);
 export const interfaceFollowSpecificChannel = preload("#follow_specific_channel", HTMLInputElement);
 export const interfaceFollowChannelName = preload("#follow_channel_name", HTMLInputElement);

@@ -77,6 +77,10 @@ body:has(#interface.active) {
     margin-inline: 0;
 }
 
+#viewer:not(.show_subchannels) > .channel .channel_list {
+    display: none;
+}
+
 .server {
     width: fit-content;
 }
