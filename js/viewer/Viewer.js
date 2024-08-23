@@ -49,6 +49,8 @@ export default class Viewer {
     #followChannelName;
     /**@type {boolean} */
     #awayMessageHidden;
+    /**@type {boolean} */
+    #subChannelsShown;
     
     /**@type {Server} */
     #server;
@@ -59,9 +61,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -412,6 +414,16 @@ export default class Viewer {
         return this.#awayMessageHidden;
     }
     
+    setSubChannelsShown(shown) {
+        this.#subChannelsShown = shown;
+        
+        viewerDiv.classList.toggle("show_subchannels", shown);
+    }
+    
+    isSubChannelsShown() {
+        return this.#subChannelsShown;
+    }
+    
     refreshViewer() {
         switch(this.#mode) {
             case "tree":
@@ -457,7 +469,7 @@ export default class Viewer {
         const channelView = new ChannelView(this, null, channel);
         this.#currentView = channelView;
         
-        channelView.buildClientTree();
+        channelView.buildTree();
         
         const tree = channelView.createElement();
         viewerDiv.appendChild(tree);
