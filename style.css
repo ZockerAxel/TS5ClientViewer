@@ -165,6 +165,14 @@ body:has(#interface.active) {
     width: var(--calculated-height);
 }
 
+.client:not(.regular_client) .status {
+    display: none;
+}
+
+.client:not(.regular_client) > .name {
+    margin-inline-start: 0;
+}
+
 .status[status="hardware_muted"]::before {
     content: "";
     
