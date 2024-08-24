@@ -41,6 +41,10 @@ body:has(#interface.active) {
     background-color: black;
 }
 
+main {
+    flex-grow: 1;
+}
+
 main:not(.aligned_to_top) {
     margin-block-start: auto;
 }
