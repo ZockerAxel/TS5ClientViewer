@@ -149,7 +149,11 @@ export default class Interface {
         });
         
         interfaceScale.addEventListener("input", function() {
-            interfaceScaleSlider.value = `${Math.max(0, Math.min(4, Number.parseFloat(interfaceScale.value)))}`;
+            const scale = Number.parseFloat(this.value);
+            
+            if(isNaN(scale)) return;
+            
+            interfaceScaleSlider.value = `${Math.max(0, Math.min(4, scale))}`;
         });
     }
     
@@ -282,13 +286,21 @@ export default class Interface {
         });
         
         interfaceScaleSlider.addEventListener("input", function() {
-            self.#viewer.setScale(Number.parseFloat(this.value));
+            const scale = Number.parseFloat(this.value);
+            
+            if(isNaN(scale)) return;
+            
+            self.#viewer.setScale(scale);
             self.#viewer.refreshViewer();
             
             self.updateGeneratedURL();
         });
         
         interfaceScale.addEventListener("input", function() {
+            const scale = Number.parseFloat(this.value);
+            
+            if(isNaN(scale)) return;
+            
             self.#viewer.setScale(Number.parseFloat(this.value));
             self.#viewer.refreshViewer();
             
