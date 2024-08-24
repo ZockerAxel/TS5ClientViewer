@@ -162,6 +162,7 @@ export default class ClientView extends View {
     }
     
     onTreeDisplayed() {
+        this.#element.style.setProperty("--height", "0");
         this.#element.style.setProperty("--height", `${this.#element.clientHeight}px`);
     }
     
