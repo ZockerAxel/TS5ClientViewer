@@ -60,7 +60,11 @@ async function main() {
  * @param {number} apiPort The API Port
  */
 function showViewer(app, handler, apiPort) {
+    /**@type {import("./viewer/Viewer.js").ViewerMode} */
+    // @ts-ignore
     const viewerMode = getOrDefault(getParam("mode"), "tree");
+    /**@type {import("./viewer/Viewer.js").ServerSelectMode} */
+    // @ts-ignore
     const serverSelectMode = getOrDefault(getParam("server"), "active");
     const serverSelectModeOptions = JSON.parse(getOrDefault(getParam("server_options"), "{}"));
     const scale = getOrDefault(getParamFloat("scale"), 1);
