@@ -15,6 +15,9 @@ function preload(query, requiredClass) {
     return element;
 }
 
+//Main
+export const mainElement = preload("main", HTMLElement);
+
 //Viewer
 export const viewerDiv = preload("#viewer", HTMLDivElement);
 
@@ -33,6 +36,7 @@ export const interfaceServerName = preload("#server_name", HTMLInputElement);
 export const interfaceServerList = preload("#server_list", HTMLSelectElement);
 export const interfaceAlignment = preload("#alignment", HTMLSelectElement);
 export const interfaceHideChannel = preload("#hide_channel", HTMLInputElement);
+export const interfaceShowSubchannels = preload("#show_subchannels", HTMLInputElement);
 export const interfaceFollowChannel = preload("#follow_channel", HTMLInputElement);
 export const interfaceFollowSpecificChannel = preload("#follow_specific_channel", HTMLInputElement);
 export const interfaceFollowChannelName = preload("#follow_channel_name", HTMLInputElement);
@@ -42,6 +46,7 @@ export const interfaceOnlyTalking = preload("#only_talking", HTMLInputElement);
 export const interfaceShowAvatars = preload("#show_avatars", HTMLInputElement);
 export const interfaceHideEmpty = preload("#hide_empty", HTMLInputElement);
 export const interfaceShowSpacers = preload("#show_spacers", HTMLInputElement);
+export const interfaceHideLocalClient = preload("#hide_local_client", HTMLInputElement);
 export const interfaceDisableLocalClientColor = preload("#disable_local_client_color", HTMLInputElement);
 export const interfaceShowQueryClients = preload("#show_query_clients", HTMLInputElement);
 export const interfaceScaleSlider = preload("#scale_slider", HTMLInputElement);

@@ -1,7 +1,7 @@
 //@ts-check
 import Server from "../ts/Server.js";
 import Handler from "../ts/Handler.js";
-import { viewerDiv, interfaceDiv, hintScreenDiv } from "../PreloadedElements.js";
+import { viewerDiv, interfaceDiv, hintScreenDiv, mainElement } from "../PreloadedElements.js";
 import ServerView from "./ServerView.js";
 import ChannelView from "./ChannelView.js";
 import { logger } from "../Logger.js";
@@ -26,7 +26,9 @@ export default class Viewer {
     /**@type {number} */
     #scale;
     /**@type {string} */
-    #alignment;
+    #horizontalAlignment;
+    /**@type {string} */
+    #verticalAlignment;
     /**@type {boolean} */
     #localClientColorEnabled;
     /**@type {boolean} */
@@ -49,6 +51,10 @@ export default class Viewer {
     #followChannelName;
     /**@type {boolean} */
     #awayMessageHidden;
+    /**@type {boolean} */
+    #subChannelsShown;
+    /**@type {boolean} */
+    #localClientHidden;
     
     /**@type {Server} */
     #server;
@@ -59,16 +65,17 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, horizontalAlignment: string, verticalAlignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean, localClientHidden: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, horizontalAlignment, verticalAlignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown, localClientHidden}) {
         this.#handler = handler;
         
         this.#mode = mode;
         this.#serverSelectMode = serverSelectMode;
         this.#serverSelectModeOptions = serverSelectModeOptions;
         this.setScale(scale);
-        this.setAlignment(alignment);
+        this.setHorizontalAlignment(horizontalAlignment);
+        this.setVerticalAlignment(verticalAlignment);
         this.setLocalClientColorEnabled(localClientColorEnabled);
         this.#channelHidden = channelHidden;
         this.setSilentClientsHidden(silentClientsHidden);
@@ -80,6 +87,8 @@ export default class Viewer {
         this.#channelFollowed = channelFollowed;
         this.#followChannelName = followChannelName;
         this.setAwayMessageHidden(awayMessageHidden);
+        this.setSubChannelsShown(subChannelsShown);
+        this.setLocalClientHidden(localClientHidden);
         
         this.#registerEvents();
         this.#addViewerChangeObserver();
@@ -214,15 +223,33 @@ export default class Viewer {
      * 
      * @param {string} alignment Alignment
      */
-    setAlignment(alignment) {
-        this.#alignment = alignment;
+    setHorizontalAlignment(alignment) {
+        this.#horizontalAlignment = alignment;
         
-        viewerDiv.style.setProperty("--alignment", `${alignment}`);
-        interfaceDiv.style.setProperty("--alignment", `${alignment === "start" ? "end" : "start"}`);
+        viewerDiv.style.setProperty("--alignment-horizontal", `${alignment}`);
+        interfaceDiv.style.setProperty("--alignment-horizontal", `${alignment === "start" ? "end" : "start"}`);
     }
     
-    getAlignment() {
-        return this.#alignment;
+    getHorizontalAlignment() {
+        return this.#horizontalAlignment;
+    }
+    
+    /**
+     * Set a new Alignment
+     * 
+     * @param {string} alignment Alignment
+     */
+    setVerticalAlignment(alignment) {
+        this.#verticalAlignment = alignment;
+        
+        const verticalProperty = alignment === "top" ? "column" : "column-reverse";
+        
+        viewerDiv.style.setProperty("--alignment-vertical", `${verticalProperty}`);
+        mainElement.classList.toggle("aligned_to_top", alignment === "top");
+    }
+    
+    getVerticalAlignment() {
+        return this.#verticalAlignment;
     }
     
     /**
@@ -268,6 +295,8 @@ export default class Viewer {
         this.#silentClientsHidden = hidden;
         
         viewerDiv.classList.toggle("hide_silent_clients", hidden);
+        
+        this.updateViewer();
     }
     
     isSilentClientsHidden() {
@@ -412,6 +441,40 @@ export default class Viewer {
         return this.#awayMessageHidden;
     }
     
+    /**
+     * Sets whether sub channels will be shown
+     * 
+     * @param {boolean} shown Whether sub channels should be shown
+     */
+    setSubChannelsShown(shown) {
+        this.#subChannelsShown = shown;
+        
+        viewerDiv.classList.toggle("show_subchannels", shown);
+        
+        this.updateViewer();//Update Viewer to make sure status icons are displayed
+    }
+    
+    isSubChannelsShown() {
+        return this.#subChannelsShown;
+    }
+    
+    /**
+     * Sets whether the local client will be hidden
+     * 
+     * @param {boolean} hidden Whether the local client should be hidden
+     */
+    setLocalClientHidden(hidden) {
+        this.#localClientHidden = hidden;
+        
+        viewerDiv.classList.toggle("hide_local_client", hidden);
+        
+        this.updateViewer();
+    }
+    
+    isLocalClientHidden() {
+        return this.#localClientHidden;
+    }
+    
     refreshViewer() {
         switch(this.#mode) {
             case "tree":
@@ -421,6 +484,10 @@ export default class Viewer {
                 this.createOwnChannel();
                 break;
         }
+    }
+    
+    updateViewer() {
+        this.#currentView?.propagateViewerUpdate();
     }
     
     createTree() {
@@ -457,7 +524,7 @@ export default class Viewer {
         const channelView = new ChannelView(this, null, channel);
         this.#currentView = channelView;
         
-        channelView.buildClientTree();
+        channelView.buildTree();
         
         const tree = channelView.createElement();
         viewerDiv.appendChild(tree);

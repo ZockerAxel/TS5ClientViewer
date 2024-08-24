@@ -17,15 +17,19 @@
     
     /* Dynamic Values (Changed by URL Parameters) */
     --scale: 1;
-    --alignment: start;
+    --alignment-horizontal: start;
+    --alignment-vertical: column;
     
     width: 100dvw;
+    height: 100vh;
     height: 100dvh;
     
     overflow: hidden;
 }
 
 body {
+    display: flex;
+    
     width: 100%;
     height: 100%;
     
@@ -38,6 +42,14 @@ body:has(#interface.active) {
     background-color: black;
 }
 
+main {
+    flex-grow: 1;
+}
+
+main:not(.aligned_to_top) {
+    align-self: end;
+}
+
 /* 
     Viewer
 */
@@ -47,16 +59,16 @@ body:has(#interface.active) {
     font-weight: bold;
     
     display: flex;
-    flex-direction: column;
-    align-items: var(--alignment);
+    flex-direction: var(--alignment-vertical);
+    align-items: var(--alignment-horizontal);
     
     user-select: none;
 }
 
 #viewer .container {
     display: flex;
-    flex-direction: column;
-    align-items: var(--alignment);
+    flex-direction: var(--alignment-vertical);
+    align-items: var(--alignment-horizontal);
 }
 
 #viewer > .container {
@@ -66,7 +78,11 @@ body:has(#interface.active) {
 .client_list, .channel_list {
     display: flex;
     flex-direction: column;
-    align-items: var(--alignment);
+    align-items: var(--alignment-horizontal);
+}
+
+.channel_list {
+    flex-direction: var(--alignment-vertical);
 }
 
 .client_list {
@@ -75,6 +91,10 @@ body:has(#interface.active) {
 
 #viewer > .channel > .client_list {
     margin-inline: 0;
+}
+
+#viewer:not(.show_subchannels) > .channel .channel_list {
+    display: none;
 }
 
 .server {
@@ -93,6 +113,7 @@ body:has(#interface.active) {
 #viewer:not(.show_spacers):not(.show_query_clients) .channel.spacer:not(.has_regular_clients),
 
 #viewer.hide_empty_channels .channel:not(.has_clients),
+#viewer.hide_empty_channels.hide_local_client .channel:not(.has_nonlocal_clients),
 #viewer.hide_empty_channels:not(.show_query_clients) .channel:not(.has_regular_clients) {
     display: none;
 }
@@ -107,6 +128,7 @@ body:has(#interface.active) {
     color: var(--client-text-color);
 }
 
+#viewer.hide_local_client .client.self,
 #viewer:not(.show_query_clients) .client:not(.regular_client) {
     display: none;
 }
@@ -159,6 +181,14 @@ body:has(#interface.active) {
     
     height: var(--calculated-height);
     width: var(--calculated-height);
+}
+
+.client:not(.regular_client) .status {
+    display: none;
+}
+
+.client:not(.regular_client) > .name {
+    margin-inline-start: 0;
 }
 
 .status[status="hardware_muted"]::before {
@@ -304,7 +334,7 @@ body:has(#interface.active) {
 #interface {
     display: none;
     
-    --alignment: end;
+    --alignment-horizontal: end;
     
     overflow: auto;
 }
@@ -323,19 +353,27 @@ body:has(#interface.active) {
     
     display: flex;
     flex-direction: column;
-    gap: 1em;
-    align-self: var(--alignment, end);
+    gap: 0.25em;
+    align-self: var(--alignment-horizontal, end);
     text-align: center;
     
-    padding: 1em;
+    padding: 0.5em;
     
     background-color: hsla(0, 0%, 80%, 85%);
 }
 
-#interface_box > section {
+#interface_box section {
     display: flex;
     flex-direction: column;
-    gap: 0.5em;
+    gap: 0.25em;
+}
+
+#interface_box > section > section {
+    border: 0.1em dashed hsl(0, 0%, 100%);
+    border-radius: 0.2em;
+    
+    padding-block: 0.2em;
+    padding-inline-end: 0.2em;
 }
 
 #interface h2 {
@@ -346,12 +384,22 @@ body:has(#interface.active) {
     font-size: 1.2em;
 }
 
+#interface h4 {
+    font-size: 1.05em;
+    
+    text-align: start;
+    
+    margin-inline-start: 0.2em;
+}
+
 #interface .line {
     position: relative;
     
     display: flex;
     gap: 0.3em;
     align-items: center;
+    
+    margin-inline-start: 0.5em;
 }
 
 #interface .line :first-child {

@@ -283,6 +283,7 @@ export default class ChannelView extends View {
     #updateHasClients() {
         this.#element.classList.toggle("has_clients", this.#hasClients());
         this.#element.classList.toggle("has_regular_clients", this.#hasRegularClients());
+        this.#element.classList.toggle("has_nonlocal_clients", this.#hasNonLocalClient());
         
         this.onTreeDisplayed();
     }
@@ -304,6 +305,18 @@ export default class ChannelView extends View {
         
         for(const channelView of this.#channelViews) {
             if(channelView.#hasRegularClients()) return true;
+        }
+        
+        return false;
+    }
+    
+    #hasNonLocalClient() {
+        for(const clientView of this.#clientViews) {
+            if(!clientView.getClient().isLocalClient()) return true;
+        }
+        
+        for(const channelView of this.#channelViews) {
+            if(channelView.#hasNonLocalClient()) return true;
         }
         
         return false;
