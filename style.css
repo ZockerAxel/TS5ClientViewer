@@ -47,7 +47,7 @@ main {
 }
 
 main:not(.aligned_to_top) {
-    align-self: end;
+    margin-block-start: auto;
 }
 
 /* 
