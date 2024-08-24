@@ -3,7 +3,7 @@ import interfaceAppObject from "./data_loaders/InterfaceAppLoader.js";
 import standaloneAppObject from "./data_loaders/StandaloneAppLoader.js";
 import obsAppObject from "./data_loaders/ObsAppLoader.js";
 
-export const APP_VERSION = "1.4.0";
+export const APP_VERSION = "1.4.1";
 
 export default class App {
     #identifier;
