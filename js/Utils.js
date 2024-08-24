@@ -1,14 +1,15 @@
 //@ts-check
 
 /**
- * Returns the entered value or the default value if the entered value is null or undefined
+ * Returns the entered value or the default value if the entered value is null, undefined or NaN
  * 
  * @param {T | null | undefined} value The Value to get
- * @param {T} defaultValue The Default Value to use if the value is null or undefined
- * @returns {T} If it is non-null and non-undefined, the Value. If not, the default value
- * @template T The Type used
+ * @param {T} defaultValue The Default Value to use if the value is null, undefined or NaN
+ * @returns {T} If it is non-null, non-undefined and non-NaN, the Value. If not, the default value
+ * @template T The target Type
  */
 export function getOrDefault(value, defaultValue) {
+    if(typeof(value) === "number" && isNaN(value)) return defaultValue;
     return (value !== null && value !== undefined) ? value : defaultValue;
 }
 
