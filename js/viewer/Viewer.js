@@ -295,6 +295,8 @@ export default class Viewer {
         this.#silentClientsHidden = hidden;
         
         viewerDiv.classList.toggle("hide_silent_clients", hidden);
+        
+        this.updateViewer();
     }
     
     isSilentClientsHidden() {
