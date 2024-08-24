@@ -12,9 +12,9 @@ export default class Interface {
      * 
      * @param {Handler} handler
      * @param {Viewer} viewer 
-     * @param {{customId: string | undefined, appPort: number, mode: import("../viewer/Viewer.js").ViewerMode, serverSelectMode: import("../viewer/Viewer.js").ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean, localClientHidden}} prefillOptions 
+     * @param {{customId: string | undefined, appPort: number, mode: import("../viewer/Viewer.js").ViewerMode, serverSelectMode: import("../viewer/Viewer.js").ServerSelectMode, serverSelectModeOptions: *, scale: number, horizontalAlignment: string, verticalAlignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean, localClientHidden}} prefillOptions 
      */
-    constructor(handler, viewer, {customId, appPort, mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown, localClientHidden}) {
+    constructor(handler, viewer, {customId, appPort, mode, serverSelectMode, serverSelectModeOptions, scale, horizontalAlignment, verticalAlignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown, localClientHidden}) {
         this.#handler = handler;
         this.#viewer = viewer;
         
@@ -34,7 +34,7 @@ export default class Interface {
             interfaceServerName.value = serverSelectModeOptions.name;
         }
         
-        interfaceAlignment.value = alignment;
+        interfaceAlignment.value = `${horizontalAlignment}-${verticalAlignment}`;
         
         interfaceHideChannel.checked = channelHidden;
         interfaceShowSubchannels.checked = subChannelsShown;
@@ -187,7 +187,12 @@ export default class Interface {
         });
         
         interfaceAlignment.addEventListener("change", function() {
-            self.#viewer.setAlignment(this.value);
+            const alignment = this.value.split("-");
+            const horizontalAlignment = alignment[0];
+            const verticalAlignment = alignment[1];
+            
+            self.#viewer.setHorizontalAlignment(horizontalAlignment);
+            self.#viewer.setVerticalAlignment(verticalAlignment);
             
             self.updateGeneratedURL();
         });
@@ -301,7 +306,7 @@ export default class Interface {
         urlComponents.push(`mode=${this.#viewer.getMode()}`);
         urlComponents.push(`server=${this.#viewer.getServerSelectMode()}`);
         if(this.#viewer.getServerSelectMode() === "by_name") urlComponents.push(`server_options=${JSON.stringify(this.#viewer.getServerSelectModeOptions())}`);
-        urlComponents.push(`align=${this.#viewer.getAlignment()}`);
+        urlComponents.push(`align=${this.#viewer.getHorizontalAlignment()}-${this.#viewer.getVerticalAlignment()}`);
         if(this.#viewer.getMode() === "channel" && this.#viewer.isChannelHidden()) urlComponents.push(`hide_channel`);
         if(this.#viewer.getMode() === "channel" && this.#viewer.isSubChannelsShown()) urlComponents.push(`show_subchannels`);
         if(this.#viewer.getMode() === "tree" && this.#viewer.isChannelFollowed()) urlComponents.push(`follow_channel`);

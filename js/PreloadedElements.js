@@ -15,6 +15,9 @@ function preload(query, requiredClass) {
     return element;
 }
 
+//Main
+export const mainElement = preload("main", HTMLElement);
+
 //Viewer
 export const viewerDiv = preload("#viewer", HTMLDivElement);
 

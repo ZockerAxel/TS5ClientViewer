@@ -64,7 +64,9 @@ function showViewer(app, handler, apiPort) {
     const serverSelectMode = getOrDefault(getParam("server"), "active");
     const serverSelectModeOptions = JSON.parse(getOrDefault(getParam("server_options"), "{}"));
     const scale = getOrDefault(getParamFloat("scale"), 1);
-    const alignment = getOrDefault(getParam("align"), "start");
+    const alignment = getOrDefault(getParam("align"), "start-top").split("-");
+    const horizontalAlignment = alignment[0];
+    const verticalAlignment = alignment[1];
     const localClientColor = !getParamBoolean("disable_local_client_color");
     const hideChannelName = getParamBoolean("hide_channel");
     const hideSilentClients = getParamBoolean("only_talking");
@@ -84,7 +86,8 @@ function showViewer(app, handler, apiPort) {
         serverSelectMode: serverSelectMode,
         serverSelectModeOptions: serverSelectModeOptions,
         scale: scale,
-        alignment: alignment,
+        horizontalAlignment: horizontalAlignment,
+        verticalAlignment: verticalAlignment,
         localClientColorEnabled: localClientColor,
         channelHidden: hideChannelName,
         silentClientsHidden: hideSilentClients,

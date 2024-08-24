@@ -17,7 +17,8 @@
     
     /* Dynamic Values (Changed by URL Parameters) */
     --scale: 1;
-    --alignment: start;
+    --alignment-horizontal: start;
+    --alignment-vertical: column;
     
     width: 100dvw;
     height: 100dvh;
@@ -26,6 +27,8 @@
 }
 
 body {
+    display: flex;
+    
     width: 100%;
     height: 100%;
     
@@ -38,6 +41,10 @@ body:has(#interface.active) {
     background-color: black;
 }
 
+main:not(.aligned_to_top) {
+    margin-block-start: auto;
+}
+
 /* 
     Viewer
 */
@@ -47,16 +54,16 @@ body:has(#interface.active) {
     font-weight: bold;
     
     display: flex;
-    flex-direction: column;
-    align-items: var(--alignment);
+    flex-direction: var(--alignment-vertical);
+    align-items: var(--alignment-horizontal);
     
     user-select: none;
 }
 
 #viewer .container {
     display: flex;
-    flex-direction: column;
-    align-items: var(--alignment);
+    flex-direction: var(--alignment-vertical);
+    align-items: var(--alignment-horizontal);
 }
 
 #viewer > .container {
@@ -65,8 +72,8 @@ body:has(#interface.active) {
 
 .client_list, .channel_list {
     display: flex;
-    flex-direction: column;
-    align-items: var(--alignment);
+    flex-direction: var(--alignment-vertical);
+    align-items: var(--alignment-horizontal);
 }
 
 .client_list {
@@ -318,7 +325,7 @@ body:has(#interface.active) {
 #interface {
     display: none;
     
-    --alignment: end;
+    --alignment-horizontal: end;
     
     overflow: auto;
 }
@@ -338,7 +345,7 @@ body:has(#interface.active) {
     display: flex;
     flex-direction: column;
     gap: 0.25em;
-    align-self: var(--alignment, end);
+    align-self: var(--alignment-horizontal, end);
     text-align: center;
     
     padding: 0.5em;

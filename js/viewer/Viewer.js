@@ -1,7 +1,7 @@
 //@ts-check
 import Server from "../ts/Server.js";
 import Handler from "../ts/Handler.js";
-import { viewerDiv, interfaceDiv, hintScreenDiv } from "../PreloadedElements.js";
+import { viewerDiv, interfaceDiv, hintScreenDiv, mainElement } from "../PreloadedElements.js";
 import ServerView from "./ServerView.js";
 import ChannelView from "./ChannelView.js";
 import { logger } from "../Logger.js";
@@ -26,7 +26,9 @@ export default class Viewer {
     /**@type {number} */
     #scale;
     /**@type {string} */
-    #alignment;
+    #horizontalAlignment;
+    /**@type {string} */
+    #verticalAlignment;
     /**@type {boolean} */
     #localClientColorEnabled;
     /**@type {boolean} */
@@ -63,16 +65,17 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, alignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean, localClientHidden: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, horizontalAlignment: string, verticalAlignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean, localClientHidden: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, alignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown, localClientHidden}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, horizontalAlignment, verticalAlignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown, localClientHidden}) {
         this.#handler = handler;
         
         this.#mode = mode;
         this.#serverSelectMode = serverSelectMode;
         this.#serverSelectModeOptions = serverSelectModeOptions;
         this.setScale(scale);
-        this.setAlignment(alignment);
+        this.setHorizontalAlignment(horizontalAlignment);
+        this.setVerticalAlignment(verticalAlignment);
         this.setLocalClientColorEnabled(localClientColorEnabled);
         this.#channelHidden = channelHidden;
         this.setSilentClientsHidden(silentClientsHidden);
@@ -220,15 +223,33 @@ export default class Viewer {
      * 
      * @param {string} alignment Alignment
      */
-    setAlignment(alignment) {
-        this.#alignment = alignment;
+    setHorizontalAlignment(alignment) {
+        this.#horizontalAlignment = alignment;
         
-        viewerDiv.style.setProperty("--alignment", `${alignment}`);
-        interfaceDiv.style.setProperty("--alignment", `${alignment === "start" ? "end" : "start"}`);
+        viewerDiv.style.setProperty("--alignment-horizontal", `${alignment}`);
+        interfaceDiv.style.setProperty("--alignment-horizontal", `${alignment === "start" ? "end" : "start"}`);
     }
     
-    getAlignment() {
-        return this.#alignment;
+    getHorizontalAlignment() {
+        return this.#horizontalAlignment;
+    }
+    
+    /**
+     * Set a new Alignment
+     * 
+     * @param {string} alignment Alignment
+     */
+    setVerticalAlignment(alignment) {
+        this.#verticalAlignment = alignment;
+        
+        const verticalProperty = alignment === "top" ? "column" : "column-reverse";
+        
+        viewerDiv.style.setProperty("--alignment-vertical", `${verticalProperty}`);
+        mainElement.classList.toggle("aligned_to_top", alignment === "top");
+    }
+    
+    getVerticalAlignment() {
+        return this.#verticalAlignment;
     }
     
     /**

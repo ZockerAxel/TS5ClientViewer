@@ -99,8 +99,10 @@
                             <div class="line">
                                 <label for="alignment">Alignment</label>
                                 <select name="alignment" id="alignment">
-                                    <option value="start">Left</option>
-                                    <option value="end">Right</option>
+                                    <option value="start-top">Top Left</option>
+                                    <option value="end-top">Top Right</option>
+                                    <option value="start-bottom">Bottom Left</option>
+                                    <option value="end-bottom">Bottom Right</option>
                                 </select>
                                 
                                 <div class="hint">Which side to align the Viewer with</div>
@@ -128,7 +130,7 @@
                                 <label for="follow_channel">Follow Own Channel</label>
                                 <input type="checkbox" name="follow_channel" id="follow_channel">
                                 
-                                <div class="hint">Will always keep the Channel you're in at the top of the Viewer by scrolling to it.<br>Only for Viewer Mode "Show Server Tree".</div>
+                                <div class="hint">Will always keep the Channel you're in as close to the top of the Viewer as possible by scrolling to it.<br>Only for Viewer Mode "Show Server Tree".</div>
                             </div>
                             
                             <div class="line">
@@ -136,7 +138,7 @@
                                 <input type="checkbox" name="follow_specific_channel" id="follow_specific_channel">
                                 <input type="text" name="follow_channel_name" id="follow_channel_name" placeholder="Channel Name" disabled>
                                 
-                                <div class="hint">Will always keep the Channel you're in at the top of the Viewer by scrolling to it.<br>Only for Viewer Mode "Show Server Tree".</div>
+                                <div class="hint">Will always keep the selected Channel in as close to the top of the Viewer as possible by scrolling to it.<br>Only for Viewer Mode "Show Server Tree".</div>
                             </div>
                             
                             <div class="line">
