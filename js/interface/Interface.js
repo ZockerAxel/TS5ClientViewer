@@ -291,7 +291,7 @@ export default class Interface {
             if(isNaN(scale)) return;
             
             self.#viewer.setScale(scale);
-            self.#viewer.refreshViewer();
+            self.#viewer.updateViewer();
             
             self.updateGeneratedURL();
         });
@@ -302,7 +302,7 @@ export default class Interface {
             if(isNaN(scale)) return;
             
             self.#viewer.setScale(Number.parseFloat(this.value));
-            self.#viewer.refreshViewer();
+            self.#viewer.updateViewer();
             
             self.updateGeneratedURL();
         });
