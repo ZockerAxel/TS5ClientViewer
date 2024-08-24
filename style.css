@@ -21,6 +21,7 @@
     --alignment-vertical: column;
     
     width: 100dvw;
+    height: 100vh;
     height: 100dvh;
     
     overflow: hidden;
@@ -46,7 +47,7 @@ main {
 }
 
 main:not(.aligned_to_top) {
-    margin-block-start: auto;
+    align-self: end;
 }
 
 /* 
