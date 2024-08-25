@@ -2,7 +2,7 @@
 
 [![Preview](https://discourse-forums-images.s3.dualstack.us-east-2.amazonaws.com/original/3X/e/4/e4d6dc9e83a23ed933427f1d412a901e1d7d4614.png)](https://github.com/ZockerAxel/TS5ClientViewer)
 
-**Level up your stream overlays** with TS5ClientViewer, a highly customizable external Client Viewer for TeamSpeak 5. Seamlessly integrate it with OBS, Streamlabs OBS, or any software that supports browser sources.
+**Level up your stream** with TS5ClientViewer, a highly customizable external Client Viewer for TeamSpeak 5. Seamlessly integrate it with OBS, Streamlabs OBS, or any software that supports browser sources.
 
 ## Key Features
 
