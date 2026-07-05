@@ -1,5 +1,5 @@
 //@ts-check
-import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale, interfaceFollowChannel, interfaceHideAwayMessage, viewerDiv, hintScreenDiv, interfaceFollowChannelName, interfaceFollowSpecificChannel, interfaceShowSubchannels, interfaceHideLocalClient } from "../PreloadedElements.js";
+import { interfaceAlignment, interfaceCustomAppId, interfaceDisableLocalClientColor, interfaceDisplayMode, interfaceDiv, interfaceHideChannel, interfaceHideEmpty, interfaceHideStatus, interfaceOnlyTalking, interfaceGeneratedUrl, interfaceScaleSlider, interfaceServer, interfaceServerList, interfaceServerName, interfaceShowAvatars, interfaceShowQueryClients, interfaceShowSpacers, interfaceUseCustomId, interfaceViewerMode, interfaceAppPort, interfaceScale, interfaceFollowChannel, interfaceHideAwayMessage, viewerDiv, hintScreenDiv, interfaceFollowChannelName, interfaceFollowSpecificChannel, interfaceShowSubchannels, interfaceHideLocalClient, interfaceDisableTutorial } from "../PreloadedElements.js";
 import Handler from "../ts/Handler.js";
 import Server from "../ts/Server.js";
 import Viewer from "../viewer/Viewer.js";
@@ -12,9 +12,9 @@ export default class Interface {
      * 
      * @param {Handler} handler
      * @param {Viewer} viewer 
-     * @param {{customId: string | undefined, appPort: number, mode: import("../viewer/Viewer.js").ViewerMode, serverSelectMode: import("../viewer/Viewer.js").ServerSelectMode, serverSelectModeOptions: *, scale: number, horizontalAlignment: string, verticalAlignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean, localClientHidden: boolean}} prefillOptions 
+     * @param {{customId: string | undefined, appPort: number, mode: import("../viewer/Viewer.js").ViewerMode, serverSelectMode: import("../viewer/Viewer.js").ServerSelectMode, serverSelectModeOptions: *, scale: number, horizontalAlignment: string, verticalAlignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean, localClientHidden: boolean, tutorialDisabled: boolean}} prefillOptions 
      */
-    constructor(handler, viewer, {customId, appPort, mode, serverSelectMode, serverSelectModeOptions, scale, horizontalAlignment, verticalAlignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown, localClientHidden}) {
+    constructor(handler, viewer, {customId, appPort, mode, serverSelectMode, serverSelectModeOptions, scale, horizontalAlignment, verticalAlignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown, localClientHidden, tutorialDisabled}) {
         this.#handler = handler;
         this.#viewer = viewer;
         
@@ -35,6 +35,8 @@ export default class Interface {
         }
         
         interfaceAlignment.value = `${horizontalAlignment}-${verticalAlignment}`;
+		
+		interfaceDisableTutorial.checked = tutorialDisabled;
         
         interfaceHideChannel.checked = channelHidden;
         interfaceShowSubchannels.checked = subChannelsShown;
@@ -324,6 +326,7 @@ export default class Interface {
         urlComponents.push(`server=${this.#viewer.getServerSelectMode()}`);
         if(this.#viewer.getServerSelectMode() === "by_name") urlComponents.push(`server_options=${JSON.stringify(this.#viewer.getServerSelectModeOptions())}`);
         urlComponents.push(`align=${this.#viewer.getHorizontalAlignment()}-${this.#viewer.getVerticalAlignment()}`);
+		if(this.#viewer.isTutorialDisabled()) urlComponents.push("disable_tutorial");
         if(this.#viewer.getMode() === "channel" && this.#viewer.isChannelHidden()) urlComponents.push(`hide_channel`);
         if(this.#viewer.getMode() === "channel" && this.#viewer.isSubChannelsShown()) urlComponents.push(`show_subchannels`);
         if(this.#viewer.getMode() === "tree" && this.#viewer.isChannelFollowed()) urlComponents.push(`follow_channel`);

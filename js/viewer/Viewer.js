@@ -68,6 +68,9 @@ export default class Viewer {
     /**@type {boolean} */
     //@ts-ignore
     #localClientHidden;
+	
+    //@ts-ignore
+    #tutorialDisabled;
     
     /**@type {Server} */
     //@ts-ignore
@@ -79,9 +82,9 @@ export default class Viewer {
     /**
      * 
      * @param {Handler} handler
-     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, horizontalAlignment: string, verticalAlignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean, localClientHidden: boolean}} options 
+     * @param {{mode: ViewerMode, serverSelectMode: ServerSelectMode, serverSelectModeOptions: *, scale: number, horizontalAlignment: string, verticalAlignment: string, localClientColorEnabled: boolean, channelHidden: boolean, silentClientsHidden: boolean, statusHidden: boolean, avatarsShown: boolean, spacersShown: boolean, emptyChannelsHidden: boolean, queryClientsShown: boolean, channelFollowed: boolean, followChannelName: string, awayMessageHidden: boolean, subChannelsShown: boolean, localClientHidden: boolean, tutorialDisabled: boolean}} options 
      */
-    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, horizontalAlignment, verticalAlignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown, localClientHidden}) {
+    constructor(handler, {mode, serverSelectMode, serverSelectModeOptions, scale, horizontalAlignment, verticalAlignment, localClientColorEnabled, channelHidden, silentClientsHidden, statusHidden, avatarsShown, spacersShown, emptyChannelsHidden, queryClientsShown, channelFollowed, followChannelName, awayMessageHidden, subChannelsShown, localClientHidden, tutorialDisabled}) {
         this.#handler = handler;
         
         this.#mode = mode;
@@ -103,6 +106,8 @@ export default class Viewer {
         this.setAwayMessageHidden(awayMessageHidden);
         this.setSubChannelsShown(subChannelsShown);
         this.setLocalClientHidden(localClientHidden);
+		
+		this.setTutorialDisabled(tutorialDisabled);
         
         this.#registerEvents();
         this.#addViewerChangeObserver();
@@ -492,6 +497,21 @@ export default class Viewer {
     isLocalClientHidden() {
         return this.#localClientHidden;
     }
+	
+	/**
+	 * Sets whether the tutorial will be disabled while no connection is active
+	 * 
+	 * @param {boolean} tutorialDisabled Whether the tutorial should be disabled
+	 */
+	setTutorialDisabled(tutorialDisabled) {
+		this.#tutorialDisabled = tutorialDisabled;
+		
+		hintScreenDiv.classList.toggle("disabled", tutorialDisabled);
+	}
+	
+	isTutorialDisabled() {
+		return this.#tutorialDisabled;
+	}
     
     refreshViewer() {
         switch(this.#mode) {

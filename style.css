@@ -342,6 +342,10 @@ main:not(.aligned_to_top) {
     min-width: 30rem;
 }
 
+#hint_screen.disabled {
+	display: none;
+}
+
 /* 
     Interface
 */

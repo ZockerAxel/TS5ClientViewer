@@ -84,6 +84,8 @@ function showViewer(app, handler, apiPort) {
     const hideAwayMessage = getParamBoolean("hide_away_message");
     const showSubchannels = getParamBoolean("show_subchannels");
     const hideLocalClient = getParamBoolean("hide_local_client");
+	
+    const disableTutorial = getParamBoolean("disable_tutorial");
     
     const viewerOptions = {
         mode: viewerMode,
@@ -105,6 +107,8 @@ function showViewer(app, handler, apiPort) {
         awayMessageHidden: hideAwayMessage,
         subChannelsShown: showSubchannels,
         localClientHidden: hideLocalClient,
+		
+        tutorialDisabled: disableTutorial,
     };
     
     const viewer = new Viewer(handler, viewerOptions);
